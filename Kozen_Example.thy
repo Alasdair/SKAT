@@ -1,4 +1,4 @@
-theory KozenExample
+theory Kozen_Example
   imports SKAT_Tactics List
 begin
 
