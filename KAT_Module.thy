@@ -66,7 +66,6 @@ locale kat_module = kat_module' +
   and mod_star: "\<lbrakk>m \<in> carrier A; n \<in> carrier A; p \<in> carrier K\<rbrakk> \<Longrightarrow> m \<squnion> n \<Colon> p \<sqsubseteq>\<^bsub>A\<^esub> n \<Longrightarrow> m \<Colon> p\<^sup>\<star> \<sqsubseteq>\<^bsub>A\<^esub> n"
   and mod_one: "m \<in> carrier A \<Longrightarrow> m \<Colon> 1 = m"
   and mod_test: "\<lbrakk>a \<in> tests K; m \<in> carrier A\<rbrakk> \<Longrightarrow> m \<Colon> a = m \<sqinter> \<top> \<Colon> a"
-  and mod_meet: "\<lbrakk>p \<in> carrier K; P \<in> carrier A; Q \<in> carrier A\<rbrakk> \<Longrightarrow> P \<sqinter> Q \<Colon> p = P \<Colon> p \<sqinter> Q \<Colon> p"
 
 begin
 

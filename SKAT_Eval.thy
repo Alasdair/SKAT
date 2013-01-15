@@ -1,5 +1,5 @@
 theory SKAT_Eval
-  imports SKAT
+  imports SKAT KAT_Module Set_Model
 begin
 
 type_synonym 'a mems = "(nat \<Rightarrow> 'a) set"
@@ -481,7 +481,7 @@ begin
   lemma mod_empty [simp]: "{} \<Colon> r = {}"
     by (simp add: module_def, transfer, metis eval_mod1)
 
-  lemma "(a \<union> b) \<Colon> r = a \<Colon> r \<union> b \<Colon> r"
+  lemma mod_union: "(a \<union> b) \<Colon> r = a \<Colon> r \<union> b \<Colon> r"
     by (simp add: module_def, transfer, metis eval_mod2)
 
   lemma mod_zero [simp]: "a \<Colon> \<zero> = {}"
@@ -535,6 +535,34 @@ begin
       by (simp add: mod_pred_expr)
     finally show ?thesis
       by (metis b_def)
+  qed
+
+
+  lemma module: "kat_module free_kat SET (\<lambda>x y. y \<Colon> x)"
+  proof (auto simp add: kat_module_def kat_module'_def)
+    show "kat free_kat"
+      by (metis free_kat)
+
+    show "complete_boolean_lattice SET"
+      by (metis SET_cbl)
+
+    show "(\<lambda>x y. y \<Colon> x) \<in> carrier free_kat \<rightarrow> carrier SET \<rightarrow> carrier SET"
+      by (simp add: ftype_pred SET_def)
+
+    show "kat_module_axioms free_kat SET (\<lambda>x y. y \<Colon> x)"
+    proof (simp add: kat_module_axioms_def, intro conjI impI allI, simp_all add: SET_def free_kat_def)
+      fix p q m n a P Q
+      show "m \<Colon> (p + q) = m \<Colon> p \<union> m \<Colon> q"
+        by (fact mod_plus)
+      show "m \<Colon> (p ; q) = (m \<Colon> p) \<Colon> q"
+        by (fact mod_mult)
+      show "(P \<union> Q) \<Colon> p = P \<Colon> p \<union> Q \<Colon> p"
+        by (fact mod_union)
+      show "m \<subseteq> n \<and> n \<Colon> p \<subseteq> n \<Longrightarrow> m \<Colon> p\<^sup>\<star> \<subseteq> n"
+        by (metis Un_least mod_star)
+      show "a \<in> carrier tests \<Longrightarrow> m \<Colon> a = m \<inter> UNIV \<Colon> a"
+        by (metis mod_test_and)
+    qed
   qed
 
   definition hoare_triple :: "'b mems \<Rightarrow> 'a skat \<Rightarrow> 'b mems \<Rightarrow> bool" ("_ \<lbrace> _ \<rbrace> _" [54,54,54] 53) where
