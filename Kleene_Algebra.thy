@@ -3,7 +3,7 @@ theory Kleene_Algebra
 begin
 
 (* +------------------------------------------------------------------------+ *)
-subsection {* Kleene Algebras *}
+section {* Kleene Algebras *}
 (* +------------------------------------------------------------------------+ *)
 
 record 'a kleene_algebra = "'a dioid" +

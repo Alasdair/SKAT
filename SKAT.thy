@@ -1,18 +1,25 @@
 theory SKAT
-  imports SKAT_Term
+  imports SKAT_Term Set_Model
 begin
+
+section {* Schematic Kleene Algebra *}
 
 (* +------------------------------------------------------------------------+ *)
 subsection {* Schematic Kleene Algebra Expressions *}
 (* +------------------------------------------------------------------------+ *)
 
-datatype 'a skat_expr = SKLeaf nat "'a trm"
-                      | SKPlus "'a skat_expr" "'a skat_expr" (infixl ":\<oplus>:" 70)
-                      | SKMult "'a skat_expr" "'a skat_expr" (infixl ":\<odot>:" 80)
-                      | SKStar "'a skat_expr"
-                      | SKBool "'a pred bexpr"
-                      | SKOne
-                      | SKZero
+text {* SKAT expressions are represented by the following datatype *}
+
+datatype 'a skat_expr =
+    SKLeaf nat "'a trm"
+  | SKPlus "'a skat_expr" "'a skat_expr" (infixl ":\<oplus>:" 70)
+  | SKMult "'a skat_expr" "'a skat_expr" (infixl ":\<odot>:" 80)
+  | SKStar "'a skat_expr"
+  | SKBool "'a pred bexpr"
+  | SKOne
+  | SKZero
+
+text {* The variables red by an expression can be calculated with the following function *}
 
 primrec reads :: "'a::ranked_alphabet skat_expr \<Rightarrow> nat set" where
   "reads (SKLeaf x s) = FV s"

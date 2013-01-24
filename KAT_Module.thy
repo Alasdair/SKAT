@@ -150,13 +150,24 @@ begin
       by (metis mult_oner pc)
   qed
 
+  declare mod_closed[intro]
+
   lemma hoare_plus:
-    assumes pc: "p \<in> carrier K" and qc: "q \<in> carrier K"
-    and Pc: "P \<in> carrier A" and Qc: "Q \<in> carrier A"
+    assumes pc [intro]: "p \<in> carrier K" and qc [intro]: "q \<in> carrier K"
+    and Pc [intro]: "P \<in> carrier A" and Qc [intro]: "Q \<in> carrier A"
     and then_branch: "P \<lbrace> p \<rbrace> Q"
     and else_branch: "P \<lbrace> q \<rbrace> Q"
     shows "P \<lbrace> p + q \<rbrace> Q"
-    by (metis A.bin_lub_var Pc Qc else_branch hoare_triple_def mod_closed mod_plus pc qc then_branch)
+  proof -
+    have "P \<Colon> p \<sqsubseteq>\<^bsub>A\<^esub> Q" and "P \<Colon> q \<sqsubseteq>\<^bsub>A\<^esub> Q"
+      by (insert then_branch else_branch) (simp add: hoare_triple_def)+
+    hence "P \<Colon> (p + q) \<sqsubseteq>\<^bsub>A\<^esub> Q"
+      by (simp add: mod_plus[OF pc qc Pc], subst A.bin_lub_var, auto)
+    thus ?thesis
+      by (simp add: hoare_triple_def)
+  qed
+
+  (* by (metis A.bin_lub_var Pc Qc else_branch hoare_triple_def mod_closed mod_plus pc qc then_branch) *)
 
   lemma hoare_if:
     assumes b_test: "b \<in> tests K"
@@ -194,31 +205,25 @@ begin
     shows "P \<lbrace> p\<^sup>\<star> \<rbrace> P"
     by (metis (lifting) A.bin_lub_var A.order_refl Pc hoare_triple_def mod_closed mod_star p_triple pc)
 
-  lemma hoare_while:
-    assumes b_test: "b \<in> tests K" and pc: "p \<in> carrier K"
-    and Pc: "P \<in> carrier A"
-    and Q_def: "Q = P \<sqinter> (\<top> \<Colon> !b)"
-    and loop_condition: "P \<sqinter> (\<top> \<Colon> b) \<lbrace>p\<rbrace> P"
-    shows "P \<lbrace> (b\<cdot>p)\<^sup>\<star>\<cdot>!b \<rbrace> Q"
-    apply (simp add: Q_def)
-    apply (rule_tac Q = P in hoare_composition)
-    apply (metis b_test mult_closed pc star_closed test_subset_var)
-    apply (metis b_test local.complement_closed test_subset_var)
-    apply (metis (lifting) Pc)
-    apply (metis (lifting) Pc)
-    apply (metis A.meet_closed A.top_closed Pc b_test local.complement_closed mod_closed test_subset_var)
-    apply (rule hoare_star)
-    apply (metis (lifting) b_test mult_closed pc test_subset_var)
-    apply (metis (lifting) Pc)
-    apply (rule_tac Q = "P \<sqinter> \<top> \<Colon> b" in hoare_composition)
-    apply (metis (lifting) b_test test_subset_var)
-    apply (metis (lifting) pc)
-    apply (metis Pc)
-    apply (metis Pc b_test mod_closed mod_test test_subset_var)
-    apply (metis (lifting) Pc)
-    apply (metis A.eq_refl Pc b_test hoare_triple_def mod_closed mod_test test_subset_var)
-    apply (metis loop_condition)
-    by (metis (lifting) A.order_refl Pc b_test hoare_triple_def kat.complement_closed kat.test_subset_var kat_subalg mod_closed mod_test)
+  declare star_closed [intro]
+  declare mult_closed [intro]
+  declare test_subset_var [intro]
+  declare complement_closed [intro]
+  declare meet_closed [intro!]
+  declare top_closed [intro]
+
+  lemma [intro]: "\<lbrakk>b \<in> tests K; P \<in> carrier A\<rbrakk> \<Longrightarrow> P \<lbrace> b \<rbrace> P \<sqinter>\<^bsub>A\<^esub> \<top> \<Colon> b"
+    by (metis A.eq_refl hoare_triple_def mod_closed mod_test test_subset_var)
+
+   lemma hoare_while:
+    assumes b_test [intro]: "b \<in> tests K" and pc [intro]: "p \<in> carrier K"
+    and Pc [intro]: "P \<in> carrier A"
+    and loop_condition [intro]: "P \<sqinter> (\<top> \<Colon> b) \<lbrace>p\<rbrace> P"
+    shows "P \<lbrace> (b\<cdot>p)\<^sup>\<star>\<cdot>!b \<rbrace> P \<sqinter> (\<top> \<Colon> !b)"
+  proof (rule hoare_composition[where ?Q = P], auto)
+    show "P \<lbrace> (b \<cdot> p)\<^sup>\<star> \<rbrace> P"
+      by (blast intro: hoare_star hoare_composition[where ?Q = "P \<sqinter> \<top> \<Colon> b"])
+  qed
 
 end
 

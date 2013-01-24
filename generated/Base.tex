@@ -1,0 +1,247 @@
+%
+\begin{isabellebody}%
+\def\isabellecontext{Base}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+\isacommand{theory}\isamarkupfalse%
+\ Base\isanewline
+\ \ \isakeyword{imports}\ Main\isanewline
+\isakeyword{begin}%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isamarkupsection{Preliminaries%
+}
+\isamarkuptrue%
+\isacommand{record}\isamarkupfalse%
+\ {\isaliteral{27}{\isacharprime}}a\ partial{\isaliteral{5F}{\isacharunderscore}}object\ {\isaliteral{3D}{\isacharequal}}\isanewline
+\ \ carrier\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ set{\isaliteral{22}{\isachardoublequoteclose}}%
+\begin{isamarkuptext}%
+From \texttt{HOL/SenSocialChoice/FSect.thy} in AFP. By Peter Gammie%
+\end{isamarkuptext}%
+\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ finite{\isaliteral{5F}{\isacharunderscore}}subset{\isaliteral{5F}{\isacharunderscore}}induct{\isaliteral{5F}{\isacharunderscore}}var\ {\isaliteral{5B}{\isacharbrackleft}}consumes\ {\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}\ case{\isaliteral{5F}{\isacharunderscore}}names\ empty\ insert{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ \isakeyword{assumes}\ {\isaliteral{22}{\isachardoublequoteopen}}finite\ F{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}F\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isakeyword{and}\ empty{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}P\ {\isaliteral{7B}{\isacharbraceleft}}{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isakeyword{and}\ insert{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C416E643E}{\isasymAnd}}a\ F{\isaliteral{2E}{\isachardot}}\ {\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}finite\ F{\isaliteral{3B}{\isacharsemicolon}}\ a\ {\isaliteral{5C3C696E3E}{\isasymin}}\ A{\isaliteral{3B}{\isacharsemicolon}}\ F\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ A{\isaliteral{3B}{\isacharsemicolon}}\ a\ {\isaliteral{5C3C6E6F74696E3E}{\isasymnotin}}\ F{\isaliteral{3B}{\isacharsemicolon}}\ P\ F{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ P\ {\isaliteral{28}{\isacharparenleft}}insert\ a\ F{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{shows}\ {\isaliteral{22}{\isachardoublequoteopen}}P\ F{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{2D}{\isacharminus}}\isanewline
+\ \ \isacommand{from}\isamarkupfalse%
+\ {\isaliteral{60}{\isacharbackquoteopen}}finite\ F{\isaliteral{60}{\isacharbackquoteclose}}\isanewline
+\ \ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}F\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ A\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ {\isaliteral{3F}{\isacharquery}}thesis{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isacommand{proof}\isamarkupfalse%
+\ induct\isanewline
+\ \ \ \ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}P\ {\isaliteral{7B}{\isacharbraceleft}}{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\ \isacommand{by}\isamarkupfalse%
+\ fact\isanewline
+\ \ \isacommand{next}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{fix}\isamarkupfalse%
+\ x\ F\isanewline
+\ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}finite\ F{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C6E6F74696E3E}{\isasymnotin}}\ F{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\isanewline
+\ \ \ \ \ \ P{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}F\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ A\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ P\ F{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ i{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}insert\ x\ F\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}P\ {\isaliteral{28}{\isacharparenleft}}insert\ x\ F{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ insert{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ \isacommand{from}\isamarkupfalse%
+\ i\ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isacommand{by}\isamarkupfalse%
+\ blast\isanewline
+\ \ \ \ \ \ \isacommand{from}\isamarkupfalse%
+\ i\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}F\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isacommand{by}\isamarkupfalse%
+\ blast\isanewline
+\ \ \ \ \ \ \isacommand{with}\isamarkupfalse%
+\ P\ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}P\ F{\isaliteral{22}{\isachardoublequoteclose}}\ \isacommand{{\isaliteral{2E}{\isachardot}}}\isamarkupfalse%
+\isanewline
+\ \ \ \ \ \ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}finite\ F{\isaliteral{22}{\isachardoublequoteclose}}\ \isacommand{by}\isamarkupfalse%
+\ fact\isanewline
+\ \ \ \ \ \ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C6E6F74696E3E}{\isasymnotin}}\ F{\isaliteral{22}{\isachardoublequoteclose}}\ \isacommand{by}\isamarkupfalse%
+\ fact\isanewline
+\ \ \ \ \ \ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}F\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isacommand{by}\isamarkupfalse%
+\ fact\isanewline
+\ \ \ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{with}\isamarkupfalse%
+\ {\isaliteral{60}{\isacharbackquoteopen}}F\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ A{\isaliteral{60}{\isacharbackquoteclose}}\ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{3F}{\isacharquery}}thesis\ \isacommand{by}\isamarkupfalse%
+\ blast\isanewline
+\isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+To talk about functions between structures with carrier sets,
+we need some notion of a function's \emph {type}.%
+\end{isamarkuptext}%
+\isamarkuptrue%
+\isacommand{definition}\isamarkupfalse%
+\ ftype\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ set\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b\ set\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{27}{\isacharprime}}a\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b{\isaliteral{29}{\isacharparenright}}\ set{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{28}{\isacharparenleft}}\isakeyword{infixr}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C72696768746172726F773E}{\isasymrightarrow}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isadigit{6}}{\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\ \isakeyword{where}\isanewline
+\ \ {\isaliteral{22}{\isachardoublequoteopen}}ftype\ A\ B\ {\isaliteral{5C3C65717569763E}{\isasymequiv}}\ {\isaliteral{7B}{\isacharbraceleft}}f{\isaliteral{2E}{\isachardot}}\ {\isaliteral{5C3C666F72616C6C3E}{\isasymforall}}x{\isaliteral{2E}{\isachardot}}\ x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ A\ {\isaliteral{5C3C6C6F6E6772696768746172726F773E}{\isasymlongrightarrow}}\ f\ x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ B{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}%
+\begin{isamarkuptext}%
+We could also define \emph{ftype} as a predicate rather than
+as a set.%
+\end{isamarkuptext}%
+\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ ftype{\isaliteral{5F}{\isacharunderscore}}pred{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{28}{\isacharparenleft}}f\ {\isaliteral{5C3C696E3E}{\isasymin}}\ A\ {\isaliteral{5C3C72696768746172726F773E}{\isasymrightarrow}}\ B{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{5C3C666F72616C6C3E}{\isasymforall}}x{\isaliteral{2E}{\isachardot}}\ x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ A\ {\isaliteral{5C3C6C6F6E6772696768746172726F773E}{\isasymlongrightarrow}}\ f\ x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ B{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ ftype{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Typing rules for composition and application can then be
+derived, as well as the type of the identity function.%
+\end{isamarkuptext}%
+\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ typed{\isaliteral{5F}{\isacharunderscore}}composition{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}f\ {\isaliteral{5C3C696E3E}{\isasymin}}\ A\ {\isaliteral{5C3C72696768746172726F773E}{\isasymrightarrow}}\ B{\isaliteral{3B}{\isacharsemicolon}}\ g\ {\isaliteral{5C3C696E3E}{\isasymin}}\ B\ {\isaliteral{5C3C72696768746172726F773E}{\isasymrightarrow}}\ C{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ g\ {\isaliteral{5C3C636972633E}{\isasymcirc}}\ f\ {\isaliteral{5C3C696E3E}{\isasymin}}\ A\ {\isaliteral{5C3C72696768746172726F773E}{\isasymrightarrow}}\ C{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ ftype{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ typed{\isaliteral{5F}{\isacharunderscore}}application{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ A{\isaliteral{3B}{\isacharsemicolon}}\ f\ {\isaliteral{5C3C696E3E}{\isasymin}}\ A\ {\isaliteral{5C3C72696768746172726F773E}{\isasymrightarrow}}\ B{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ f\ x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ B{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ ftype{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ typed{\isaliteral{5F}{\isacharunderscore}}abstraction{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C666F72616C6C3E}{\isasymforall}}x{\isaliteral{2E}{\isachardot}}\ f\ x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ A\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ f\ {\isaliteral{5C3C696E3E}{\isasymin}}\ UNIV\ {\isaliteral{5C3C72696768746172726F773E}{\isasymrightarrow}}\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ ftype{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ typed{\isaliteral{5F}{\isacharunderscore}}mapping{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}f\ {\isaliteral{5C3C696E3E}{\isasymin}}\ A\ {\isaliteral{5C3C72696768746172726F773E}{\isasymrightarrow}}\ B{\isaliteral{3B}{\isacharsemicolon}}\ X\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ f\ {\isaliteral{60}{\isacharbackquote}}\ X\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ B{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ ftype{\isaliteral{5F}{\isacharunderscore}}pred\ image{\isaliteral{5F}{\isacharunderscore}}subsetI\ set{\isaliteral{5F}{\isacharunderscore}}mp{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ id{\isaliteral{5F}{\isacharunderscore}}type{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}id\ {\isaliteral{5C3C696E3E}{\isasymin}}\ A\ {\isaliteral{5C3C72696768746172726F773E}{\isasymrightarrow}}\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ ftype{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+%
+\isadelimtheory
+\isanewline
+%
+\endisadelimtheory
+%
+\isatagtheory
+\isacommand{end}\isamarkupfalse%
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+\isanewline
+%
+\endisadelimtheory
+\end{isabellebody}%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "root"
+%%% End:

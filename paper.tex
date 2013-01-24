@@ -1,0 +1,900 @@
+\documentclass{llncs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{graphicx,color}
+\usepackage{multicol}
+\usepackage{float}
+
+\usepackage{isabelle,isabellesym}
+\usepackage[greek,english]{babel}
+\usepackage{pdfsetup}
+
+\isabellestyle{it}
+
+\newfloat{schemes}{ptb}{sch}
+
+\usetikzlibrary{arrows,shapes,calc}
+
+\newcommand{\nkat}{\overline{\phantom{x}}}
+\newcommand{\llbrace}{\hspace{1pt} \lbrace \kern -3pt \vert \hspace{1pt}}
+\newcommand{\rrbrace}{\hspace{0.5pt} \rbrace \kern -5pt \vert \hspace{3pt}}
+\newcommand{\ifthenelse}[3]{\text{IF $#1$ THEN $#2$ ELSE $#3$}}
+\newcommand{\while}[2]{\text{WHILE $#1$ DO $#2$ WEND}}
+\newcommand{\triple}[3]{\llbrace #1 \rrbrace #2 \llbrace #3 \rrbrace}
+
+\begin{document}
+
+\tikzstyle{block} = [rectangle,thick,draw=black,minimum height=6mm]
+\tikzstyle{line} = [draw,thick, -latex']
+\tikzstyle{test} = [diamond,thick,draw=black]
+\tikzstyle{false} = [above right of=t2, node distance=2.5mm]
+\tikzstyle{true} = [above left of=t2, node distance=2.5mm]
+
+\title{Schematic KA Paper}
+
+\author{Alasdair Armstrong\inst{1} \and Georg Struth\inst{1} \and Tjark Weber\inst{2}}
+
+\institute{Department of Computer Science, University of Sheffield, UK,\\
+\email{$\{$a.armstrong,g.struth$\}$@dcs.shef.ac.uk}
+\and
+Department of Information Technology, Uppsala University, Sweden,\\
+\email{tjark.weber@it.uu.se}}
+
+\maketitle
+
+\begin{abstract}
+  FIXME: In this paper we describe a formalisation of Dexter Kozen's
+  schematic Kleene algebra in Isabelle/HOL. In addition, we will
+  demonstrate how this approach can be extended to support Hoare logic
+  style verification of programs, and how in this setting Isabelle can
+  be used to fully automate the verification of simple algorithms. I
+  will finally discuss promising directions for future work in this
+  area, such as adding support for reasoning with concurrent programs.
+\end{abstract}
+
+\section{Introduction}
+
+\newpage
+...
+\pagebreak
+
+\section{Kleene Algebra and Kleene Algebra with Tests}
+\label{sec:alg}
+
+A dioid is a structure $(D, +, \cdot, 0, 1)$ where $(D, +, 0)$ is a
+semilattice with a least element $0$, $(D, \cdot, 1)$ is a monoid,
+multiplication distributes over addition and $0\cdot x = 0 = x\cdot
+0$. The natural partial order, $x \le y$ is defined as $x + y = y$. A
+Kleene algebra~\cite{Kozen} is a dioid extended with an additional
+unary operation $^\ast$, which additionally satisifies the four axioms
+\begin{align*}
+1 + xx^\ast &\le x^\ast,\\
+1 + x^\ast x &\le x^\ast,\\
+z + xy \le y &\to x^\ast z \le y,\\
+z + yx \le y &\to zx^\ast \le y.
+\end{align*}
+Intuitively, one can think of the operations of Kleene algebra having
+the following meanings: $+$ represents non-deterministic choice
+between two actions, while $\cdot$ represents sequential
+composition. $1$ is the skip action, and $0$ is the abortive
+action. The star operation represents finite iteration, i.e. $x^\ast$
+represents zero or more executions of the $x$ action.
+
+In order to model actual programming constructs such as if statements
+and while loops we require some notion of a test or assertion. To
+facilitate this, we use Kozen's Kleene algebra with
+tests~\cite{Kozen97}. Formally, a Kleene algebra with tests (KAT) is
+a two sorted structure $(K,B,+,\cdot,^\star,0,1,\nkat)$ where
+$(B,+,\cdot,\nkat,0,1)$ is a boolean algebra and
+$(K,+,\cdot,^\ast,0,1)$ is a Kleene algebra such that the dioid
+$(B,+,\cdot,0,1)$ is a subalgebra of $(K,+,\cdot,0,1)$. The $\nkat$
+operator is only defined for elements in $B$. As per Kozen, we use
+$p,q,r,\dots$ for arbitrary elements of $K$ and $a,b,c,\dots$ for
+tests.
+
+If statements and while loops can be encoded in KAT in the following way:
+\begin{align*}
+\ifthenelse{b}{p}{q} &\overset{\text{def}}{=} bp + \overline{b}q,\\
+\while{b}{p} &\overset{\text{def}}{=} (bp)^\ast \overline{b}.
+\end{align*}
+It is also sometimes convenient to write sequential composition as $p;
+q$ rather than $pq$, where $;$ has a lower precedence than $\cdot$
+does. In KAT the $+$, $\cdot$, $0$ and $1$ operators now take on two
+meanings. For arbitrary elements of $K$, they have the intuitive
+meanings described above, but for tests, they also represent
+disjunction, conjunction, false and true respectively. These two
+separate usages of the operators do not conflict in any way.
+
+In KAT, Hoare triples can be defined as follows:
+\begin{align}
+\label{eq:kathoare}
+\triple{b}{p}{c} \overset{\text{def}}{\Longleftrightarrow} bp = bpc \Longleftrightarrow bp\overline{c} = 0.
+\end{align}
+Intuitively, $bp = bpc$ states that if $p$ is executed in a state
+satisfying $b$, then $c$ must hold in the resulting state, while
+$bp\overline{c} = 0$ states that there are no actions $p$ such that
+when executed in a state satisfying $b$ will result in a state
+satisfying $c$. All the rules of Hoare logic except the assignment
+rules can be derivied in KAT. This fragment is known as propositional
+Hoare logic (PHL). KAT, in fact is strictly more powerful than PHL. I
+supports the deriviation of new Hoare-style inference rules and
+reasoning about program equivalences. KAT also permits an elegant
+equational style of reasoning, as it does not rely on any specialised
+syntactic constructs, unlike Hoare logic or dynamic logic.
+
+\section{Schematic KAT and Flowchart Schemes}
+\label{sec:skat}
+
+The absence of the assignment rule is main obstacle towards verifying
+and analysing programs with KAT. To overcome this, axioms for
+assignment have been added. These are targeted mainly at semantics of
+flowchart schemes, hence the name \emph{schematic KAT}
+(SKAT)~\cite{Angus01}. For an overview of flowchart schemes,
+transformation rules between such schemes and the general problem of
+scheme equivalence, see Manna's book~\cite{Manna}. We formalise
+Kozen's approach to flowchart equivalence in SKAT, which in in turn is
+inspired by Manna's work. In this section we describe the conceptual
+development of SKAT together with its formalisation in Isabelle.
+
+A \emph{ranked alphabet} or signature $\Sigma$ consists of a family of
+function symbols $f,g,\dots$ and relation symbols $P,Q,\dots$ together
+with an arity with maps symbols to natural numbers. In Isabelle we
+have represented ranked alphabets as a type class. Variables are
+simply represented by natural numbers. A subset of these are designated
+as output variables.
+
+Terms are defined as a datatype in Isabelle in the obvious way.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{datatype}\isamarkupfalse%
+\ {\isaliteral{27}{\isacharprime}}a\ trm\ {\isaliteral{3D}{\isacharequal}}\ App\ {\isaliteral{27}{\isacharprime}}a\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ trm\ list{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{7C}{\isacharbar}}\ Var\ nat\isanewline
+\end{isabellebody}
+
+In the definition there are no arity checks. We omit them for
+pragmatic reasons in order to avoid overloading proofs with additional
+obligations. In practice verifications will simply fail if arity
+constraints are violated.
+
+Predicates are needed to formalise tests, they are again implemented
+as a simple datatype.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{datatype}\isamarkupfalse%
+\ {\isaliteral{27}{\isacharprime}}a\ pred\ {\isaliteral{3D}{\isacharequal}}\ Pred\ {\isaliteral{27}{\isacharprime}}a\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ trm\ list{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\end{isabellebody}
+
+Using terms and predicates we can now define the expressions of
+schematic Kleene algebra.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{datatype}\isamarkupfalse%
+\ {\isaliteral{27}{\isacharprime}}a\ skat{\isaliteral{5F}{\isacharunderscore}}expr\ {\isaliteral{3D}{\isacharequal}}\isanewline
+\ \ \ \ SKLeaf\ nat\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ trm{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ {\isaliteral{7C}{\isacharbar}}\ SKPlus\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ skat{\isaliteral{5F}{\isacharunderscore}}expr{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ skat{\isaliteral{5F}{\isacharunderscore}}expr{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{28}{\isacharparenleft}}\isakeyword{infixl}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{3A}{\isacharcolon}}{\isaliteral{5C3C6F706C75733E}{\isasymoplus}}{\isaliteral{3A}{\isacharcolon}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isadigit{7}}{\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{7C}{\isacharbar}}\ SKMult\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ skat{\isaliteral{5F}{\isacharunderscore}}expr{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ skat{\isaliteral{5F}{\isacharunderscore}}expr{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{28}{\isacharparenleft}}\isakeyword{infixl}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{3A}{\isacharcolon}}{\isaliteral{5C3C6F646F743E}{\isasymodot}}{\isaliteral{3A}{\isacharcolon}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isadigit{8}}{\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{7C}{\isacharbar}}\ SKStar\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ skat{\isaliteral{5F}{\isacharunderscore}}expr{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ {\isaliteral{7C}{\isacharbar}}\ SKBool\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ pred\ bexpr{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ {\isaliteral{7C}{\isacharbar}}\ SKOne\isanewline
+\ \ {\isaliteral{7C}{\isacharbar}}\ SKZero\isanewline
+\end{isabellebody}
+
+In this datatype, SKLeaf is the constructor for assignments, since it
+is built from a variable term pair. The other constructors provide
+syntax the programming constructs of sequential composition,
+conditionals and while loops as in KAT. The type \textit{'a pred
+  bexpr} represents boolean combinations of predicates, which are the
+tests in SKAT. The connection between this syntax and the graphical
+language of flowchart schemes is discussed in Kozen's paper.
+
+Using this syntax we can now define a notion of flowchart
+equivalence. We use Isabelle's quotient types for this purpose. First
+we define the obvious congruence on SKAT terms that includes the KAT
+axioms and the following assignment axioms
+\begin{align*}
+x := s; y := t &= y := t[x/s]; x := s &(y \in FV(s))\\
+x := s; y := t &= x := s; y := t[x/s] &(x \in FV(s))\\
+x := s; x := t &= x := t[x/s]\\
+\varphi[x/t]; x := t &= x := t; \varphi
+\end{align*}
+For brevity, we only show the equivalence rules and a single Kleene
+algebra axiom in Isabelle. Additional recursive functions for free
+variables and substitutions support the assignment axioms.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{inductive}\isamarkupfalse%
+\ skat{\isaliteral{5F}{\isacharunderscore}}con\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a{\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}ranked{\isaliteral{5F}{\isacharunderscore}}alphabet\ skat{\isaliteral{5F}{\isacharunderscore}}expr\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ skat{\isaliteral{5F}{\isacharunderscore}}expr\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ bool{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{where}\isanewline
+\ \ refl\ {\isaliteral{5B}{\isacharbrackleft}}intro{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}skat{\isaliteral{5F}{\isacharunderscore}}con\ x\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ sym\ {\isaliteral{5B}{\isacharbrackleft}}sym{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}skat{\isaliteral{5F}{\isacharunderscore}}con\ x\ y\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ skat{\isaliteral{5F}{\isacharunderscore}}con\ y\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ trans\ {\isaliteral{5B}{\isacharbrackleft}}trans{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}skat{\isaliteral{5F}{\isacharunderscore}}con\ x\ y\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ skat{\isaliteral{5F}{\isacharunderscore}}con\ y\ z\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ skat{\isaliteral{5F}{\isacharunderscore}}con\ x\ z{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+$\vdots$ \isanewline
+{\isaliteral{7C}{\isacharbar}}\ mult{\isaliteral{5F}{\isacharunderscore}}assoc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}skat{\isaliteral{5F}{\isacharunderscore}}con\ {\isaliteral{28}{\isacharparenleft}}SKMult\ {\isaliteral{28}{\isacharparenleft}}SKMult\ x\ y{\isaliteral{29}{\isacharparenright}}\ z{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}SKMult\ x\ {\isaliteral{28}{\isacharparenleft}}SKMult\ y\ z{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+$\vdots$\isanewline
+\end{isabellebody}
+
+In Isabelle we can now formally take the quotient of SKAT expressions
+with respect to this congruence.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{quotient{\isaliteral{5F}{\isacharunderscore}}type}\isamarkupfalse%
+\ {\isaliteral{27}{\isacharprime}}a\ skat\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a{\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}ranked{\isaliteral{5F}{\isacharunderscore}}alphabet\ skat{\isaliteral{5F}{\isacharunderscore}}expr{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{2F}{\isacharslash}}\ skat{\isaliteral{5F}{\isacharunderscore}}con\isanewline
+\end{isabellebody}
+
+Once a notion of equivalence on SKAT expressions is available we can
+define additional syntactic sugar by lifting constructors to SKAT operations.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{lift{\isaliteral{5F}{\isacharunderscore}}definition}\isamarkupfalse%
+\ skat{\isaliteral{5F}{\isacharunderscore}}plus\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a{\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}ranked{\isaliteral{5F}{\isacharunderscore}}alphabet\ skat\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ skat\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ skat{\isaliteral{22}{\isachardoublequoteclose}}
+\isanewline\ \ {\isaliteral{28}{\isacharparenleft}}\isakeyword{infixl}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isadigit{7}}{\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\ \isakeyword{is}\ SKPlus\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ add{\isaliteral{5F}{\isacharunderscore}}compat{\isaliteral{2C}{\isacharcomma}}\ assumption{\isaliteral{2B}{\isacharplus}}{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof\isanewline
+\end{isabellebody}
+
+We have used Isabelle's transfer tactic to provide nice notation and lift definitions from the congruence.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ skat{\isaliteral{5F}{\isacharunderscore}}assign{\isadigit{1}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C6E6F7465713E}{\isasymnoteq}}\ y{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C6E6F74696E3E}{\isasymnotin}}\ FV\ s{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ {\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ s\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ y\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ t{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ t{\isaliteral{5B}{\isacharbrackleft}}x{\isaliteral{7C}{\isacharbar}}s{\isaliteral{5D}{\isacharbrackright}}\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ s{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}transfer{\isaliteral{2C}{\isacharcomma}}\ rule\ skat{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{2E}{\isachardot}}assign{\isadigit{1}}{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof\isanewline
+\end{isabellebody}
+
+We can now formally prove via an interpretation statement that the quotient algebra constructed forms a KAT.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{definition}\isamarkupfalse%
+\ tests\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a{\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}ranked{\isaliteral{5F}{\isacharunderscore}}alphabet\ skat\ ord{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{where}\isanewline
+\ \ {\isaliteral{22}{\isachardoublequoteopen}}tests\ {\isaliteral{5C3C65717569763E}{\isasymequiv}}\ {\isaliteral{5C3C6C706172723E}{\isasymlparr}}carrier\ {\isaliteral{3D}{\isacharequal}}\ test{\isaliteral{5F}{\isacharunderscore}}set{\isaliteral{2C}{\isacharcomma}}\ le\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{5C3C6C616D6264613E}{\isasymlambda}}x\ y{\isaliteral{2E}{\isachardot}}\ skat{\isaliteral{5F}{\isacharunderscore}}plus\ x\ y\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C72706172723E}{\isasymrparr}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\end{isabellebody}
+
+\begin{isabellebody}
+\isacommand{definition}\isamarkupfalse%
+\ free{\isaliteral{5F}{\isacharunderscore}}kat\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a{\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}ranked{\isaliteral{5F}{\isacharunderscore}}alphabet\ skat\ test{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{where}\isanewline
+\ \ {\isaliteral{22}{\isachardoublequoteopen}}free{\isaliteral{5F}{\isacharunderscore}}kat\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{5C3C6C706172723E}{\isasymlparr}}carrier\ {\isaliteral{3D}{\isacharequal}}\ UNIV{\isaliteral{2C}{\isacharcomma}}\ plus\ {\isaliteral{3D}{\isacharequal}}\ skat{\isaliteral{5F}{\isacharunderscore}}plus{\isaliteral{2C}{\isacharcomma}}\ mult\ {\isaliteral{3D}{\isacharequal}}\ skat{\isaliteral{5F}{\isacharunderscore}}mult{\isaliteral{2C}{\isacharcomma}}\ one\ {\isaliteral{3D}{\isacharequal}}\ skat{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{2C}{\isacharcomma}}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ zero\ {\isaliteral{3D}{\isacharequal}}\ skat{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{2C}{\isacharcomma}}\ star\ {\isaliteral{3D}{\isacharequal}}\ skat{\isaliteral{5F}{\isacharunderscore}}star{\isaliteral{2C}{\isacharcomma}}\ test{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}test\ {\isaliteral{3D}{\isacharequal}}\ tests{\isaliteral{5C3C72706172723E}{\isasymrparr}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\end{isabellebody}
+
+\begin{isabellebody}
+\isacommand{interpretation}\isamarkupfalse%
+\ skt{\isaliteral{3A}{\isacharcolon}}\ kat\ free{\isaliteral{5F}{\isacharunderscore}}kat\isanewline
+\ \ $\dots$\isanewline
+\end{isabellebody}
+
+Proving this statement requires a substantial amount of work. First,
+we have implemented Kleene algebra with tests (with carrier sets) in
+Isabelle. Second, we have shown that the quotient algebra constructed
+satisfies the KAT axioms, including the axioms of boolean algebra for
+the test subalgebra. A main complication arises from the fact that
+boolean complementation is only defined on the subalgebra; as such it
+cannot be directly lifted from the congruence and must be defined
+indirectly using the indefinite description operator.
+
+When defining a quotient type, Isabelle automatically generates two
+coercion functions for us. The \textit{abs-skat} function maps
+elements of type \textit{'a skat-expr} to elements of the quotient
+algebra type \textit{'a skat}, while the \textit{rep-skat} function
+maps in the converse direction. Both these functions are based on
+Isabelle's definite description operator, which can be
+unwieldy. However, as our types are inductively defined we can as well
+use the following recursive function instead of \textit{abs-skat}.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{primrec}\isamarkupfalse%
+\ skat{\isaliteral{5F}{\isacharunderscore}}unfold\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a{\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}ranked{\isaliteral{5F}{\isacharunderscore}}alphabet\ skat{\isaliteral{5F}{\isacharunderscore}}expr\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ skat{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C666C6F6F723E}{\isasymlfloor}}{\isaliteral{5F}{\isacharunderscore}}{\isaliteral{5C3C72666C6F6F723E}{\isasymrfloor}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{5B}{\isacharbrackleft}}{\isadigit{1}}{\isadigit{1}}{\isadigit{1}}{\isaliteral{5D}{\isacharbrackright}}\ {\isadigit{1}}{\isadigit{1}}{\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\ \isakeyword{where}\isanewline
+\ \ {\isaliteral{22}{\isachardoublequoteopen}}skat{\isaliteral{5F}{\isacharunderscore}}unfold\ {\isaliteral{28}{\isacharparenleft}}SKLeaf\ x\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}skat{\isaliteral{5F}{\isacharunderscore}}unfold\ {\isaliteral{28}{\isacharparenleft}}SKPlus\ x\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ skat{\isaliteral{5F}{\isacharunderscore}}unfold\ x\ {\isaliteral{2B}{\isacharplus}}\ skat{\isaliteral{5F}{\isacharunderscore}}unfold\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}skat{\isaliteral{5F}{\isacharunderscore}}unfold\ {\isaliteral{28}{\isacharparenleft}}SKMult\ x\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ skat{\isaliteral{5F}{\isacharunderscore}}unfold\ x\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ skat{\isaliteral{5F}{\isacharunderscore}}unfold\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}skat{\isaliteral{5F}{\isacharunderscore}}unfold\ {\isaliteral{28}{\isacharparenleft}}SKBool\ p{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ test{\isaliteral{5F}{\isacharunderscore}}unfold\ p{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}skat{\isaliteral{5F}{\isacharunderscore}}unfold\ SKOne\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{5C3C6F6E653E}{\isasymone}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}skat{\isaliteral{5F}{\isacharunderscore}}unfold\ SKZero\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{5C3C7A65726F3E}{\isasymzero}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}skat{\isaliteral{5F}{\isacharunderscore}}unfold\ {\isaliteral{28}{\isacharparenleft}}SKStar\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}skat{\isaliteral{5F}{\isacharunderscore}}unfold\ x{\isaliteral{29}{\isacharparenright}}\isaliteral{5C3C5E7375703E}{}\isactrlsup {\isaliteral{5C3C737461723E}{\isasymstar}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\end{isabellebody}
+
+Mathematically, \textit{skat-unfold} is a homomorphism. It is very
+useful when defining tactics.
+
+\section{Formalising a Metatheorem}
+\label{sec:metatheorem}
+
+Now we formalise a metatheorem (Lemma 4.4 in~\cite{Angus01}) that is
+useful for various purposes, including checking commutativity
+conditions, elimination of useless variables and renaming
+variables. In Isabelle these tasks are captured by tactics which
+instantiate the metatheorem.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{theorem}\isamarkupfalse%
+\ metatheorem{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ \isakeyword{assumes}\ f{\isaliteral{5F}{\isacharunderscore}}homo{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}kat{\isaliteral{5F}{\isacharunderscore}}homomorphism\ f{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ g{\isaliteral{5F}{\isacharunderscore}}homo{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}kat{\isaliteral{5F}{\isacharunderscore}}homomorphism\ g{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ atomic{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C416E643E}{\isasymAnd}}a{\isaliteral{2E}{\isachardot}}\ a\ {\isaliteral{5C3C696E3E}{\isasymin}}\ atoms\ p\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ f\ a\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ x\ {\isaliteral{3D}{\isacharequal}}\ x\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ g\ a{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{shows}\ {\isaliteral{22}{\isachardoublequoteopen}}f\ p\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ x\ {\isaliteral{3D}{\isacharequal}}\ x\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ g\ p{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\end{isabellebody}
+
+The proof is by induction on $p$ and follows essentially that of
+Kozen. The statement of the theorem uses the predicate
+\textit{kat-homomorphism} which states that $f$ and $g$ are morphisms
+of KAT. This notion is defined in Isabelle as a locale with the
+obvious conditions. The functions $f$ and $g$ map from the SKAT term
+algebra into SKAT, hence they have the same type as
+\textit{skat-unfold}.
+
+We have instantiated the metatheorem as follows:
+
+\begin{isabellebody}
+\isanewline
+\isacommand{lemmas}\isamarkupfalse%
+\ skat{\isaliteral{5F}{\isacharunderscore}}comm\ {\isaliteral{3D}{\isacharequal}}\ metatheorem{\isaliteral{5B}{\isacharbrackleft}}OF\ skat{\isaliteral{5F}{\isacharunderscore}}unfold{\isaliteral{5F}{\isacharunderscore}}homo\ skat{\isaliteral{5F}{\isacharunderscore}}unfold{\isaliteral{5F}{\isacharunderscore}}homo{\isaliteral{5D}{\isacharbrackright}}\isanewline
+\end{isabellebody}
+
+\begin{isabellebody}
+\isacommand{lemma}\isamarkupfalse%
+\ eliminate{\isaliteral{5F}{\isacharunderscore}}variables{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ \isakeyword{assumes}\ no{\isaliteral{5F}{\isacharunderscore}}reads{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C6E6F74696E3E}{\isasymnotin}}\ reads\ p{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{shows}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C666C6F6F723E}{\isasymlfloor}}p{\isaliteral{5C3C72666C6F6F723E}{\isasymrfloor}}\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ null\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{5C3C6C666C6F6F723E}{\isasymlfloor}}eliminate\ x\ p{\isaliteral{5C3C72666C6F6F723E}{\isasymrfloor}}\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ null{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ $\dots$\isanewline
+\end{isabellebody}
+
+Lemma \textit{skat-comm} states that if $x$ commutes with all atomic
+expressions of $p$, then $x$ commutes with $p$; an observation due to
+Kozen. This has been proved by simply instantiating $f$ and $g$ in the
+metatheorem using a proof that \textit{skat-unfold} is a KAT
+homomorphism. Lemma \textit{eliminate-variables} is Kozen's Lemma
+$4.5$ which states that if the variable $x$ is not read in $p$, then
+setting it to null will eliminate it from $p$. In the statement of the
+lemma, \textit{reads $p$} is a recursive function which returns all
+the variables on the right-hand side of all assignments within $p$,
+and the function \textit{eliminate x p} removes all assignments to $x$
+in $p$.
+
+We have used these lemmas to program tactics that check for
+commutativity and eliminate variables. These tactics take expressions
+of the quotient algebra and coerce them into the term algebra to
+perform these syntactic manipulations. All the machinery for these
+coercions, such as \textit{skat-unfold} is thereby hidden to the user.
+
+\begin{align*} %FIXME
+&1 := Var\ 2; 3 := Var\ 4\ =\ 3 := Var\ 2; 1 := Var\ 2\\
+&\text{  by skat\_comm}
+\end{align*}
+
+\section{Verification of Flowchart Equivalence}
+
+We now use our implementation of SKAT to formally verify a well known
+flowchart equivalence example in Isabelle. This example is attributed
+by Manna to Paterson. We follow Angus and Kozen's analysis in
+SKAT. The two flowcharts can be found at page $16$ and $17$ in Angus
+and Kozen's paper or page 254 and 258 in Manna's
+book~\cite{Manna}. Manna essentially uses graph transformations on
+flowchart diagrams in a rather informal way to prove the equivalence
+between these schemes. Angus and Kozen use an alternative algebraic
+approach. Their manual proof covers six pages. Our contribution is the
+verification of their proof in Isabelle.
+
+The two flowcharts, translated into SKAT, are as follows.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{definition}\isamarkupfalse%
+\ scheme{\isadigit{1}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}kzp\ skat\ list{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{where}\ {\isaliteral{22}{\isachardoublequoteopen}}scheme{\isadigit{1}}\ {\isaliteral{5C3C65717569763E}{\isasymequiv}}\isanewline
+\ \ {\isaliteral{5B}{\isacharbrackleft}}\ {\isadigit{1}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ vx\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{4}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ f\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{1}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ f\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ g\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{4}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{3}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ g\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ loop\isanewline
+\ \ \ \ {\isaliteral{5B}{\isacharbrackleft}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{1}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ f\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ g\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{4}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{3}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ g\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ {\isaliteral{5D}{\isacharbrackright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{1}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ f\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{3}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ loop\isanewline
+\ \ \ \ {\isaliteral{5B}{\isacharbrackleft}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{4}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ seq\isanewline
+\ \ \ \ \ \ {\isaliteral{5B}{\isacharbrackleft}}\ P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{4}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ f\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\isaliteral{5C3C5E7375703E}{}\isactrlsup {\isaliteral{5C3C737461723E}{\isasymstar}}\isanewline
+\ \ \ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{3}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{4}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ f\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{1}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ f\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ {\isaliteral{5D}{\isacharbrackright}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ g\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{4}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{3}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ g\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ loop\isanewline
+\ \ \ \ \ \ {\isaliteral{5B}{\isacharbrackleft}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{1}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ f\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ g\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{4}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{3}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ g\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ {\isaliteral{5D}{\isacharbrackright}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{1}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ f\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{3}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ {\isaliteral{5D}{\isacharbrackright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{4}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ f\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\isaliteral{5C3C5E7375703E}{}\isactrlsup {\isaliteral{5C3C737461723E}{\isasymstar}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{3}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{0}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ Var\ {\isadigit{2}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ halt\isanewline
+\ \ {\isaliteral{5D}{\isacharbrackright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\isacommand{definition}\isamarkupfalse%
+\ scheme{\isadigit{2}}\ \isakeyword{where}\ {\isaliteral{22}{\isachardoublequoteopen}}scheme{\isadigit{2}}\ {\isaliteral{5C3C65717569763E}{\isasymequiv}}\isanewline
+\ \ {\isaliteral{5B}{\isacharbrackleft}}\ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ f\ vx\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ g\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ skat{\isaliteral{5F}{\isacharunderscore}}star\ {\isaliteral{28}{\isacharparenleft}}seq\isanewline
+\ \ \ \ {\isaliteral{5B}{\isacharbrackleft}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ f\ {\isaliteral{28}{\isacharparenleft}}f\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ g\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ {\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ P\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ {\isadigit{0}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ Var\ {\isadigit{2}}\isanewline
+\ \ {\isaliteral{2C}{\isacharcomma}}\ halt\isanewline
+\ \ {\isaliteral{5D}{\isacharbrackright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\end{isabellebody}
+
+In the definition statement \textit{kzp} is an instantiation of the
+ranked alphabet type class. In the code, lists delimited by brackets
+indicate blocks of sequential code. Loop expressions indicate the star
+of a block of code that follows. The \textit{seq} function converts a
+block of code into an SKAT expression. The \textit{halt} command sets
+all non output variables used in the scheme to null. To make algebraic
+reasoning more efficient, we follow Angus and Kozen in introducing
+abbreviations for atomic commands and tests. The flowchart equivalence
+problem can then be expressed more succinctly in SKAT as follows.
+
+\begin{isabellebody}
+\isanewline
+seq {\isaliteral{5B}{\isacharbrackleft}}x{\isadigit{1}}{\isaliteral{2C}{\isacharcomma}}p{\isadigit{4}}{\isadigit{1}}{\isaliteral{2C}{\isacharcomma}}p{\isadigit{1}}{\isadigit{1}}{\isaliteral{2C}{\isacharcomma}}q{\isadigit{2}}{\isadigit{1}}{\isadigit{4}}{\isaliteral{2C}{\isacharcomma}}q{\isadigit{3}}{\isadigit{1}}{\isadigit{1}}{\isaliteral{2C}{\isacharcomma}}loop\ {\isaliteral{5B}{\isacharbrackleft}}{\isaliteral{21}{\isacharbang}}a{\isadigit{1}}{\isaliteral{2C}{\isacharcomma}}p{\isadigit{1}}{\isadigit{1}}{\isaliteral{2C}{\isacharcomma}}q{\isadigit{2}}{\isadigit{1}}{\isadigit{4}}{\isaliteral{2C}{\isacharcomma}}q{\isadigit{3}}{\isadigit{1}}{\isadigit{1}}{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}a{\isadigit{1}}{\isaliteral{2C}{\isacharcomma}}p{\isadigit{1}}{\isadigit{3}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}loop\ {\isaliteral{5B}{\isacharbrackleft}}{\isaliteral{21}{\isacharbang}}a{\isadigit{4}}\ {\isaliteral{2B}{\isacharplus}}\ seq\ {\isaliteral{5B}{\isacharbrackleft}}a{\isadigit{4}}{\isaliteral{2C}{\isacharcomma}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}a{\isadigit{2}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}p{\isadigit{2}}{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isaliteral{5C3C5E7375703E}{}\isactrlsup {\isaliteral{5C3C737461723E}{\isasymstar}}{\isaliteral{2C}{\isacharcomma}}a{\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}{\isaliteral{21}{\isacharbang}}a{\isadigit{3}}{\isaliteral{2C}{\isacharcomma}}p{\isadigit{4}}{\isadigit{1}}{\isaliteral{2C}{\isacharcomma}}p{\isadigit{1}}{\isadigit{1}}{\isaliteral{5D}{\isacharbrackright}}\isanewline
+{\isaliteral{2C}{\isacharcomma}}q{\isadigit{2}}{\isadigit{1}}{\isadigit{4}}{\isaliteral{2C}{\isacharcomma}}q{\isadigit{3}}{\isadigit{1}}{\isadigit{1}}{\isaliteral{2C}{\isacharcomma}}loop\ {\isaliteral{5B}{\isacharbrackleft}}{\isaliteral{21}{\isacharbang}}a{\isadigit{1}}{\isaliteral{2C}{\isacharcomma}}p{\isadigit{1}}{\isadigit{1}}{\isaliteral{2C}{\isacharcomma}}q{\isadigit{2}}{\isadigit{1}}{\isadigit{4}}{\isaliteral{2C}{\isacharcomma}}q{\isadigit{3}}{\isadigit{1}}{\isadigit{1}}{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}a{\isadigit{1}}{\isaliteral{2C}{\isacharcomma}}p{\isadigit{1}}{\isadigit{3}}{\isaliteral{5D}{\isacharbrackright}}\isanewline
+\ \ \ \ {\isaliteral{2C}{\isacharcomma}}a{\isadigit{4}}{\isaliteral{2C}{\isacharcomma}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}a{\isadigit{2}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}p{\isadigit{2}}{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isaliteral{5C3C5E7375703E}{}\isactrlsup {\isaliteral{5C3C737461723E}{\isasymstar}}{\isaliteral{2C}{\isacharcomma}}a{\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}a{\isadigit{3}}{\isaliteral{2C}{\isacharcomma}}z{\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}halt{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+$=$\isanewline
+seq {\isaliteral{5B}{\isacharbrackleft}}s{\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}a{\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}q{\isadigit{2}}{\isadigit{2}}{\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}{\isaliteral{28}{\isacharparenleft}}seq\ {\isaliteral{5B}{\isacharbrackleft}}{\isaliteral{21}{\isacharbang}}a{\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}r{\isadigit{2}}{\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}a{\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}q{\isadigit{2}}{\isadigit{2}}{\isadigit{2}}{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isaliteral{5C3C5E7375703E}{}\isactrlsup {\isaliteral{5C3C737461723E}{\isasymstar}}{\isaliteral{2C}{\isacharcomma}}a{\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}z{\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}halt{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\end{isabellebody}
+
+The proof consists of more than 450 lines of Isabelle code. After some
+preparatory lemmas we essentially follow Angus and Kozen's proof line
+by line. The proof is heavily based on our underlying KAT library
+which contains about a hundred lemmas for dealing with the Kleene star
+and combined reasoning about the interaction between actions and
+tests. Typical properties are $(p+q)^\ast = p^\ast(q\cdot
+p^\ast)^\ast$, $(pq)^\ast p = p(qp)^\ast$ or $bp = pc
+\Longleftrightarrow bp!c = !bpc$. We have also programmed a number
+tactics for manipulating large skat expressions. Most of these
+implement commutations in lists of expressions modulo commutativity
+conditions on atomic expressions which are inferred from the terms on
+the fly. These tactics refine the simple commutativity check discussed
+in Section \ref{sec:metatheorem}. The general strategy is to work with
+the abbreviated terms using the rules of KAT, as far as possible and
+descend to the level of SKAT by expanding abbreviations where
+necessary, for instance to infer commutativity conditions using our
+tactics.
+
+As an example, if we abbreviate $1 := Var\ 2$ as $p$, and $3 := Var\ 4$
+as $q$ the SKAT identity from section \ref{sec:metatheorem} reduces to
+the KAT identity $pq = qp$.
+
+Our previous experience in theorem proving with algebra shows that
+proof automation is often very successful~\cite{self}. In this regard,
+our present proof experience is slightly disappointing, as custom
+tactics and low level proof techniques were needed to reconstruct
+Angus and Kozen's proof. A further compression of their proof steps
+does not seem feasible, a complete automation of their proof would
+currently be out of reach. The main reason is that algebraic terms
+generated by verification examples tend to be much longer than typical
+textbook identities. An alternative proof strategy in which
+commutativity conditions are not inferred by tactics on the fly, but
+generated beforehand as abstract algebraic conditions might be
+beneficial for automation. In addition, experience shows that
+reasoning with inequalities in Kleene algebra is often superior to
+equational reasoning (``Use inequalities whenever possible''
+J.~H.~Conway), and it often leads to shorter terms. Theorem provers
+however, find inequational reasoning more difficult.
+
+% Flowcharts are constructed from the components shown in Figure
+% \ref{fig:flow}.
+
+% %% Could do this all using TikZ
+% \begin{figure}[tbh]
+%   \begin{center}
+%     \begin{tikzpicture}
+%       \node (c) {};
+%       \node [test, below of=c] (test) {$\Phi$};
+%       \node [below left of=test,node distance=1.1cm] (t) {};
+%       \node [below right of=test, node distance=1.1cm] (f) {};
+%       \path [line] (c) -- (test);
+%       \path [line] (test) -| node[false] {F} (t);
+%       \path [line] (test) -| node[true] {T} (f);
+%     \end{tikzpicture}\\
+%     If statement
+%   \end{center}
+%   \begin{minipage}[t]{0.49\columnwidth}
+%     \begin{center}
+%       \begin{tikzpicture}
+%         \node [block] (start) {start};
+%         \node [below of=start, node distance=0.8cm] (c) {};
+%         \path [line] (start) -- (c);
+%       \end{tikzpicture}\\
+%       Start statement\\
+%       \vspace{1.1cm}
+%       \begin{tikzpicture}
+%         \node (c) {};
+%         \node [block, below of=c, node distance=0.8cm] (loop) {loop};
+%         \path [line] (c) -- (loop);
+%       \end{tikzpicture}\\
+%       Loop statement
+%     \end{center}
+%   \end{minipage}
+%   \begin{minipage}[t]{0.49\columnwidth}
+%     \begin{center}
+%       \begin{tikzpicture}
+%         \node (c) {};
+%         \node [block, below of=c, node distance=0.8cm] (halt) {halt};
+%         \path [line] (c) -- (halt);
+%       \end{tikzpicture}\\
+%       Halt statement\\
+%       \vspace{0.5cm}
+%       \begin{tikzpicture}
+%         \node (c1) {};
+%         \node [block, below of=c1, node distance=0.8cm] (a) {$y_n = t$};
+%         \node [below of=a, node distance=0.8cm] (c2) {};
+%         \path [line] (c1) -- (a);
+%         \path [line] (a) -- (c2);
+%       \end{tikzpicture}\\
+%       Assignment statement
+%     \end{center}
+%   \end{minipage}
+%   \caption{Flowchart statements}
+%   \label{fig:flow}
+% \end{figure}
+
+\begin{figure}[ptb]
+\begin{minipage}[t]{0.49\columnwidth}
+\begin{tikzpicture}[node distance=1cm,auto]
+  \node [block] (start) {start};
+  \node [block, below of=start] (a1) {$y := f(x)$};
+  \node [test, below of=a1, node distance=1.6cm] (t1) {$P(y)$};
+  \node [block, below left of=t1,node distance=1.7cm] (loop) {loop};
+  \node [block, below right of=t1,node distance=1.7cm] (a2) {$y := g(y,y)$};
+  \node [test, below of=a2, node distance=1.6cm] (t2) {$P(y)$};
+  \node [block, below left of=t2,node distance=1.7cm] (a3) {$y = f(f(y))$};
+  \node [block, below right of=t2,node distance=1.7cm] (a4) {$z := y$};
+  \node [block, below of=a4] (halt) {halt};
+
+  \path [line] (start) -- (a1);
+  \path [line] (a1) -- (t1);
+  \path [line] (t1) -| node[false] {F} (loop);
+  \path [line] (t1) -| node[true] {T} (a2);
+  \path [line] (a2) -- (t2);
+  \path [line] (t2) -| node[false] {F} (a3);
+  \path [line] (t2) -| node[true] {T} (a4);
+  \path [line] (a4) -- (halt);
+  \path [line] let \p1 = (a3.base),
+                   \p2 = (t1.base)
+               in (a3) -- (\x1,\y1 - 1cm) -- (\x1 - 2cm, \y1 - 1cm) --  (\x1 - 2cm, \y2 + 12mm) -- (\x2,\y2 + 12mm);
+\end{tikzpicture}
+\begin{center}
+Scheme $S_{6E}$ \cite[p. 258]{Manna}
+\end{center}
+\end{minipage}
+\begin{minipage}[t]{0.49\columnwidth}
+\begin{tikzpicture}[node distance=1cm,auto]
+  \node [block] (start) {start};
+  \node [block, below of=start] (a1) {$y_1 := x$};
+  \node [block, below of=a1] (a2) {$y_4 := f(y_1)$};
+  \node [block, below of=a2] (a3) {$y_1 := f(y_1)$};
+  \node [block, below of=a3] (a4) {$y_2 := g(y_1,y_4)$};
+  \node [block, below of=a4] (a5) {$y_3 := g(y_1,y_1)$};
+  \node [test, below of=a5, node distance=1.6cm] (t1) {$P(y_1)$};
+  \node [block, below of=t1, node distance=1.6cm] (a6) {$y_1 := f(y_3)$};
+  \node [test, below of=a6, node distance=1.6cm] (t2) {$P(y_4)$};
+  \node [test, below of=t2, node distance=2.2cm] (t3) {$P(y_2)$};
+  \node [block, below left of=t3,node distance=1.7cm] (a7) {$y_2 := f(y_2)$};
+  \node [test, below right of=t3,node distance=1.7cm] (t4) {$P(y_3)$};
+  \node [block, below of=t4, node distance=1.6cm] (a8) {$z := y_2$};
+  \node [block, below of=a8] (halt) {halt};
+
+  \path [line] (start) -- (a1);
+  \path [line] (a1) -- (a2);
+  \path [line] (a2) -- (a3);
+  \path [line] (a3) -- (a4);
+  \path [line] (a4) -- (a5);
+  \path [line] (a5) -- (t1);
+  \path [line] let \p1 = (t1.base), \p2 = (a3.base)
+               in (t1) -| node{F}(\x1 - 1.5cm,\y1 + 1mm) -- (\x1 - 1.5cm,\y2 + 6.5mm) -- (\x2, \y2 + 6.5mm);
+  \path [line] (t1) -- node{T} (a6);
+  \path [line] (a6) -- (t2);
+  \path [line] (t2) -- node{T} (t3);
+  \path [line] let \p1 = (t2.base), \p2 = (a4.base)
+               in (t2) -| node{F}(\x1 - 2.5cm,\y1 + 1mm) -- (\x1 - 2.5cm,\y2 + 6.5mm) -- (\x2, \y2 + 6.5mm);
+  \path [line] (t3) -| node[true]{T} (t4);
+  \path [line] (t3) -| node[false]{F} (a7);
+  \path [line] (t4) -- node{T} (a8);
+  \path [line] (a8) -- (halt);
+  \path [line] let \p1 = (t4.base), \p2 = (a2.base)
+               in (t4) -| node[false]{F}(\x1 + 1cm,\y1 + 1mm) -- (\x1 + 1cm,\y2 + 6.5mm) -- (\x2,\y2 + 6.5mm);
+  \path [line] let \p1 = (a7.base), \p2 = (t3.base)
+               in (a7) -- (\x1,\y1 - 1cm) -- (\x1 - 1.5cm,\y1 - 1cm) -- (\x1 - 1.5cm,\y2 + 13mm) -- (\x2,\y2 + 13mm);
+\end{tikzpicture}
+\begin{center}
+Scheme $S_{6A}$ \cite[p. 254]{Manna}
+\end{center}
+\end{minipage}
+\caption{Two equivalent program schemes}
+\end{figure}
+
+\section{Hoare Logic}
+
+It is well known that PHL can be encoded in KAT, and other variants of
+Kleene algebra such as modal Kleene algebras and Kleene modules. The
+latter can be understood as algebraic versions of propositional
+dynamic logic. A combination of these algebras with the assignment
+rule and their application in formal program verification has so far
+not been attempted, at least not in a mechanised theorem prover. We
+have implemented a novel approach in which SKAT and Kleene modules are
+combined. This allows us to separate tests conceptually from pre and
+post-conditions of programs.
+
+We define a \emph{Kleene module}~\cite{KM} as a structure
+$(K,L,:)$ where $K$ is a Kleene algebra
+$(K,+,\cdot,^\star,0,1)$, $L$ is a boolean algebra and $:$
+is a mapping of type $L \times K \to L$ where
+\begin{align*}
+  m : (p + q) &= m : p \sqcup m : q,\\
+  m : (p \cdot q) &= m : p : q,\\
+  (m \sqcup n) : p &= m : p \sqcup n : p,\\
+  m : 0 &= \bot,\\
+  m : 1 &= m,\\
+  (m \sqcup n) : p \le n &\longrightarrow m : p^\ast \le n.
+\end{align*}
+Instead of a Kleene algebra, we can use a KAT as the first component
+of the module. To model the interaction between assertions as modelled
+by $L$ and tests, we add the axiom
+\begin{equation*}
+  m : a = m \wedge (\top : a).
+\end{equation*}
+
+We have implemented modules over KAT in Isabelle by using locales,
+based on that, we can define Hoare triples as usual.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{definition}\isamarkupfalse%
+\ hoare{\isaliteral{5F}{\isacharunderscore}}triple\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}b\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ bool{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5F}{\isacharunderscore}}\ {\isaliteral{5C3C6C62726163653E}{\isasymlbrace}}\ {\isaliteral{5F}{\isacharunderscore}}\ {\isaliteral{5C3C7262726163653E}{\isasymrbrace}}\ {\isaliteral{5F}{\isacharunderscore}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{5B}{\isacharbrackleft}}{\isadigit{5}}{\isadigit{4}}{\isaliteral{2C}{\isacharcomma}}{\isadigit{5}}{\isadigit{4}}{\isaliteral{2C}{\isacharcomma}}{\isadigit{5}}{\isadigit{4}}{\isaliteral{5D}{\isacharbrackright}}\ {\isadigit{5}}{\isadigit{3}}{\isaliteral{29}{\isacharparenright}}\ \isakeyword{where}\isanewline
+\ \ {\isaliteral{22}{\isachardoublequoteopen}}P\ {\isaliteral{5C3C6C62726163653E}{\isasymlbrace}}\ p\ {\isaliteral{5C3C7262726163653E}{\isasymrbrace}}\ Q\ {\isaliteral{5C3C65717569763E}{\isasymequiv}}\ P\ {\isaliteral{5C3C436F6C6F6E3E}{\isasymColon}}\ p\ {\isaliteral{5C3C737173756273657465713E}{\isasymsqsubseteq}}\isaliteral{5C3C5E627375623E}{}\isactrlbsub A\isaliteral{5C3C5E657375623E}{}\isactrlesub \ Q{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\end{isabellebody}
+
+As $:$ is a reserved symbol in Isabelle, we use $::$ for the scalar
+product. The index $A$ refers to the boolean algebra of assertions and
+the order $\sqsubseteq_A$ is the order on this boolean algebra. Using
+this encoding, the inference rules of PHL (which does not include the
+assignment rule) can now easily be derived as theorems of KAT
+modules. As an example, we derive the while rule.
+
+\begin{isabellebody}
+\isanewline
+\ \ \ \isacommand{lemma}\isamarkupfalse%
+\ hoare{\isaliteral{5F}{\isacharunderscore}}while{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ \ \ \isakeyword{assumes}\ b{\isaliteral{5F}{\isacharunderscore}}test\ {\isaliteral{5B}{\isacharbrackleft}}intro{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}b\ {\isaliteral{5C3C696E3E}{\isasymin}}\ tests\ K{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ pc\ {\isaliteral{5B}{\isacharbrackleft}}intro{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}p\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ K{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isakeyword{and}\ Pc\ {\isaliteral{5B}{\isacharbrackleft}}intro{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}P\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isakeyword{and}\ loop{\isaliteral{5F}{\isacharunderscore}}condition\ {\isaliteral{5B}{\isacharbrackleft}}intro{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}P\ {\isaliteral{5C3C7371696E7465723E}{\isasymsqinter}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{5C3C746F703E}{\isasymtop}}\ {\isaliteral{5C3C436F6C6F6E3E}{\isasymColon}}\ b{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C6C62726163653E}{\isasymlbrace}}p{\isaliteral{5C3C7262726163653E}{\isasymrbrace}}\ P{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isaliteral{22}{\isachardoublequoteopen}}P\ {\isaliteral{5C3C6C62726163653E}{\isasymlbrace}}\ {\isaliteral{28}{\isacharparenleft}}b{\isaliteral{5C3C63646F743E}{\isasymcdot}}p{\isaliteral{29}{\isacharparenright}}\isaliteral{5C3C5E7375703E}{}\isactrlsup {\isaliteral{5C3C737461723E}{\isasymstar}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}b\ {\isaliteral{5C3C7262726163653E}{\isasymrbrace}}\ P\ {\isaliteral{5C3C7371696E7465723E}{\isasymsqinter}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{5C3C746F703E}{\isasymtop}}\ {\isaliteral{5C3C436F6C6F6E3E}{\isasymColon}}\ {\isaliteral{21}{\isacharbang}}b{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ hoare{\isaliteral{5F}{\isacharunderscore}}composition{\isaliteral{5B}{\isacharbrackleft}}\isakeyword{where}\ {\isaliteral{3F}{\isacharquery}}Q\ {\isaliteral{3D}{\isacharequal}}\ P{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ auto{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}P\ {\isaliteral{5C3C6C62726163653E}{\isasymlbrace}}\ {\isaliteral{28}{\isacharparenleft}}b\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ p{\isaliteral{29}{\isacharparenright}}\isaliteral{5C3C5E7375703E}{}\isactrlsup {\isaliteral{5C3C737461723E}{\isasymstar}}\ {\isaliteral{5C3C7262726163653E}{\isasymrbrace}}\ P{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}blast\ intro{\isaliteral{3A}{\isacharcolon}}\ hoare{\isaliteral{5F}{\isacharunderscore}}star\ hoare{\isaliteral{5F}{\isacharunderscore}}composition{\isaliteral{5B}{\isacharbrackleft}}\isakeyword{where}\ {\isaliteral{3F}{\isacharquery}}Q\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{22}{\isachardoublequoteopen}}P\ {\isaliteral{5C3C7371696E7465723E}{\isasymsqinter}}\ {\isaliteral{5C3C746F703E}{\isasymtop}}\ {\isaliteral{5C3C436F6C6F6E3E}{\isasymColon}}\ b{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+\end{isabellebody}
+
+To use this Hoare logic for verification, we need to model the
+assignment axiom and the statespace of the program. The first can be
+obtained by specialising KAT to SKAT, the second by explicitly
+modelling the boolean algebra of states. As usual, states of a program
+are represented as functions from variables to values. Assertions
+correspond to sets of states. Hence the boolean algebra is a powerset
+algebra over states. Similar implementations are available in theorem
+provers such as Isabelle, HOL and Coq, but not as instantiations of
+more general algebraic structures. SKAT expressions, in particular,
+assignment statements are translated in Gordon style into forward
+predicate transformers. These map assertions to assertions.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{fun}\isamarkupfalse%
+\ eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{27}{\isacharprime}}a{\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}ranked{\isaliteral{5F}{\isacharunderscore}}alphabet{\isaliteral{2C}{\isacharcomma}}\ {\isaliteral{27}{\isacharprime}}b{\isaliteral{29}{\isacharparenright}}\ interp\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ skat{\isaliteral{5F}{\isacharunderscore}}expr\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b\ mems\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b\ mems{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{where}\isanewline
+\ \ {\isaliteral{22}{\isachardoublequoteopen}}eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ {\isaliteral{28}{\isacharparenleft}}SKLeaf\ x\ s{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}\ {\isaliteral{3D}{\isacharequal}}\ assigns\ D\ x\ s\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ {\isaliteral{28}{\isacharparenleft}}SKBool\ P{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}\ {\isaliteral{3D}{\isacharequal}}\ filter{\isaliteral{5F}{\isacharunderscore}}set\ {\isaliteral{28}{\isacharparenleft}}eval{\isaliteral{5F}{\isacharunderscore}}bexpr\ D\ P{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ {\isaliteral{28}{\isacharparenleft}}s\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{5C3C6F646F743E}{\isasymodot}}{\isaliteral{3A}{\isacharcolon}}\ t{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}\ {\isaliteral{3D}{\isacharequal}}\ eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ t\ {\isaliteral{28}{\isacharparenleft}}eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ s\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ {\isaliteral{28}{\isacharparenleft}}s\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{5C3C6F706C75733E}{\isasymoplus}}{\isaliteral{3A}{\isacharcolon}}\ t{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}\ {\isaliteral{3D}{\isacharequal}}\ eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ s\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}\ {\isaliteral{5C3C756E696F6E3E}{\isasymunion}}\ eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ t\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ {\isaliteral{28}{\isacharparenleft}}SKStar\ s{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{5C3C556E696F6E3E}{\isasymUnion}}n{\isaliteral{2E}{\isachardot}}\ iter\ n\ {\isaliteral{28}{\isacharparenleft}}eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ s{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ SKOne\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ SKZero\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{7B}{\isacharbraceleft}}{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\end{isabellebody}
+\begin{isabellebody}
+\isanewline
+\isacommand{theorem}\isamarkupfalse%
+\ skat{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{5F}{\isacharunderscore}}eval{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}\isanewline
+\ \ skat{\isaliteral{5F}{\isacharunderscore}}con\ s\ t\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ {\isaliteral{5C3C666F72616C6C3E}{\isasymforall}}{\isaliteral{5C3C44656C74613E}{\isasymDelta}}{\isaliteral{2E}{\isachardot}}\ eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ s\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}\ {\isaliteral{3D}{\isacharequal}}\ eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ t\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\end{isabellebody}
+\begin{isabellebody}
+\isanewline
+\isacommand{lift{\isaliteral{5F}{\isacharunderscore}}definition}\isamarkupfalse%
+\ eval\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{27}{\isacharprime}}a{\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}ranked{\isaliteral{5F}{\isacharunderscore}}alphabet{\isaliteral{2C}{\isacharcomma}}\ {\isaliteral{27}{\isacharprime}}b{\isaliteral{29}{\isacharparenright}}\ interp\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ skat\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b\ mems\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b\ mems{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{is}\ eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\isanewline
+\end{isabellebody}
+
+{
+\small
+\begin{verbatim}
+structure HoareSimpRules = Named_Thms
+  (val name = @{binding "hoare_simp"}
+   val description = "Simplification rules for the hoare tactic")
+
+fun hoare_step_tac ctxt n =
+  rtac @{thm hoare_composition} n
+  ORELSE (rtac @{thm hoare_assignment} n
+    THEN TRY (rtac @{thm subset_refl} n))
+  ORELSE (rtac @{thm hoare_while_inv} n
+    THEN asm_full_simp_tac (simpset_of ctxt) 1)
+
+val hoare_tac = Subgoal.FOCUS (fn {context, ...} =>
+  REPEAT (hoare_step_tac context 1)
+  THEN auto_tac (map_simpset
+    (fn ss => ss addsimps HoareSimpRules.get context) context))
+\end{verbatim}
+}
+
+% \begin{minipage}[T]{0.1\textwidth}
+% {
+% \begin{align*}
+% &\text{\textbf{lemma} hoare\_plus:}\\
+% &\hspace{2ex}\text{\textbf{assumes} pc [intro]: p $\in$ $K$ \textbf{and} qc [intro]: q $\in$ $K$}\\
+% &\hspace{2ex}\text{\textbf{and} mc [intro]: m $\in$ $A$ \textbf{and} nc [intro]: n $\in$ $A$}\\
+% &\hspace{2ex}\text{\textbf{and} left\_branch: $\{m\} p \{n\}$}\\
+% &\hspace{2ex}\text{\textbf{and} right\_branch: $\{m\} q \{n\}$}\\
+% &\hspace{2ex}\text{\textbf{shows} $\{m\} p + q \{n\}$}\\
+% &\text{\textbf{proof} -}\\
+% &\hspace{2ex}\text{\textbf{have} $m : p \le n$ \textbf{and} $m : q \le n$}\\
+% &\hspace{4ex}\text{\textbf{by} (insert left\_branch right\_branch) (simp add: hoare\_triple\_def)+}\\
+% &\hspace{2ex}\text{\textbf{hence} $m : (p + q) \le n$}\\
+% &\hspace{4ex}\text{\textbf{by} (simp add: mod\_plus[OF pc qc mc], subst $\mathcal{A}$.bin\_lub\_var, auto)}\\
+% &\hspace{2ex}\text{\textbf{thus} ?thesis}\\
+% &\hspace{4ex}\text{\textbf{by} (simp add: hoare\_triple\_def)}\\
+% &\text{\textbf{qed}}
+% \end{align*}
+% }
+% \end{minipage}
+
+% \begin{minipage}[T]{0.1\textwidth}
+% {
+% \begin{align*}
+% &\text{\textbf{lemma} \textit{hoare\_plus}:}\\
+% &\hspace{2ex}\text{\textbf{assumes} \textit{pc} [intro]: \texttt{"}p $\in$ $K$\texttt{"} \textbf{and} \textit{qc} [intro]: \texttt{"}q $\in$ $K$\texttt{"}}\\
+% &\hspace{2ex}\text{\textbf{and} \textit{Pc} [intro]: \texttt{"}P $\in$ $A$\texttt{"} \textbf{and} \textit{Qc} [intro]: \texttt{"}Q $\in$ $A$\texttt{"}}\\
+% &\hspace{2ex}\text{\textbf{and} \textit{then\_branch}: \texttt{"}P $\llbrace$ p $\rrbrace$ Q\texttt{"}}\\
+% &\hspace{2ex}\text{\textbf{and} \textit{else\_branch}: \texttt{"}P $\llbrace$ q $\rrbrace$ Q\texttt{"}}\\
+% &\hspace{2ex}\text{\textbf{shows} \texttt{"}P $\llbrace$ p + q $\rrbrace$ Q\texttt{"}}\\
+% &\text{\textbf{proof} -}\\
+% &\hspace{2ex}\text{\textbf{have} \texttt{"}P $:$ p $\le$ Q\texttt{"} \textbf{and} \texttt{"}P $:$ q $\le$ Q\texttt{"}}\\
+% &\hspace{4ex}\text{\textbf{by} (insert \textit{then\_branch else\_branch}) (simp add: \textit{hoare\_triple\_def})+}\\
+% &\hspace{2ex}\text{\textbf{hence} \texttt{"}P $:$ (p + q) $\le$ Q\texttt{"}}\\
+% &\hspace{4ex}\text{\textbf{by} (simp add: \textit{mod\_plus}[OF \textit{pc} \textit{qc} \textit{Pc}], subst \textit{A.bin\_lub\_var}, auto)}\\
+% &\hspace{2ex}\text{\textbf{thus} ?thesis}\\
+% &\hspace{4ex}\text{\textbf{by} (simp add: \textit{hoare\_triple\_def})}\\
+% &\text{\textbf{qed}}
+% \end{align*}
+% }
+% \end{minipage}
+
+\section{Examples}
+
+Euclid's algorithm for finding the greatest common divisor:
+
+\begin{minipage}[T]{0.1\textwidth}
+{
+\begin{align*}
+&\text{\textbf{lemma} \textit{euclids\_algorithm}:}\\
+&\hspace{2ex}\text{\texttt{"}\{mem. mem 0 = x $\wedge$ mem 1 = y\} $\llbrace$}\\
+&\hspace{2ex}\text{WHILE !(pred (EQ (Var 1) (NAT 0)))}\\
+&\hspace{2ex}\text{INVARIANT \{mem. gcd (mem 0) (mem 1) = gcd x y\}}\\
+&\hspace{2ex}\text{DO}\\
+&\hspace{4ex}\text{2 := Var 1;}\\
+&\hspace{4ex}\text{1 := MOD (Var 0) (Var 1);}\\
+&\hspace{4ex}\text{0 := Var 2}\\
+&\hspace{2ex}\text{WEND}\\
+&\hspace{2ex}\text{$\rrbrace$ \{mem. mem 0 = gcd x y\}\texttt{"}}\\
+&\hspace{2ex}\text{\textbf{by} hoare\_auto (metis \textit{gcd\_red\_nat})}
+\end{align*}
+}
+\end{minipage}
+
+Multiplication by repeated addition
+
+\begin{minipage}[T]{0.1\textwidth}
+{
+\begin{align*}
+&\text{\textbf{lemma} \textit{repeated\_addition}:}\\
+&\hspace{2ex}\text{\texttt{"}\{mem. mem 0 = x $\wedge$ mem 1 = y\} $\llbrace$}\\
+&\hspace{2ex}\text{2 := NAT 0;}\\
+&\hspace{2ex}\text{3 := NAT 0;}\\
+&\hspace{2ex}\text{WHILE !(pred (EQ (Var 2) (Var 0)))}\\
+&\hspace{2ex}\text{INVARIANT \{mem. mem 3 = mem 2 * mem 1 $\wedge$ mem 0 = x $\wedge$ mem 1 = y\}}\\
+&\hspace{2ex}\text{DO}\\
+&\hspace{4ex}\text{3 := PLUS (Var 3) (Var 1);}\\
+&\hspace{4ex}\text{2 := PLUS (Var 2) (NAT 1)}\\
+&\hspace{2ex}\text{WEND}\\
+&\hspace{2ex}\text{$\rrbrace$ \{mem. mem 3 = (x * y)\}\texttt{"}}\\
+&\hspace{2ex}\text{\textbf{by} hoare\_auto smt}
+\end{align*}
+}
+\end{minipage}
+
+Factorial algorithm
+
+\begin{minipage}[T]{0.1\textwidth}
+{
+\begin{align*}
+&\text{\textbf{lemma} \textit{factorial}:}\\
+&\hspace{2ex}\text{\texttt{"}\{mem. mem 0 = x\} $\llbrace$}\\
+&\hspace{2ex}\text{1 := NAT 1;}\\
+&\hspace{2ex}\text{WHILE !(pred (EQ (Var 0) (NAT 0)))}\\
+&\hspace{2ex}\text{INVARIANT \{mem. fact x = mem 1 * fact (mem 0)\}}\\
+&\hspace{2ex}\text{DO}\\
+&\hspace{4ex}\text{1 := MULT (Var 1) (Var 0);}\\
+&\hspace{4ex}\text{0 := MINUS (Var 0) (NAT 1)}\\
+&\hspace{2ex}\text{WEND}\\
+&\hspace{2ex}\text{$\rrbrace$ \{mem. mem 1 = fact x\}\texttt{"}}\\
+&\hspace{2ex}\text{\textbf{by} hoare\_auto (metis \textit{fact\_reduce\_nat})}
+\end{align*}
+}
+\end{minipage}
+
+\section{Conclusion}
+
+\bibliographystyle{plain}
+\bibliography{paper}
+
+\end{document}

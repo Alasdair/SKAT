@@ -2,6 +2,8 @@ theory SKAT_Term
   imports KAT Boolean_Algebra_Extras
 begin
 
+section {* SKAT Terms *}
+
 (* +------------------------------------------------------------------------+ *)
 subsection {* Ranked Alphabets *}
 (* +------------------------------------------------------------------------+ *)

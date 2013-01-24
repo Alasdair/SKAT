@@ -2,10 +2,12 @@ theory Base
   imports Main
 begin
 
+section {* Preliminaries *}
+
 record 'a partial_object =
   carrier :: "'a set"
 
-(* From HOL/SenSocialChoice/FSect.thy in AFP. By Peter Gammie *)
+text {* From \texttt{HOL/SenSocialChoice/FSect.thy} in AFP. By Peter Gammie *}
 lemma finite_subset_induct_var [consumes 2, case_names empty insert]:
   assumes "finite F" and "F \<subseteq> A"
     and empty: "P {}"

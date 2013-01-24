@@ -1,0 +1,1898 @@
+%
+\begin{isabellebody}%
+\def\isabellecontext{Boolean{\isaliteral{5F}{\isacharunderscore}}Algebra{\isaliteral{5F}{\isacharunderscore}}Extras}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+\isacommand{theory}\isamarkupfalse%
+\ Boolean{\isaliteral{5F}{\isacharunderscore}}Algebra{\isaliteral{5F}{\isacharunderscore}}Extras\isanewline
+\ \ \isakeyword{imports}\ Lattice\isanewline
+\isakeyword{begin}%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+\isanewline
+%
+\endisadelimtheory
+\isanewline
+\isacommand{record}\isamarkupfalse%
+\ {\isaliteral{27}{\isacharprime}}a\ huntington{\isaliteral{5F}{\isacharunderscore}}algebra\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ partial{\isaliteral{5F}{\isacharunderscore}}object{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{2B}{\isacharplus}}\isanewline
+\ \ hor\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{28}{\isacharparenleft}}\isakeyword{infixl}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{5C3C696E6465783E}{\isasymindex}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isadigit{7}}{\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ hnot\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}{\isaliteral{5C3C696E6465783E}{\isasymindex}}{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\isanewline
+\isacommand{no{\isaliteral{5F}{\isacharunderscore}}notation}\isamarkupfalse%
+\isanewline
+\ \ Groups{\isaliteral{2E}{\isachardot}}plus{\isaliteral{5F}{\isacharunderscore}}class{\isaliteral{2E}{\isachardot}}plus\ {\isaliteral{28}{\isacharparenleft}}\isakeyword{infixl}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isadigit{6}}{\isadigit{5}}{\isaliteral{29}{\isacharparenright}}\ \isakeyword{and}\isanewline
+\ \ Groups{\isaliteral{2E}{\isachardot}}one{\isaliteral{5F}{\isacharunderscore}}class{\isaliteral{2E}{\isachardot}}one\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{1}}{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{29}{\isacharparenright}}\ \isakeyword{and}\isanewline
+\ \ Groups{\isaliteral{2E}{\isachardot}}zero{\isaliteral{5F}{\isacharunderscore}}class{\isaliteral{2E}{\isachardot}}zero\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{0}}{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\isanewline
+\isacommand{locale}\isamarkupfalse%
+\ huntington{\isaliteral{5F}{\isacharunderscore}}algebra\ {\isaliteral{3D}{\isacharequal}}\ \isakeyword{fixes}\ A\ {\isaliteral{28}{\isacharparenleft}}\isakeyword{structure}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isakeyword{assumes}\ hor{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{2B}{\isacharplus}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ hnot{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ {\isaliteral{21}{\isacharbang}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ huntington{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}y{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ comm{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{2B}{\isacharplus}}\ y\ {\isaliteral{3D}{\isacharequal}}\ y\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ assoc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ z\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ {\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{2B}{\isacharplus}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ z\ {\isaliteral{3D}{\isacharequal}}\ x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{2B}{\isacharplus}}\ z{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ carrier{\isaliteral{5F}{\isacharunderscore}}non{\isaliteral{5F}{\isacharunderscore}}empty{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}carrier\ A\ {\isaliteral{5C3C6E6F7465713E}{\isasymnoteq}}\ {\isaliteral{7B}{\isacharbraceleft}}{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\isakeyword{begin}\isanewline
+\isanewline
+\ \ \isanewline
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ or{\isaliteral{5F}{\isacharunderscore}}left{\isaliteral{5F}{\isacharunderscore}}cong{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{3D}{\isacharequal}}\ z\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{2B}{\isacharplus}}\ y\ {\isaliteral{3D}{\isacharequal}}\ z\ {\isaliteral{2B}{\isacharplus}}\ y{\isaliteral{22}{\isachardoublequoteclose}}%
+\isadelimproof
+\ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ or{\isaliteral{5F}{\isacharunderscore}}right{\isaliteral{5F}{\isacharunderscore}}cong{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}y\ {\isaliteral{3D}{\isacharequal}}\ z\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{2B}{\isacharplus}}\ y\ {\isaliteral{3D}{\isacharequal}}\ x\ {\isaliteral{2B}{\isacharplus}}\ z{\isaliteral{22}{\isachardoublequoteclose}}%
+\isadelimproof
+\ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ not{\isaliteral{5F}{\isacharunderscore}}cong{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{3D}{\isacharequal}}\ y\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ {\isaliteral{21}{\isacharbang}}x\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}y{\isaliteral{22}{\isachardoublequoteclose}}%
+\isadelimproof
+\ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ H{\isadigit{1}}{\isaliteral{3A}{\isacharcolon}}\ \isakeyword{assumes}\ xc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{shows}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{2D}{\isacharminus}}\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ nxc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ nnxc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assms\ hnot{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}{\isaliteral{2B}{\isacharplus}}\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}subst\ huntington{\isaliteral{5B}{\isacharbrackleft}}OF\ nxc\ nnxc{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ subst\ huntington{\isaliteral{5B}{\isacharbrackleft}}OF\ xc\ nnxc{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ assoc\ comm\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ nxc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ sym{\isaliteral{2C}{\isacharcomma}}\ subst\ huntington{\isaliteral{5B}{\isacharbrackleft}}OF\ nnxc\ nxc{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ subst\ huntington{\isaliteral{5B}{\isacharbrackleft}}OF\ nxc\ nxc{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{finally}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{3F}{\isacharquery}}thesis\ \isacommand{{\isaliteral{2E}{\isachardot}}}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ double{\isaliteral{5F}{\isacharunderscore}}neg{\isaliteral{3A}{\isacharcolon}}\ \isakeyword{assumes}\ xc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{shows}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{2D}{\isacharminus}}\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ nxc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ nnxc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assms\ hnot{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}{\isaliteral{2B}{\isacharplus}}\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}subst\ huntington{\isaliteral{5B}{\isacharbrackleft}}OF\ nnxc\ nxc{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ or{\isaliteral{5F}{\isacharunderscore}}right{\isaliteral{5F}{\isacharunderscore}}cong{\isaliteral{2C}{\isacharcomma}}\ rule\ not{\isaliteral{5F}{\isacharunderscore}}cong{\isaliteral{2C}{\isacharcomma}}\ metis\ H{\isadigit{1}}\ assms\ comm\ hnot{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ H{\isadigit{1}}\ comm\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ huntington\ nxc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assms\ comm\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ huntington{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{finally}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{3F}{\isacharquery}}thesis\ \isacommand{{\isaliteral{2E}{\isachardot}}}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ H{\isadigit{2}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ {\isaliteral{21}{\isacharbang}}x\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}y\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{22}{\isachardoublequoteclose}}%
+\isadelimproof
+\ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ double{\isaliteral{5F}{\isacharunderscore}}neg{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isanewline
+\ \ \isacommand{definition}\isamarkupfalse%
+\ hand\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{28}{\isacharparenleft}}\isakeyword{infixl}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isadigit{8}}{\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\ \isakeyword{where}\isanewline
+\ \ \ \ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ y\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}y{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ hand{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ de{\isaliteral{5F}{\isacharunderscore}}morgan{\isadigit{1}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{2B}{\isacharplus}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}x\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ {\isaliteral{21}{\isacharbang}}y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ double{\isaliteral{5F}{\isacharunderscore}}neg\ hand{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ de{\isaliteral{5F}{\isacharunderscore}}morgan{\isadigit{2}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ double{\isaliteral{5F}{\isacharunderscore}}neg\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ hor{\isaliteral{5F}{\isacharunderscore}}as{\isaliteral{5F}{\isacharunderscore}}hand{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{2B}{\isacharplus}}\ y\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ {\isaliteral{21}{\isacharbang}}y{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ {\isaliteral{28}{\isacharparenleft}}lifting{\isaliteral{29}{\isacharparenright}}\ de{\isaliteral{5F}{\isacharunderscore}}morgan{\isadigit{2}}\ double{\isaliteral{5F}{\isacharunderscore}}neg\ hnot{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ hunt{\isaliteral{5F}{\isacharunderscore}}var{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ {\isaliteral{28}{\isacharparenleft}}lifting{\isaliteral{29}{\isacharparenright}}\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ huntington{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ hand{\isaliteral{5F}{\isacharunderscore}}comm{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{5C3C63646F743E}{\isasymcdot}}x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ {\isaliteral{28}{\isacharparenleft}}lifting{\isaliteral{29}{\isacharparenright}}\ comm\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ hand{\isaliteral{5F}{\isacharunderscore}}assoc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ z\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ {\isaliteral{28}{\isacharparenleft}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{28}{\isacharparenleft}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ assoc\ de{\isaliteral{5F}{\isacharunderscore}}morgan{\isadigit{2}}\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ and{\isaliteral{5F}{\isacharunderscore}}right{\isaliteral{5F}{\isacharunderscore}}cong{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}y\ {\isaliteral{3D}{\isacharequal}}\ z\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}z{\isaliteral{22}{\isachardoublequoteclose}}%
+\isadelimproof
+\ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ and{\isaliteral{5F}{\isacharunderscore}}left{\isaliteral{5F}{\isacharunderscore}}cong{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{3D}{\isacharequal}}\ y\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z{\isaliteral{22}{\isachardoublequoteclose}}%
+\isadelimproof
+\ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isanewline
+\ \ \isacommand{definition}\isamarkupfalse%
+\ one{\isaliteral{5F}{\isacharunderscore}}f\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{where}\isanewline
+\ \ \ \ {\isaliteral{22}{\isachardoublequoteopen}}one{\isaliteral{5F}{\isacharunderscore}}f\ x\ {\isaliteral{5C3C65717569763E}{\isasymequiv}}\ x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ one{\isaliteral{5F}{\isacharunderscore}}f{\isaliteral{5F}{\isacharunderscore}}const{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ \ \ \isakeyword{assumes}\ xc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ yc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isaliteral{22}{\isachardoublequoteopen}}one{\isaliteral{5F}{\isacharunderscore}}f\ x\ {\isaliteral{3D}{\isacharequal}}\ one{\isaliteral{5F}{\isacharunderscore}}f\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{2D}{\isacharminus}}\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ nxc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ nyc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ xc\ yc{\isaliteral{29}{\isacharparenright}}{\isaliteral{2B}{\isacharplus}}\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}one{\isaliteral{5F}{\isacharunderscore}}f\ x\ {\isaliteral{3D}{\isacharequal}}\ x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ one{\isaliteral{5F}{\isacharunderscore}}f{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}subst\ huntington{\isaliteral{5B}{\isacharbrackleft}}OF\ nxc\ nyc{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ subst\ huntington{\isaliteral{5B}{\isacharbrackleft}}OF\ xc\ nyc{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ y\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ y\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ x{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ assoc\ comm\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ nxc\ nyc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ y\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ sym{\isaliteral{2C}{\isacharcomma}}\ subst\ huntington{\isaliteral{5B}{\isacharbrackleft}}OF\ nyc\ nxc{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ subst\ huntington{\isaliteral{5B}{\isacharbrackleft}}OF\ yc\ nxc{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ one{\isaliteral{5F}{\isacharunderscore}}f\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ one{\isaliteral{5F}{\isacharunderscore}}f{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{finally}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{3F}{\isacharquery}}thesis\ \isacommand{{\isaliteral{2E}{\isachardot}}}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{definition}\isamarkupfalse%
+\ hone\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{1}}{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{29}{\isacharparenright}}\ \isakeyword{where}\isanewline
+\ \ \ \ {\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{1}}\ {\isaliteral{5C3C65717569763E}{\isasymequiv}}\ THE\ x{\isaliteral{2E}{\isachardot}}\ x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ {\isaliteral{28}{\isacharparenleft}}one{\isaliteral{5F}{\isacharunderscore}}f\ {\isaliteral{60}{\isacharbackquote}}\ carrier\ A{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ one{\isaliteral{5F}{\isacharunderscore}}prop{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x\ {\isaliteral{3D}{\isacharequal}}\ {\isadigit{1}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ hone{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{2C}{\isacharcomma}}\ rule\ the{\isadigit{1}}I{\isadigit{2}}{\isaliteral{2C}{\isacharcomma}}\ auto{\isaliteral{2C}{\isacharcomma}}\ {\isaliteral{28}{\isacharparenleft}}metis\ one{\isaliteral{5F}{\isacharunderscore}}f{\isaliteral{5F}{\isacharunderscore}}def\ one{\isaliteral{5F}{\isacharunderscore}}f{\isaliteral{5F}{\isacharunderscore}}const{\isaliteral{29}{\isacharparenright}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ one{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{1}}\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ hone{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ the{\isadigit{1}}I{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ carrier{\isaliteral{5F}{\isacharunderscore}}non{\isaliteral{5F}{\isacharunderscore}}empty\ empty{\isaliteral{5F}{\isacharunderscore}}is{\isaliteral{5F}{\isacharunderscore}}image\ ex{\isaliteral{5F}{\isacharunderscore}}in{\isaliteral{5F}{\isacharunderscore}}conv{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ one{\isaliteral{5F}{\isacharunderscore}}f{\isaliteral{5F}{\isacharunderscore}}const{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ one{\isaliteral{5F}{\isacharunderscore}}f{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{definition}\isamarkupfalse%
+\ hzero\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{0}}{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{29}{\isacharparenright}}\ \isakeyword{where}\isanewline
+\ \ \ \ {\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{0}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isadigit{1}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ zero{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{0}}\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hzero{\isaliteral{5F}{\isacharunderscore}}def\ one{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ or{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ \ \ \isakeyword{assumes}\ xc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{0}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{2D}{\isacharminus}}\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}{\isadigit{1}}\ {\isaliteral{3D}{\isacharequal}}\ {\isadigit{0}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hzero{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ {\isadigit{0}}\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ {\isadigit{0}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ {\isadigit{0}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}subst\ huntington{\isaliteral{5B}{\isacharbrackleft}}OF\ zero{\isaliteral{5F}{\isacharunderscore}}closed\ zero{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isadigit{0}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}{\isadigit{0}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isadigit{0}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ {\isaliteral{28}{\isacharparenleft}}lifting{\isaliteral{29}{\isacharparenright}}\ double{\isaliteral{5F}{\isacharunderscore}}neg\ hzero{\isaliteral{5F}{\isacharunderscore}}def\ one{\isaliteral{5F}{\isacharunderscore}}closed\ one{\isaliteral{5F}{\isacharunderscore}}prop{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isadigit{1}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isadigit{1}}\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hzero{\isaliteral{5F}{\isacharunderscore}}def\ double{\isaliteral{5F}{\isacharunderscore}}neg\ one{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{finally}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ eq{\isadigit{1}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}{\isadigit{1}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isadigit{1}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isadigit{1}}\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\ \isacommand{{\isaliteral{2E}{\isachardot}}}\isamarkupfalse%
+\isanewline
+\isanewline
+\ \ \ \ \isacommand{hence}\isamarkupfalse%
+\ eq{\isadigit{2}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{1}}\ {\isaliteral{3D}{\isacharequal}}\ {\isadigit{1}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isadigit{1}}\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ assoc\ double{\isaliteral{5F}{\isacharunderscore}}neg\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ hzero{\isaliteral{5F}{\isacharunderscore}}def\ one{\isaliteral{5F}{\isacharunderscore}}prop\ zero{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\isanewline
+\ \ \ \ \isacommand{hence}\isamarkupfalse%
+\ eq{\isadigit{3}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{1}}\ {\isaliteral{3D}{\isacharequal}}\ {\isadigit{1}}\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{1}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assoc\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ one{\isaliteral{5F}{\isacharunderscore}}closed\ one{\isaliteral{5F}{\isacharunderscore}}prop{\isaliteral{29}{\isacharparenright}}\isanewline
+\isanewline
+\ \ \ \ \isacommand{from}\isamarkupfalse%
+\ eq{\isadigit{1}}\ \isakeyword{and}\ eq{\isadigit{3}}\ \isacommand{have}\isamarkupfalse%
+\ eq{\isadigit{4}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{0}}\ {\isaliteral{3D}{\isacharequal}}\ {\isadigit{0}}\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{0}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hzero{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{0}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ x\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}\ x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{0}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}subst\ huntington{\isaliteral{5B}{\isacharbrackleft}}OF\ xc\ xc{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{0}}\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{0}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ assms\ comm\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ hzero{\isaliteral{5F}{\isacharunderscore}}def\ one{\isaliteral{5F}{\isacharunderscore}}prop{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{0}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assms\ assoc\ eq{\isadigit{4}}\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hand{\isaliteral{5F}{\isacharunderscore}}def\ zero{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assms\ comm\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hzero{\isaliteral{5F}{\isacharunderscore}}def\ one{\isaliteral{5F}{\isacharunderscore}}prop{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assms\ double{\isaliteral{5F}{\isacharunderscore}}neg\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hunt{\isaliteral{5F}{\isacharunderscore}}var{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{finally}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{3F}{\isacharquery}}thesis\ \isacommand{{\isaliteral{2E}{\isachardot}}}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ and{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isadigit{1}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ double{\isaliteral{5F}{\isacharunderscore}}neg\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hzero{\isaliteral{5F}{\isacharunderscore}}def\ or{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ and{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isadigit{0}}\ {\isaliteral{3D}{\isacharequal}}\ {\isadigit{0}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ H{\isadigit{1}}\ assoc\ de{\isaliteral{5F}{\isacharunderscore}}morgan{\isadigit{2}}\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ hunt{\isaliteral{5F}{\isacharunderscore}}var\ hzero{\isaliteral{5F}{\isacharunderscore}}def\ one{\isaliteral{5F}{\isacharunderscore}}prop{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ or{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{1}}\ {\isaliteral{3D}{\isacharequal}}\ {\isadigit{1}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ and{\isaliteral{5F}{\isacharunderscore}}zero\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}as{\isaliteral{5F}{\isacharunderscore}}hand\ hzero{\isaliteral{5F}{\isacharunderscore}}def\ one{\isaliteral{5F}{\isacharunderscore}}closed\ one{\isaliteral{5F}{\isacharunderscore}}prop{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ or{\isaliteral{5F}{\isacharunderscore}}idem{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{2B}{\isacharplus}}\ x\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ double{\isaliteral{5F}{\isacharunderscore}}neg\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}as{\isaliteral{5F}{\isacharunderscore}}hand\ huntington\ hzero{\isaliteral{5F}{\isacharunderscore}}def\ one{\isaliteral{5F}{\isacharunderscore}}prop\ or{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ and{\isaliteral{5F}{\isacharunderscore}}idem{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}x\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ double{\isaliteral{5F}{\isacharunderscore}}neg\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ or{\isaliteral{5F}{\isacharunderscore}}idem{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{definition}\isamarkupfalse%
+\ HBA\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ ord{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{where}\isanewline
+\ \ \ \ {\isaliteral{22}{\isachardoublequoteopen}}HBA\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{5C3C6C706172723E}{\isasymlparr}}carrier\ {\isaliteral{3D}{\isacharequal}}\ carrier\ A{\isaliteral{2C}{\isacharcomma}}\ le\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{5C3C6C616D6264613E}{\isasymlambda}}x\ y{\isaliteral{2E}{\isachardot}}\ x\ {\isaliteral{2B}{\isacharplus}}\ y\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C72706172723E}{\isasymrparr}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}ord{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}order\ HBA{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}default{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{5F}{\isacharunderscore}}all\ add{\isaliteral{3A}{\isacharcolon}}\ HBA{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{2C}{\isacharcomma}}\ {\isaliteral{28}{\isacharparenleft}}metis\ or{\isaliteral{5F}{\isacharunderscore}}idem\ assoc\ comm{\isaliteral{29}{\isacharparenright}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}carrier\ {\isaliteral{5B}{\isacharbrackleft}}simp{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}carrier\ HBA\ {\isaliteral{3D}{\isacharequal}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ HBA{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}lub{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ order{\isaliteral{2E}{\isachardot}}is{\isaliteral{5F}{\isacharunderscore}}lub\ HBA\ {\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{2B}{\isacharplus}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{7B}{\isacharbraceleft}}x{\isaliteral{2C}{\isacharcomma}}\ y{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ order{\isaliteral{2E}{\isachardot}}is{\isaliteral{5F}{\isacharunderscore}}lub{\isaliteral{5F}{\isacharunderscore}}simp{\isaliteral{5B}{\isacharbrackleft}}OF\ HBA{\isaliteral{5F}{\isacharunderscore}}ord{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ safe{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp{\isaliteral{5F}{\isacharunderscore}}all\ add{\isaliteral{3A}{\isacharcolon}}\ HBA{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hor{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assoc\ or{\isaliteral{5F}{\isacharunderscore}}idem{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assoc\ comm\ or{\isaliteral{5F}{\isacharunderscore}}idem{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assoc{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ glb{\isadigit{1}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ y\ {\isaliteral{2B}{\isacharplus}}\ x\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ and{\isaliteral{5F}{\isacharunderscore}}idem\ assoc\ de{\isaliteral{5F}{\isacharunderscore}}morgan{\isadigit{2}}\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ huntington{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ glb{\isadigit{2}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ y\ {\isaliteral{2B}{\isacharplus}}\ y\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ and{\isaliteral{5F}{\isacharunderscore}}idem\ assoc\ de{\isaliteral{5F}{\isacharunderscore}}morgan{\isadigit{2}}\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hand{\isaliteral{5F}{\isacharunderscore}}comm\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ huntington{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ absorb{\isadigit{1}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{2B}{\isacharplus}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ comm\ double{\isaliteral{5F}{\isacharunderscore}}neg\ glb{\isadigit{1}}\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}glb{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ order{\isaliteral{2E}{\isachardot}}is{\isaliteral{5F}{\isacharunderscore}}glb\ HBA\ {\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{7B}{\isacharbraceleft}}x{\isaliteral{2C}{\isacharcomma}}\ y{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ order{\isaliteral{2E}{\isachardot}}is{\isaliteral{5F}{\isacharunderscore}}glb{\isaliteral{5F}{\isacharunderscore}}simp{\isaliteral{5B}{\isacharbrackleft}}OF\ HBA{\isaliteral{5F}{\isacharunderscore}}ord{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ safe{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp{\isaliteral{5F}{\isacharunderscore}}all\ add{\isaliteral{3A}{\isacharcolon}}\ HBA{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hand{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ glb{\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ glb{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ H{\isadigit{2}}\ de{\isaliteral{5F}{\isacharunderscore}}morgan{\isadigit{1}}\ de{\isaliteral{5F}{\isacharunderscore}}morgan{\isadigit{2}}\ glb{\isadigit{1}}\ hand{\isaliteral{5F}{\isacharunderscore}}assoc\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hand{\isaliteral{5F}{\isacharunderscore}}comm\ hnot{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}js{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}join{\isaliteral{5F}{\isacharunderscore}}semilattice\ HBA{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ default\isanewline
+\ \ \ \ \isacommand{prefer}\isamarkupfalse%
+\ {\isadigit{4}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule{\isaliteral{5F}{\isacharunderscore}}tac\ x\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{2B}{\isacharplus}}\ y{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{in}\ bexI{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ simp\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ HBA{\isaliteral{5F}{\isacharunderscore}}lub{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp{\isaliteral{5F}{\isacharunderscore}}all\ add{\isaliteral{3A}{\isacharcolon}}\ HBA{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hor{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ or{\isaliteral{5F}{\isacharunderscore}}idem{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assoc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ comm{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}ms{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}meet{\isaliteral{5F}{\isacharunderscore}}semilattice\ HBA{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ default\isanewline
+\ \ \ \ \isacommand{prefer}\isamarkupfalse%
+\ {\isadigit{4}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule{\isaliteral{5F}{\isacharunderscore}}tac\ x\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C63646F743E}{\isasymcdot}}\ y{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{in}\ bexI{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ simp\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ HBA{\isaliteral{5F}{\isacharunderscore}}glb{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp{\isaliteral{5F}{\isacharunderscore}}all\ add{\isaliteral{3A}{\isacharcolon}}\ HBA{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hand{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ or{\isaliteral{5F}{\isacharunderscore}}idem{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assoc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ comm{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}lattice\ HBA{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ lattice{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{2C}{\isacharcomma}}\ metis\ HBA{\isaliteral{5F}{\isacharunderscore}}ms\ HBA{\isaliteral{5F}{\isacharunderscore}}js{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}join\ {\isaliteral{5B}{\isacharbrackleft}}simp{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{5C3C7371756E696F6E3E}{\isasymsqunion}}\isaliteral{5C3C5E627375623E}{}\isactrlbsub HBA\isaliteral{5C3C5E657375623E}{}\isactrlesub \ y\ {\isaliteral{3D}{\isacharequal}}\ x\ {\isaliteral{2B}{\isacharplus}}\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ order{\isaliteral{2E}{\isachardot}}join{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ HBA{\isaliteral{5F}{\isacharunderscore}}ord{\isaliteral{5D}{\isacharbrackright}}\ order{\isaliteral{2E}{\isachardot}}lub{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ HBA{\isaliteral{5F}{\isacharunderscore}}ord{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ the{\isadigit{1}}I{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ HBA{\isaliteral{5F}{\isacharunderscore}}lub{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ HBA{\isaliteral{5F}{\isacharunderscore}}ord\ order{\isaliteral{2E}{\isachardot}}is{\isaliteral{5F}{\isacharunderscore}}lub{\isaliteral{5F}{\isacharunderscore}}unique{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ HBA{\isaliteral{5F}{\isacharunderscore}}lub\ HBA{\isaliteral{5F}{\isacharunderscore}}ord\ order{\isaliteral{2E}{\isachardot}}is{\isaliteral{5F}{\isacharunderscore}}lub{\isaliteral{5F}{\isacharunderscore}}unique{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}meet\ {\isaliteral{5B}{\isacharbrackleft}}simp{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{3B}{\isacharsemicolon}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ x\ {\isaliteral{5C3C7371696E7465723E}{\isasymsqinter}}\isaliteral{5C3C5E627375623E}{}\isactrlbsub HBA\isaliteral{5C3C5E657375623E}{}\isactrlesub \ y\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ order{\isaliteral{2E}{\isachardot}}meet{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ HBA{\isaliteral{5F}{\isacharunderscore}}ord{\isaliteral{5D}{\isacharbrackright}}\ order{\isaliteral{2E}{\isachardot}}glb{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ HBA{\isaliteral{5F}{\isacharunderscore}}ord{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ the{\isadigit{1}}I{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ HBA{\isaliteral{5F}{\isacharunderscore}}glb{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ HBA{\isaliteral{5F}{\isacharunderscore}}ord\ order{\isaliteral{2E}{\isachardot}}is{\isaliteral{5F}{\isacharunderscore}}glb{\isaliteral{5F}{\isacharunderscore}}unique{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ {\isaliteral{28}{\isacharparenleft}}lifting{\isaliteral{29}{\isacharparenright}}\ HBA{\isaliteral{5F}{\isacharunderscore}}glb\ HBA{\isaliteral{5F}{\isacharunderscore}}ord\ order{\isaliteral{2E}{\isachardot}}is{\isaliteral{5F}{\isacharunderscore}}glb{\isaliteral{5F}{\isacharunderscore}}unique{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}bounded{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}bounded{\isaliteral{5F}{\isacharunderscore}}lattice\ HBA{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{5F}{\isacharunderscore}}def\ bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{5F}{\isacharunderscore}}axioms{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ safe\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ HBA{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule{\isaliteral{5F}{\isacharunderscore}}tac\ x\ {\isaliteral{3D}{\isacharequal}}\ {\isadigit{0}}\ \isakeyword{in}\ bexI{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ comm\ or{\isaliteral{5F}{\isacharunderscore}}zero\ zero{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ zero{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule{\isaliteral{5F}{\isacharunderscore}}tac\ x\ {\isaliteral{3D}{\isacharequal}}\ {\isadigit{1}}\ \isakeyword{in}\ bexI{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ and{\isaliteral{5F}{\isacharunderscore}}one\ hand{\isaliteral{5F}{\isacharunderscore}}comm\ one{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ one{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}top\ {\isaliteral{5B}{\isacharbrackleft}}simp{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}top\ HBA\ {\isaliteral{3D}{\isacharequal}}\ {\isadigit{1}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}top{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ HBA{\isaliteral{5F}{\isacharunderscore}}bounded{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ the{\isadigit{1}}I{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp{\isaliteral{5F}{\isacharunderscore}}all\ add{\isaliteral{3A}{\isacharcolon}}\ HBA{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ and{\isaliteral{5F}{\isacharunderscore}}one\ comm\ glb{\isadigit{2}}\ one{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ double{\isaliteral{5F}{\isacharunderscore}}neg\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ one{\isaliteral{5F}{\isacharunderscore}}prop{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}bot\ {\isaliteral{5B}{\isacharbrackleft}}simp{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}bot\ HBA\ {\isaliteral{3D}{\isacharequal}}\ {\isadigit{0}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}bot{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ HBA{\isaliteral{5F}{\isacharunderscore}}bounded{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ the{\isadigit{1}}I{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp{\isaliteral{5F}{\isacharunderscore}}all\ add{\isaliteral{3A}{\isacharcolon}}\ HBA{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ {\isaliteral{28}{\isacharparenleft}}lifting{\isaliteral{29}{\isacharparenright}}\ comm\ or{\isaliteral{5F}{\isacharunderscore}}zero\ zero{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ or{\isaliteral{5F}{\isacharunderscore}}zero\ zero{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}complemented{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}complemented{\isaliteral{5F}{\isacharunderscore}}lattice\ HBA{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ complemented{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{5F}{\isacharunderscore}}def\ complemented{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{5F}{\isacharunderscore}}axioms{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ safe\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ HBA{\isaliteral{5F}{\isacharunderscore}}bounded{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule{\isaliteral{5F}{\isacharunderscore}}tac\ x\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}x{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{in}\ exI{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}subgoal{\isaliteral{5F}{\isacharunderscore}}tac\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ simp\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hzero{\isaliteral{5F}{\isacharunderscore}}def\ one{\isaliteral{5F}{\isacharunderscore}}prop{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hnot{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ distl{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ \ \ \isakeyword{assumes}\ xc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ yc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ zc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}z\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isaliteral{22}{\isachardoublequoteopen}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{2B}{\isacharplus}}\ z{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}z{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{2D}{\isacharminus}}\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ c{\isadigit{1}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ xc\ yc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ c{\isadigit{2}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{2B}{\isacharplus}}\ z{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ xc\ yc\ zc{\isaliteral{29}{\isacharparenright}}\isanewline
+\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{2B}{\isacharplus}}\ z{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{2B}{\isacharplus}}\ z{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}y\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{2B}{\isacharplus}}\ z{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ comm\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ hunt{\isaliteral{5F}{\isacharunderscore}}var\ xc\ yc\ zc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{2B}{\isacharplus}}\ z{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ or{\isaliteral{5F}{\isacharunderscore}}left{\isaliteral{5F}{\isacharunderscore}}cong{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ double{\isaliteral{5F}{\isacharunderscore}}neg\ glb{\isadigit{1}}\ hand{\isaliteral{5F}{\isacharunderscore}}assoc\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}as{\isaliteral{5F}{\isacharunderscore}}hand\ xc\ yc\ zc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}z{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{28}{\isacharparenleft}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{2B}{\isacharplus}}\ z{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{2B}{\isacharplus}}\ z{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}z{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}subst\ hunt{\isaliteral{5F}{\isacharunderscore}}var{\isaliteral{5B}{\isacharbrackleft}}OF\ c{\isadigit{1}}\ zc{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ subst\ hunt{\isaliteral{5F}{\isacharunderscore}}var{\isaliteral{5B}{\isacharbrackleft}}OF\ c{\isadigit{2}}\ zc{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}z{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{28}{\isacharparenleft}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{2B}{\isacharplus}}\ z{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}z{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ or{\isaliteral{5F}{\isacharunderscore}}right{\isaliteral{5F}{\isacharunderscore}}cong{\isaliteral{2C}{\isacharcomma}}\ rule\ or{\isaliteral{5F}{\isacharunderscore}}left{\isaliteral{5F}{\isacharunderscore}}cong{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ absorb{\isadigit{1}}\ comm\ hand{\isaliteral{5F}{\isacharunderscore}}assoc\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hand{\isaliteral{5F}{\isacharunderscore}}comm\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ xc\ yc\ zc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}z{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{28}{\isacharparenleft}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{2B}{\isacharplus}}\ z{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}y{\isaliteral{2B}{\isacharplus}}z{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ de{\isaliteral{5F}{\isacharunderscore}}morgan{\isadigit{1}}\ hand{\isaliteral{5F}{\isacharunderscore}}assoc\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ xc\ yc\ zc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}z{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{28}{\isacharparenleft}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isadigit{0}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ hand{\isaliteral{5F}{\isacharunderscore}}assoc\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ hzero{\isaliteral{5F}{\isacharunderscore}}def\ one{\isaliteral{5F}{\isacharunderscore}}prop\ xc\ yc\ zc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}z{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{2B}{\isacharplus}}\ {\isaliteral{28}{\isacharparenleft}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ {\isadigit{0}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ and{\isaliteral{5F}{\isacharunderscore}}zero\ xc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ or{\isaliteral{5F}{\isacharunderscore}}zero\ xc\ yc\ zc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{21}{\isacharbang}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ {\isaliteral{28}{\isacharparenleft}}no{\isaliteral{5F}{\isacharunderscore}}types{\isaliteral{29}{\isacharparenright}}\ c{\isadigit{1}}\ comm\ glb{\isadigit{1}}\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hunt{\isaliteral{5F}{\isacharunderscore}}var\ zc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{also}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}{\isaliteral{2E}{\isachardot}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y\ {\isaliteral{2B}{\isacharplus}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}z{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ assoc\ hand{\isaliteral{5F}{\isacharunderscore}}assoc\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hand{\isaliteral{5F}{\isacharunderscore}}comm\ hnot{\isaliteral{5F}{\isacharunderscore}}closed\ hunt{\isaliteral{5F}{\isacharunderscore}}var\ xc\ yc\ zc{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{finally}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{3F}{\isacharquery}}thesis\ \isacommand{{\isaliteral{2E}{\isachardot}}}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ distr{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ \ \ \isakeyword{assumes}\ xc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ yc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ zc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}z\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{2B}{\isacharplus}}\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{2B}{\isacharplus}}\ y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ distl\ hand{\isaliteral{5F}{\isacharunderscore}}comm\ hor{\isaliteral{5F}{\isacharunderscore}}closed\ xc\ yc\ zc{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}distributive{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}distributive{\isaliteral{5F}{\isacharunderscore}}lattice\ HBA{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ distributive{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{5F}{\isacharunderscore}}def\ distributive{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{5F}{\isacharunderscore}}axioms{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ safe\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ HBA{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}subgoal{\isaliteral{5F}{\isacharunderscore}}tac\ {\isaliteral{22}{\isachardoublequoteopen}}y\ {\isaliteral{2B}{\isacharplus}}\ z\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{22}{\isachardoublequoteopen}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{22}{\isachardoublequoteopen}}x{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ simp\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ distl{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hand{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}{\isaliteral{2B}{\isacharplus}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hor{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}subgoal{\isaliteral{5F}{\isacharunderscore}}tac\ {\isaliteral{22}{\isachardoublequoteopen}}y{\isaliteral{5C3C63646F743E}{\isasymcdot}}z\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{2B}{\isacharplus}}\ y\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{2B}{\isacharplus}}\ z\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ A{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ simp\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ and{\isaliteral{5F}{\isacharunderscore}}idem\ assoc\ comm\ distl\ distr\ glb{\isadigit{1}}\ glb{\isadigit{2}}\ hand{\isaliteral{5F}{\isacharunderscore}}closed\ hand{\isaliteral{5F}{\isacharunderscore}}def\ hor{\isaliteral{5F}{\isacharunderscore}}as{\isaliteral{5F}{\isacharunderscore}}hand{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hor{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}{\isaliteral{2B}{\isacharplus}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hand{\isaliteral{5F}{\isacharunderscore}}closed{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\ \ \isacommand{lemma}\isamarkupfalse%
+\ HBA{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}boolean{\isaliteral{5F}{\isacharunderscore}}algebra\ HBA{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ \ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ boolean{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{2C}{\isacharcomma}}\ metis\ HBA{\isaliteral{5F}{\isacharunderscore}}complemented\ HBA{\isaliteral{5F}{\isacharunderscore}}distributive{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{end}\isamarkupfalse%
+\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ huntington{\isaliteral{5F}{\isacharunderscore}}induces{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ \isakeyword{assumes}\ hunt{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}huntington{\isaliteral{5F}{\isacharunderscore}}algebra\ {\isaliteral{5C3C6C706172723E}{\isasymlparr}}carrier\ {\isaliteral{3D}{\isacharequal}}\ A{\isaliteral{2C}{\isacharcomma}}\ hor\ {\isaliteral{3D}{\isacharequal}}\ p{\isaliteral{2C}{\isacharcomma}}\ hnot\ {\isaliteral{3D}{\isacharequal}}\ n{\isaliteral{5C3C72706172723E}{\isasymrparr}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{shows}\ {\isaliteral{22}{\isachardoublequoteopen}}boolean{\isaliteral{5F}{\isacharunderscore}}algebra\ {\isaliteral{5C3C6C706172723E}{\isasymlparr}}carrier\ {\isaliteral{3D}{\isacharequal}}\ A{\isaliteral{2C}{\isacharcomma}}\ le\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{5C3C6C616D6264613E}{\isasymlambda}}x\ y{\isaliteral{2E}{\isachardot}}\ p\ x\ y\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C72706172723E}{\isasymrparr}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{2D}{\isacharminus}}\isanewline
+\ \ \isacommand{let}\isamarkupfalse%
+\ {\isaliteral{3F}{\isacharquery}}H\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C706172723E}{\isasymlparr}}carrier\ {\isaliteral{3D}{\isacharequal}}\ A{\isaliteral{2C}{\isacharcomma}}\ hor\ {\isaliteral{3D}{\isacharequal}}\ p{\isaliteral{2C}{\isacharcomma}}\ hnot\ {\isaliteral{3D}{\isacharequal}}\ n{\isaliteral{5C3C72706172723E}{\isasymrparr}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\ \ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}boolean{\isaliteral{5F}{\isacharunderscore}}algebra\ {\isaliteral{28}{\isacharparenleft}}huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}HBA\ {\isaliteral{3F}{\isacharquery}}H{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ assms\ huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}HBA{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{29}{\isacharparenright}}\isanewline
+\isanewline
+\ \ \isacommand{moreover}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C706172723E}{\isasymlparr}}carrier\ {\isaliteral{3D}{\isacharequal}}\ A{\isaliteral{2C}{\isacharcomma}}\ le\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{5C3C6C616D6264613E}{\isasymlambda}}x\ y{\isaliteral{2E}{\isachardot}}\ p\ x\ y\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C72706172723E}{\isasymrparr}}\ {\isaliteral{3D}{\isacharequal}}\ huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}HBA\ {\isaliteral{3F}{\isacharquery}}H{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}HBA{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ hunt{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\isanewline
+\ \ \isacommand{ultimately}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{3F}{\isacharquery}}thesis\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{notation}\isamarkupfalse%
+\isanewline
+\ \ Groups{\isaliteral{2E}{\isachardot}}plus{\isaliteral{5F}{\isacharunderscore}}class{\isaliteral{2E}{\isachardot}}plus\ {\isaliteral{28}{\isacharparenleft}}\isakeyword{infixl}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isadigit{6}}{\isadigit{5}}{\isaliteral{29}{\isacharparenright}}\ \isakeyword{and}\isanewline
+\ \ Groups{\isaliteral{2E}{\isachardot}}one{\isaliteral{5F}{\isacharunderscore}}class{\isaliteral{2E}{\isachardot}}one\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{1}}{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{29}{\isacharparenright}}\ \isakeyword{and}\isanewline
+\ \ Groups{\isaliteral{2E}{\isachardot}}zero{\isaliteral{5F}{\isacharunderscore}}class{\isaliteral{2E}{\isachardot}}zero\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{22}{\isachardoublequoteopen}}{\isadigit{0}}{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\isanewline
+\isacommand{no{\isaliteral{5F}{\isacharunderscore}}notation}\isamarkupfalse%
+\isanewline
+\ \ huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}hor\ {\isaliteral{28}{\isacharparenleft}}\isakeyword{infixl}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{5C3C696E6465783E}{\isasymindex}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isadigit{7}}{\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\ \isakeyword{and}\isanewline
+\ \ huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}hnot\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{21}{\isacharbang}}{\isaliteral{5C3C696E6465783E}{\isasymindex}}{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\isanewline
+\isacommand{datatype}\isamarkupfalse%
+\ {\isaliteral{27}{\isacharprime}}a\ bexpr\ {\isaliteral{3D}{\isacharequal}}\ BLeaf\ {\isaliteral{27}{\isacharprime}}a\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {\isaliteral{7C}{\isacharbar}}\ BOr\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bexpr{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bexpr{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{28}{\isacharparenleft}}\isakeyword{infixl}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{3A}{\isacharcolon}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{3A}{\isacharcolon}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isadigit{7}}{\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {\isaliteral{7C}{\isacharbar}}\ BNot\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bexpr{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {\isaliteral{7C}{\isacharbar}}\ BAnd\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bexpr{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bexpr{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{28}{\isacharparenleft}}\isakeyword{infixl}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{3A}{\isacharcolon}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{3A}{\isacharcolon}}{\isaliteral{22}{\isachardoublequoteclose}}\ {\isadigit{7}}{\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {\isaliteral{7C}{\isacharbar}}\ BOne\isanewline
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {\isaliteral{7C}{\isacharbar}}\ BZero\isanewline
+\isanewline
+\isacommand{primrec}\isamarkupfalse%
+\ bexpr{\isaliteral{5F}{\isacharunderscore}}map\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{27}{\isacharprime}}a\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ bexpr\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b\ bexpr{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{where}\isanewline
+\ \ {\isaliteral{22}{\isachardoublequoteopen}}bexpr{\isaliteral{5F}{\isacharunderscore}}map\ f\ {\isaliteral{28}{\isacharparenleft}}BLeaf\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ BLeaf\ {\isaliteral{28}{\isacharparenleft}}f\ x{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}bexpr{\isaliteral{5F}{\isacharunderscore}}map\ f\ {\isaliteral{28}{\isacharparenleft}}BOr\ x\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ BOr\ {\isaliteral{28}{\isacharparenleft}}bexpr{\isaliteral{5F}{\isacharunderscore}}map\ f\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}bexpr{\isaliteral{5F}{\isacharunderscore}}map\ f\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}bexpr{\isaliteral{5F}{\isacharunderscore}}map\ f\ {\isaliteral{28}{\isacharparenleft}}BNot\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ BNot\ {\isaliteral{28}{\isacharparenleft}}bexpr{\isaliteral{5F}{\isacharunderscore}}map\ f\ x{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}bexpr{\isaliteral{5F}{\isacharunderscore}}map\ f\ {\isaliteral{28}{\isacharparenleft}}BAnd\ x\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ BAnd\ {\isaliteral{28}{\isacharparenleft}}bexpr{\isaliteral{5F}{\isacharunderscore}}map\ f\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}bexpr{\isaliteral{5F}{\isacharunderscore}}map\ f\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}bexpr{\isaliteral{5F}{\isacharunderscore}}map\ f\ BOne\ {\isaliteral{3D}{\isacharequal}}\ BOne{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}bexpr{\isaliteral{5F}{\isacharunderscore}}map\ f\ BZero\ {\isaliteral{3D}{\isacharequal}}\ BZero{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\isacommand{primrec}\isamarkupfalse%
+\ bexpr{\isaliteral{5F}{\isacharunderscore}}leaves\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bexpr\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ set{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{where}\isanewline
+\ \ {\isaliteral{22}{\isachardoublequoteopen}}bexpr{\isaliteral{5F}{\isacharunderscore}}leaves\ {\isaliteral{28}{\isacharparenleft}}BLeaf\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{7B}{\isacharbraceleft}}x{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}bexpr{\isaliteral{5F}{\isacharunderscore}}leaves\ {\isaliteral{28}{\isacharparenleft}}BOr\ x\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ bexpr{\isaliteral{5F}{\isacharunderscore}}leaves\ x\ {\isaliteral{5C3C756E696F6E3E}{\isasymunion}}\ bexpr{\isaliteral{5F}{\isacharunderscore}}leaves\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}bexpr{\isaliteral{5F}{\isacharunderscore}}leaves\ {\isaliteral{28}{\isacharparenleft}}BNot\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ bexpr{\isaliteral{5F}{\isacharunderscore}}leaves\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}bexpr{\isaliteral{5F}{\isacharunderscore}}leaves\ {\isaliteral{28}{\isacharparenleft}}BAnd\ x\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ bexpr{\isaliteral{5F}{\isacharunderscore}}leaves\ x\ {\isaliteral{5C3C756E696F6E3E}{\isasymunion}}\ bexpr{\isaliteral{5F}{\isacharunderscore}}leaves\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}bexpr{\isaliteral{5F}{\isacharunderscore}}leaves\ BOne\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{7B}{\isacharbraceleft}}{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}bexpr{\isaliteral{5F}{\isacharunderscore}}leaves\ BZero\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{7B}{\isacharbraceleft}}{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\isacommand{inductive}\isamarkupfalse%
+\ hunt{\isaliteral{5F}{\isacharunderscore}}con\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bexpr\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ bexpr\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ bool{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{where}\isanewline
+\ \ refl\ {\isaliteral{5B}{\isacharbrackleft}}intro{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}hunt{\isaliteral{5F}{\isacharunderscore}}con\ x\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ sym\ {\isaliteral{5B}{\isacharbrackleft}}sym{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}hunt{\isaliteral{5F}{\isacharunderscore}}con\ x\ y\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ hunt{\isaliteral{5F}{\isacharunderscore}}con\ y\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ trans\ {\isaliteral{5B}{\isacharbrackleft}}trans{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C6C6272616B6B3E}{\isasymlbrakk}}hunt{\isaliteral{5F}{\isacharunderscore}}con\ x\ y{\isaliteral{3B}{\isacharsemicolon}}\ hunt{\isaliteral{5F}{\isacharunderscore}}con\ y\ z{\isaliteral{5C3C726272616B6B3E}{\isasymrbrakk}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ hunt{\isaliteral{5F}{\isacharunderscore}}con\ x\ z{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ or{\isaliteral{5F}{\isacharunderscore}}compat{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}hunt{\isaliteral{5F}{\isacharunderscore}}con\ x{\isadigit{1}}\ x{\isadigit{2}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ hunt{\isaliteral{5F}{\isacharunderscore}}con\ y{\isadigit{1}}\ y{\isadigit{2}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ hunt{\isaliteral{5F}{\isacharunderscore}}con\ {\isaliteral{28}{\isacharparenleft}}BOr\ x{\isadigit{1}}\ y{\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}BOr\ x{\isadigit{2}}\ y{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ not{\isaliteral{5F}{\isacharunderscore}}compat{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}hunt{\isaliteral{5F}{\isacharunderscore}}con\ x\ y\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ hunt{\isaliteral{5F}{\isacharunderscore}}con\ {\isaliteral{28}{\isacharparenleft}}BNot\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}BNot\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ and{\isaliteral{5F}{\isacharunderscore}}compat{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}hunt{\isaliteral{5F}{\isacharunderscore}}con\ x{\isadigit{1}}\ x{\isadigit{2}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ hunt{\isaliteral{5F}{\isacharunderscore}}con\ y{\isadigit{1}}\ y{\isadigit{2}}\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ hunt{\isaliteral{5F}{\isacharunderscore}}con\ {\isaliteral{28}{\isacharparenleft}}BAnd\ x{\isadigit{1}}\ y{\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}BAnd\ x{\isadigit{2}}\ y{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ huntington{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}hunt{\isaliteral{5F}{\isacharunderscore}}con\ {\isaliteral{28}{\isacharparenleft}}BNot\ {\isaliteral{28}{\isacharparenleft}}BNot\ x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{3A}{\isacharcolon}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{3A}{\isacharcolon}}\ BNot\ {\isaliteral{28}{\isacharparenleft}}BNot\ x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{3A}{\isacharcolon}}\ BNot\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ comm{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}hunt{\isaliteral{5F}{\isacharunderscore}}con\ {\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{3A}{\isacharcolon}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{3A}{\isacharcolon}}\ x{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ assoc{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}hunt{\isaliteral{5F}{\isacharunderscore}}con\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{3A}{\isacharcolon}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{3A}{\isacharcolon}}\ z{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{28}{\isacharparenleft}}y\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{3A}{\isacharcolon}}\ z{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ one{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}hunt{\isaliteral{5F}{\isacharunderscore}}con\ {\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{3A}{\isacharcolon}}\ BNot\ x{\isaliteral{29}{\isacharparenright}}\ BOne{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ zero{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}hunt{\isaliteral{5F}{\isacharunderscore}}con\ {\isaliteral{28}{\isacharparenleft}}BNot\ BOne{\isaliteral{29}{\isacharparenright}}\ BZero{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+{\isaliteral{7C}{\isacharbar}}\ meet{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}hunt{\isaliteral{5F}{\isacharunderscore}}con\ {\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{5C3C63646F743E}{\isasymcdot}}{\isaliteral{3A}{\isacharcolon}}\ y{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}BNot\ {\isaliteral{28}{\isacharparenleft}}BNot\ x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{2B}{\isacharplus}}{\isaliteral{3A}{\isacharcolon}}\ BNot\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\isacommand{quotient{\isaliteral{5F}{\isacharunderscore}}type}\isamarkupfalse%
+\ {\isaliteral{27}{\isacharprime}}a\ bterm\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bexpr{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{2F}{\isacharslash}}\ {\isaliteral{22}{\isachardoublequoteopen}}hunt{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ equivp{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{2C}{\isacharcomma}}\ auto{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}subgoal{\isaliteral{5F}{\isacharunderscore}}tac\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{5C3C666F72616C6C3E}{\isasymforall}}z{\isaliteral{2E}{\isachardot}}\ hunt{\isaliteral{5F}{\isacharunderscore}}con\ x\ z\ {\isaliteral{3D}{\isacharequal}}\ hunt{\isaliteral{5F}{\isacharunderscore}}con\ y\ z{\isaliteral{22}{\isachardoublequoteclose}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hunt{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{2E}{\isachardot}}sym\ hunt{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{2E}{\isachardot}}trans{\isaliteral{29}{\isacharparenright}}{\isaliteral{2B}{\isacharplus}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lift{\isaliteral{5F}{\isacharunderscore}}definition}\isamarkupfalse%
+\ bt{\isaliteral{5F}{\isacharunderscore}}or\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bterm\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ bterm\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ bterm{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{is}\ BOr\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ hunt{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{2E}{\isachardot}}or{\isaliteral{5F}{\isacharunderscore}}compat{\isaliteral{2C}{\isacharcomma}}\ assumption{\isaliteral{2B}{\isacharplus}}{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lift{\isaliteral{5F}{\isacharunderscore}}definition}\isamarkupfalse%
+\ bt{\isaliteral{5F}{\isacharunderscore}}not\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bterm\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ bterm{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{is}\ BNot\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ hunt{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{2E}{\isachardot}}not{\isaliteral{5F}{\isacharunderscore}}compat{\isaliteral{2C}{\isacharcomma}}\ assumption{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lift{\isaliteral{5F}{\isacharunderscore}}definition}\isamarkupfalse%
+\ bt{\isaliteral{5F}{\isacharunderscore}}and\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bterm\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ bterm\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ bterm{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{is}\ BAnd\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ hunt{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{2E}{\isachardot}}and{\isaliteral{5F}{\isacharunderscore}}compat{\isaliteral{2C}{\isacharcomma}}\ assumption{\isaliteral{2B}{\isacharplus}}{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lift{\isaliteral{5F}{\isacharunderscore}}definition}\isamarkupfalse%
+\ bt{\isaliteral{5F}{\isacharunderscore}}one\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bterm{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{is}\ BOne\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ hunt{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{2E}{\isachardot}}refl{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lift{\isaliteral{5F}{\isacharunderscore}}definition}\isamarkupfalse%
+\ bt{\isaliteral{5F}{\isacharunderscore}}zero\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ bterm{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{is}\ BZero\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ hunt{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{2E}{\isachardot}}refl{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{definition}\isamarkupfalse%
+\ free{\isaliteral{5F}{\isacharunderscore}}ba\ \isakeyword{where}\ {\isaliteral{22}{\isachardoublequoteopen}}free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{5C3C65717569763E}{\isasymequiv}}\ {\isaliteral{5C3C6C706172723E}{\isasymlparr}}carrier\ {\isaliteral{3D}{\isacharequal}}\ UNIV{\isaliteral{2C}{\isacharcomma}}\ le\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{5C3C6C616D6264613E}{\isasymlambda}}x\ y{\isaliteral{2E}{\isachardot}}\ bt{\isaliteral{5F}{\isacharunderscore}}or\ x\ y\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{5C3C72706172723E}{\isasymrparr}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}hunt{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}huntington{\isaliteral{5F}{\isacharunderscore}}algebra\ {\isaliteral{5C3C6C706172723E}{\isasymlparr}}carrier\ {\isaliteral{3D}{\isacharequal}}\ UNIV{\isaliteral{2C}{\isacharcomma}}\ hor\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}or{\isaliteral{2C}{\isacharcomma}}\ hnot\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}not{\isaliteral{5C3C72706172723E}{\isasymrparr}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}default{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{5F}{\isacharunderscore}}all{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{fix}\isamarkupfalse%
+\ x\ y\ z\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}b\ bterm{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}or\ {\isaliteral{28}{\isacharparenleft}}bt{\isaliteral{5F}{\isacharunderscore}}not\ {\isaliteral{28}{\isacharparenleft}}bt{\isaliteral{5F}{\isacharunderscore}}or\ {\isaliteral{28}{\isacharparenleft}}bt{\isaliteral{5F}{\isacharunderscore}}not\ x{\isaliteral{29}{\isacharparenright}}\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}bt{\isaliteral{5F}{\isacharunderscore}}not\ {\isaliteral{28}{\isacharparenleft}}bt{\isaliteral{5F}{\isacharunderscore}}or\ {\isaliteral{28}{\isacharparenleft}}bt{\isaliteral{5F}{\isacharunderscore}}not\ x{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}bt{\isaliteral{5F}{\isacharunderscore}}not\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ HOL{\isaliteral{2E}{\isachardot}}sym{\isaliteral{2C}{\isacharcomma}}\ transfer{\isaliteral{2C}{\isacharcomma}}\ rule\ hunt{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{2E}{\isachardot}}huntington{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}bt{\isaliteral{5F}{\isacharunderscore}}or\ x\ y\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}or\ y\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}transfer{\isaliteral{2C}{\isacharcomma}}\ rule\ hunt{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{2E}{\isachardot}}comm{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}bt{\isaliteral{5F}{\isacharunderscore}}or\ {\isaliteral{28}{\isacharparenleft}}bt{\isaliteral{5F}{\isacharunderscore}}or\ x\ y{\isaliteral{29}{\isacharparenright}}\ z\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}or\ x\ {\isaliteral{28}{\isacharparenleft}}bt{\isaliteral{5F}{\isacharunderscore}}or\ y\ z{\isaliteral{29}{\isacharparenright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}transfer{\isaliteral{2C}{\isacharcomma}}\ rule\ hunt{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{2E}{\isachardot}}assoc{\isaliteral{29}{\isacharparenright}}\isanewline
+\isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{abbreviation}\isamarkupfalse%
+\ BTH\ \isakeyword{where}\ {\isaliteral{22}{\isachardoublequoteopen}}BTH\ {\isaliteral{5C3C65717569763E}{\isasymequiv}}\ {\isaliteral{5C3C6C706172723E}{\isasymlparr}}carrier\ {\isaliteral{3D}{\isacharequal}}\ UNIV{\isaliteral{2C}{\isacharcomma}}\ hor\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}or{\isaliteral{2C}{\isacharcomma}}\ hnot\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}not{\isaliteral{5C3C72706172723E}{\isasymrparr}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ bt{\isaliteral{5F}{\isacharunderscore}}hone\ {\isaliteral{5B}{\isacharbrackleft}}simp{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}hone\ BTH\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{2D}{\isacharminus}}\isanewline
+\ \ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}bt{\isaliteral{5F}{\isacharunderscore}}or\ bt{\isaliteral{5F}{\isacharunderscore}}one\ {\isaliteral{28}{\isacharparenleft}}bt{\isaliteral{5F}{\isacharunderscore}}not\ bt{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}transfer{\isaliteral{2C}{\isacharcomma}}\ metis\ one{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{thus}\isamarkupfalse%
+\ {\isaliteral{3F}{\isacharquery}}thesis\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}one{\isaliteral{5F}{\isacharunderscore}}prop{\isaliteral{5B}{\isacharbrackleft}}symmetric{\isaliteral{2C}{\isacharcomma}}\ OF\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}hunt{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ bt{\isaliteral{5F}{\isacharunderscore}}hzero\ {\isaliteral{5B}{\isacharbrackleft}}simp{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}hzero\ BTH\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{2D}{\isacharminus}}\isanewline
+\ \ \isacommand{have}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}bt{\isaliteral{5F}{\isacharunderscore}}not\ bt{\isaliteral{5F}{\isacharunderscore}}one\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}transfer{\isaliteral{2C}{\isacharcomma}}\ metis\ zero{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{thus}\isamarkupfalse%
+\ {\isaliteral{3F}{\isacharquery}}thesis\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}hzero{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}hunt{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{interpretation}\isamarkupfalse%
+\ hba{\isaliteral{3A}{\isacharcolon}}\ huntington{\isaliteral{5F}{\isacharunderscore}}algebra\ {\isaliteral{22}{\isachardoublequoteopen}}BTH{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{where}\ {\isaliteral{22}{\isachardoublequoteopen}}hor\ BTH\ x\ y\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}or\ x\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}hnot\ BTH\ x\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}not\ x{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}hand\ BTH\ x\ y\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}and\ x\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}hone\ BTH\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}hzero\ BTH\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ BTH\ {\isaliteral{3D}{\isacharequal}}\ True{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp{\isaliteral{5F}{\isacharunderscore}}all\ add{\isaliteral{3A}{\isacharcolon}}\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}hunt{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ huntington{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{2E}{\isachardot}}hand{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}hunt{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ transfer\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hunt{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{2E}{\isachardot}}sym\ meet{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{done}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{theorem}\isamarkupfalse%
+\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}boolean{\isaliteral{5F}{\isacharunderscore}}algebra\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{from}\isamarkupfalse%
+\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}hunt\isanewline
+\ \ \isacommand{show}\isamarkupfalse%
+\ {\isaliteral{22}{\isachardoublequoteopen}}boolean{\isaliteral{5F}{\isacharunderscore}}algebra\ {\isaliteral{5C3C6C706172723E}{\isasymlparr}}carrier\ {\isaliteral{3D}{\isacharequal}}\ UNIV{\isaliteral{2C}{\isacharcomma}}\ le\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{5C3C6C616D6264613E}{\isasymlambda}}x\ y{\isaliteral{2E}{\isachardot}}\ bt{\isaliteral{5F}{\isacharunderscore}}or\ x\ y\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{5C3C72706172723E}{\isasymrparr}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ huntington{\isaliteral{5F}{\isacharunderscore}}induces{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{29}{\isacharparenright}}\isanewline
+\isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}ord{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}order\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}insert\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ boolean{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{5F}{\isacharunderscore}}def\ distributive{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ lattice{\isaliteral{5F}{\isacharunderscore}}def\ join{\isaliteral{5F}{\isacharunderscore}}semilattice{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isaliteral{5B}{\isacharbrackleft}}simp{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}carrier\ free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{3D}{\isacharequal}}\ UNIV{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isaliteral{5B}{\isacharbrackleft}}simp{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C7371756E696F6E3E}{\isasymsqunion}}\isaliteral{5C3C5E627375623E}{}\isactrlbsub free{\isaliteral{5F}{\isacharunderscore}}ba\isaliteral{5C3C5E657375623E}{}\isactrlesub \ y\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}or\ x\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ order{\isaliteral{2E}{\isachardot}}join{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}ord{\isaliteral{5D}{\isacharbrackright}}\ order{\isaliteral{2E}{\isachardot}}lub{\isaliteral{5F}{\isacharunderscore}}simp{\isaliteral{5B}{\isacharbrackleft}}OF\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}ord{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ the{\isadigit{1}}I{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ hba{\isaliteral{2E}{\isachardot}}assoc\ hba{\isaliteral{2E}{\isachardot}}comm\ hba{\isaliteral{2E}{\isachardot}}or{\isaliteral{5F}{\isacharunderscore}}idem{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hba{\isaliteral{2E}{\isachardot}}comm{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ {\isaliteral{28}{\isacharparenleft}}full{\isaliteral{5F}{\isacharunderscore}}types{\isaliteral{29}{\isacharparenright}}\ hba{\isaliteral{2E}{\isachardot}}assoc\ hba{\isaliteral{2E}{\isachardot}}comm\ hba{\isaliteral{2E}{\isachardot}}or{\isaliteral{5F}{\isacharunderscore}}idem{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isaliteral{5B}{\isacharbrackleft}}simp{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C7371696E7465723E}{\isasymsqinter}}\isaliteral{5C3C5E627375623E}{}\isactrlbsub free{\isaliteral{5F}{\isacharunderscore}}ba\isaliteral{5C3C5E657375623E}{}\isactrlesub \ y\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}and\ x\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ order{\isaliteral{2E}{\isachardot}}meet{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}ord{\isaliteral{5D}{\isacharbrackright}}\ order{\isaliteral{2E}{\isachardot}}glb{\isaliteral{5F}{\isacharunderscore}}simp{\isaliteral{5B}{\isacharbrackleft}}OF\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}ord{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ the{\isadigit{1}}I{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule{\isaliteral{5F}{\isacharunderscore}}tac\ x\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{22}{\isachardoublequoteopen}}bt{\isaliteral{5F}{\isacharunderscore}}and\ x\ y{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{in}\ exI{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hba{\isaliteral{2E}{\isachardot}}absorb{\isadigit{1}}\ hba{\isaliteral{2E}{\isachardot}}distl\ hba{\isaliteral{2E}{\isachardot}}glb{\isadigit{2}}\ hba{\isaliteral{2E}{\isachardot}}hand{\isaliteral{5F}{\isacharunderscore}}comm{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hba{\isaliteral{2E}{\isachardot}}comm{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}smt\ hba{\isaliteral{2E}{\isachardot}}absorb{\isadigit{1}}\ hba{\isaliteral{2E}{\isachardot}}distr\ hba{\isaliteral{2E}{\isachardot}}glb{\isadigit{2}}\ hba{\isaliteral{2E}{\isachardot}}hand{\isaliteral{5F}{\isacharunderscore}}comm{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}bl{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}bounded{\isaliteral{5F}{\isacharunderscore}}lattice\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}insert\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ boolean{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{5F}{\isacharunderscore}}def\ complemented{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{done}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isaliteral{5B}{\isacharbrackleft}}simp{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}top\ free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}top{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}bl{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ the{\isadigit{1}}I{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hba{\isaliteral{2E}{\isachardot}}or{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hba{\isaliteral{2E}{\isachardot}}comm{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hba{\isaliteral{2E}{\isachardot}}comm\ hba{\isaliteral{2E}{\isachardot}}or{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isaliteral{5B}{\isacharbrackleft}}simp{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}bot\ free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}bot{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{5B}{\isacharbrackleft}}OF\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}bl{\isaliteral{5D}{\isacharbrackright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}simp\ add{\isaliteral{3A}{\isacharcolon}}\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}rule\ the{\isadigit{1}}I{\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hba{\isaliteral{2E}{\isachardot}}comm\ hba{\isaliteral{2E}{\isachardot}}or{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{apply}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hba{\isaliteral{2E}{\isachardot}}or{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hba{\isaliteral{2E}{\isachardot}}or{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{interpretation}\isamarkupfalse%
+\ ba{\isaliteral{3A}{\isacharcolon}}\ join{\isaliteral{5F}{\isacharunderscore}}semilattice\ free{\isaliteral{5F}{\isacharunderscore}}ba\isanewline
+\ \ \isakeyword{where}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C7371756E696F6E3E}{\isasymsqunion}}\isaliteral{5C3C5E627375623E}{}\isactrlbsub free{\isaliteral{5F}{\isacharunderscore}}ba\isaliteral{5C3C5E657375623E}{}\isactrlesub \ y\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}or\ x\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C7371696E7465723E}{\isasymsqinter}}\isaliteral{5C3C5E627375623E}{}\isactrlbsub free{\isaliteral{5F}{\isacharunderscore}}ba\isaliteral{5C3C5E657375623E}{}\isactrlesub \ y\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}and\ x\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}carrier\ free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{3D}{\isacharequal}}\ UNIV{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}top\ free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}bot\ free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}insert\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{5F}{\isacharunderscore}}all\ add{\isaliteral{3A}{\isacharcolon}}\ boolean{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{5F}{\isacharunderscore}}def\ distributive{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{5F}{\isacharunderscore}}def\ lattice{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{2C}{\isacharcomma}}\ auto{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{interpretation}\isamarkupfalse%
+\ ba{\isaliteral{3A}{\isacharcolon}}\ meet{\isaliteral{5F}{\isacharunderscore}}semilattice\ free{\isaliteral{5F}{\isacharunderscore}}ba\isanewline
+\ \ \isakeyword{where}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C7371756E696F6E3E}{\isasymsqunion}}\isaliteral{5C3C5E627375623E}{}\isactrlbsub free{\isaliteral{5F}{\isacharunderscore}}ba\isaliteral{5C3C5E657375623E}{}\isactrlesub \ y\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}or\ x\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C7371696E7465723E}{\isasymsqinter}}\isaliteral{5C3C5E627375623E}{}\isactrlbsub free{\isaliteral{5F}{\isacharunderscore}}ba\isaliteral{5C3C5E657375623E}{}\isactrlesub \ y\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}and\ x\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}carrier\ free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{3D}{\isacharequal}}\ UNIV{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}top\ free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}bot\ free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}insert\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{5F}{\isacharunderscore}}all\ add{\isaliteral{3A}{\isacharcolon}}\ boolean{\isaliteral{5F}{\isacharunderscore}}algebra{\isaliteral{5F}{\isacharunderscore}}def\ distributive{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{5F}{\isacharunderscore}}def\ lattice{\isaliteral{5F}{\isacharunderscore}}def{\isaliteral{2C}{\isacharcomma}}\ auto{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{interpretation}\isamarkupfalse%
+\ ba{\isaliteral{3A}{\isacharcolon}}\ boolean{\isaliteral{5F}{\isacharunderscore}}algebra\ free{\isaliteral{5F}{\isacharunderscore}}ba\isanewline
+\ \ \isakeyword{where}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C7371756E696F6E3E}{\isasymsqunion}}\isaliteral{5C3C5E627375623E}{}\isactrlbsub free{\isaliteral{5F}{\isacharunderscore}}ba\isaliteral{5C3C5E657375623E}{}\isactrlesub \ y\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}or\ x\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}x\ {\isaliteral{5C3C7371696E7465723E}{\isasymsqinter}}\isaliteral{5C3C5E627375623E}{}\isactrlbsub free{\isaliteral{5F}{\isacharunderscore}}ba\isaliteral{5C3C5E657375623E}{}\isactrlesub \ y\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}and\ x\ y{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}carrier\ free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{3D}{\isacharequal}}\ UNIV{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}top\ free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}one{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ {\isaliteral{22}{\isachardoublequoteopen}}bounded{\isaliteral{5F}{\isacharunderscore}}lattice{\isaliteral{2E}{\isachardot}}bot\ free{\isaliteral{5F}{\isacharunderscore}}ba\ {\isaliteral{3D}{\isacharequal}}\ bt{\isaliteral{5F}{\isacharunderscore}}zero{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}insert\ free{\isaliteral{5F}{\isacharunderscore}}ba{\isaliteral{2C}{\isacharcomma}}\ simp{\isaliteral{5F}{\isacharunderscore}}all{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+%
+\isadelimtheory
+\isanewline
+%
+\endisadelimtheory
+%
+\isatagtheory
+\isacommand{end}\isamarkupfalse%
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+\isanewline
+%
+\endisadelimtheory
+\end{isabellebody}%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "root"
+%%% End:

@@ -134,11 +134,13 @@ lemma satisfies_assign: "satisfies x (op = m) = UNIV \<Colon> x := NAT m"
 lemma skat_assign3_var: "r = t[x|s] \<Longrightarrow> (x := s \<cdot> x := t) = (x := r)"
   by (metis skat_assign3)
 
+(*
 lemma variable_update: "satisfies x (op = n) \<lbrace> x := NAT m \<rbrace> satisfies x (op = m)"
   apply (simp add: satisfies_assign)
   apply (rule hoare_assignment)
   apply (simp add: mod_assign[symmetric] mod_mult[symmetric])
   sorry
+*)
 
   lemma while:
     assumes b_test: "b \<in> carrier tests"
@@ -169,7 +171,8 @@ declare pred_to_expr [simp]
 declare pred_expr_not [simp]
 
 lemma [simp]: "pred_expr (BNot (BNot P)) = pred_expr P"
-  sorry
+  apply (subst pred_expr_not[symmetric])+
+  by (metis hba.double_neg not_to_not pred_expr_test)
 
 declare pred_expr_closed [simp]
 

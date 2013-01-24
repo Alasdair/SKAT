@@ -2,6 +2,8 @@ theory Lattice
   imports Base
 begin
 
+section {* Lattices and Orders *}
+
 subsection {* Partial orders *}
 
 record 'a ord = "'a partial_object" +
