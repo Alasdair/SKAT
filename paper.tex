@@ -19,8 +19,9 @@
 \newcommand{\nkat}{\overline{\phantom{x}}}
 \newcommand{\llbrace}{\hspace{1pt} \lbrace \kern -3pt \vert \hspace{1pt}}
 \newcommand{\rrbrace}{\hspace{0.5pt} \rbrace \kern -5pt \vert \hspace{3pt}}
-\newcommand{\ifthenelse}[3]{\text{IF $#1$ THEN $#2$ ELSE $#3$}}
-\newcommand{\while}[2]{\text{WHILE $#1$ DO $#2$ WEND}}
+\newcommand{\ifthenelse}[3]{\text{\textit{IF} $#1$ \textit{THEN} $#2$ \textit{ELSE} $#3$}}
+\newcommand{\while}[2]{\text{\textit{WHILE} $#1$ \textit{DO} $#2$ \textit{WEND}}}
+\newcommand{\whileinv}[3]{\text{\textit{WHILE} $#1$ \textit{INVARIANT} $#2$ \textit{DO} $#3$ \textit{WEND}}}
 \newcommand{\triple}[3]{\llbrace #1 \rrbrace #2 \llbrace #3 \rrbrace}
 
 \begin{document}
@@ -31,7 +32,7 @@
 \tikzstyle{false} = [above right of=t2, node distance=2.5mm]
 \tikzstyle{true} = [above left of=t2, node distance=2.5mm]
 
-\title{Schematic KA Paper}
+\title{Program Verification based on Kleene Algebra in Isabelle/HOL}
 
 \author{Alasdair Armstrong\inst{1} \and Georg Struth\inst{1} \and Tjark Weber\inst{2}}
 
@@ -44,13 +45,19 @@ Department of Information Technology, Uppsala University, Sweden,\\
 \maketitle
 
 \begin{abstract}
-  FIXME: In this paper we describe a formalisation of Dexter Kozen's
-  schematic Kleene algebra in Isabelle/HOL. In addition, we will
-  demonstrate how this approach can be extended to support Hoare logic
-  style verification of programs, and how in this setting Isabelle can
-  be used to fully automate the verification of simple algorithms. I
-  will finally discuss promising directions for future work in this
-  area, such as adding support for reasoning with concurrent programs.
+  Schematic Kleene algebra with tests (SKAT) supports the equational
+  verification of flowchart scheme equivalence. It is expressive
+  enough to capture simple while programs with assignment
+  statements. We formalise SKAT terms in Isabelle/HOL and use the
+  quotient type package to reason equationally in this algebra. We
+  apply this formalisation to a complex flowchart transformation proof
+  from the literature. We extend SKAT with assertion statements and
+  derive the inference rules of Hoare logic. We apply this extension
+  in simple program verification examples and the derivation of
+  additional Hoare-style rules. This shows that algebra can provide an
+  abstract semantic layer from which different program analysis and
+  verification tasks can be implemented in a particularly simple and
+  lightweight way.
 \end{abstract}
 
 \section{Introduction}
@@ -164,6 +171,26 @@ as a simple datatype.
 \isanewline
 \isacommand{datatype}\isamarkupfalse%
 \ {\isaliteral{27}{\isacharprime}}a\ pred\ {\isaliteral{3D}{\isacharequal}}\ Pred\ {\isaliteral{27}{\isacharprime}}a\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ trm\ list{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\end{isabellebody}
+
+In order to evaluate terms, predicates and tests, we need an
+interpretation function. Mathematically, this generates the term
+algebra over the ranked alphabet by mapping function symbols to
+functions of the right arity. Similarly, relation symbols are mapped
+to relations over terms of the correct arity. This interpretation
+function allows us to evaluate terms and predicates built from our
+ranked alphabet. This is essential for defining a notion of flowchart
+equivalence~\cite{Angus01,Manna}. It is also needed in our
+formalisation of Hoare logic in Section \ref{sec:hoare}.
+
+In Isabelle, this is based on the following pair of functions.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{record}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}{\isaliteral{27}{\isacharprime}}a{\isaliteral{2C}{\isacharcomma}}\ {\isaliteral{27}{\isacharprime}}b{\isaliteral{29}{\isacharparenright}}\ interp\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}b\ partial{\isaliteral{5F}{\isacharunderscore}}object{\isaliteral{22}{\isachardoublequoteclose}}\ {\isaliteral{2B}{\isacharplus}}\isanewline
+\ \ mf\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b\ list\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ mr\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{27}{\isacharprime}}a\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b\ relation{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
 \end{isabellebody}
 
 Using terms and predicates we can now define the expressions of
@@ -578,82 +605,8 @@ however, find inequational reasoning more difficult.
 %   \label{fig:flow}
 % \end{figure}
 
-\begin{figure}[ptb]
-\begin{minipage}[t]{0.49\columnwidth}
-\begin{tikzpicture}[node distance=1cm,auto]
-  \node [block] (start) {start};
-  \node [block, below of=start] (a1) {$y := f(x)$};
-  \node [test, below of=a1, node distance=1.6cm] (t1) {$P(y)$};
-  \node [block, below left of=t1,node distance=1.7cm] (loop) {loop};
-  \node [block, below right of=t1,node distance=1.7cm] (a2) {$y := g(y,y)$};
-  \node [test, below of=a2, node distance=1.6cm] (t2) {$P(y)$};
-  \node [block, below left of=t2,node distance=1.7cm] (a3) {$y = f(f(y))$};
-  \node [block, below right of=t2,node distance=1.7cm] (a4) {$z := y$};
-  \node [block, below of=a4] (halt) {halt};
-
-  \path [line] (start) -- (a1);
-  \path [line] (a1) -- (t1);
-  \path [line] (t1) -| node[false] {F} (loop);
-  \path [line] (t1) -| node[true] {T} (a2);
-  \path [line] (a2) -- (t2);
-  \path [line] (t2) -| node[false] {F} (a3);
-  \path [line] (t2) -| node[true] {T} (a4);
-  \path [line] (a4) -- (halt);
-  \path [line] let \p1 = (a3.base),
-                   \p2 = (t1.base)
-               in (a3) -- (\x1,\y1 - 1cm) -- (\x1 - 2cm, \y1 - 1cm) --  (\x1 - 2cm, \y2 + 12mm) -- (\x2,\y2 + 12mm);
-\end{tikzpicture}
-\begin{center}
-Scheme $S_{6E}$ \cite[p. 258]{Manna}
-\end{center}
-\end{minipage}
-\begin{minipage}[t]{0.49\columnwidth}
-\begin{tikzpicture}[node distance=1cm,auto]
-  \node [block] (start) {start};
-  \node [block, below of=start] (a1) {$y_1 := x$};
-  \node [block, below of=a1] (a2) {$y_4 := f(y_1)$};
-  \node [block, below of=a2] (a3) {$y_1 := f(y_1)$};
-  \node [block, below of=a3] (a4) {$y_2 := g(y_1,y_4)$};
-  \node [block, below of=a4] (a5) {$y_3 := g(y_1,y_1)$};
-  \node [test, below of=a5, node distance=1.6cm] (t1) {$P(y_1)$};
-  \node [block, below of=t1, node distance=1.6cm] (a6) {$y_1 := f(y_3)$};
-  \node [test, below of=a6, node distance=1.6cm] (t2) {$P(y_4)$};
-  \node [test, below of=t2, node distance=2.2cm] (t3) {$P(y_2)$};
-  \node [block, below left of=t3,node distance=1.7cm] (a7) {$y_2 := f(y_2)$};
-  \node [test, below right of=t3,node distance=1.7cm] (t4) {$P(y_3)$};
-  \node [block, below of=t4, node distance=1.6cm] (a8) {$z := y_2$};
-  \node [block, below of=a8] (halt) {halt};
-
-  \path [line] (start) -- (a1);
-  \path [line] (a1) -- (a2);
-  \path [line] (a2) -- (a3);
-  \path [line] (a3) -- (a4);
-  \path [line] (a4) -- (a5);
-  \path [line] (a5) -- (t1);
-  \path [line] let \p1 = (t1.base), \p2 = (a3.base)
-               in (t1) -| node{F}(\x1 - 1.5cm,\y1 + 1mm) -- (\x1 - 1.5cm,\y2 + 6.5mm) -- (\x2, \y2 + 6.5mm);
-  \path [line] (t1) -- node{T} (a6);
-  \path [line] (a6) -- (t2);
-  \path [line] (t2) -- node{T} (t3);
-  \path [line] let \p1 = (t2.base), \p2 = (a4.base)
-               in (t2) -| node{F}(\x1 - 2.5cm,\y1 + 1mm) -- (\x1 - 2.5cm,\y2 + 6.5mm) -- (\x2, \y2 + 6.5mm);
-  \path [line] (t3) -| node[true]{T} (t4);
-  \path [line] (t3) -| node[false]{F} (a7);
-  \path [line] (t4) -- node{T} (a8);
-  \path [line] (a8) -- (halt);
-  \path [line] let \p1 = (t4.base), \p2 = (a2.base)
-               in (t4) -| node[false]{F}(\x1 + 1cm,\y1 + 1mm) -- (\x1 + 1cm,\y2 + 6.5mm) -- (\x2,\y2 + 6.5mm);
-  \path [line] let \p1 = (a7.base), \p2 = (t3.base)
-               in (a7) -- (\x1,\y1 - 1cm) -- (\x1 - 1.5cm,\y1 - 1cm) -- (\x1 - 1.5cm,\y2 + 13mm) -- (\x2,\y2 + 13mm);
-\end{tikzpicture}
-\begin{center}
-Scheme $S_{6A}$ \cite[p. 254]{Manna}
-\end{center}
-\end{minipage}
-\caption{Two equivalent program schemes}
-\end{figure}
-
 \section{Hoare Logic}
+\label{sec:hoare}
 
 It is well known that PHL can be encoded in KAT, and other variants of
 Kleene algebra such as modal Kleene algebras and Kleene modules. The
@@ -738,6 +691,11 @@ more general algebraic structures. SKAT expressions, in particular,
 assignment statements are translated in Gordon style into forward
 predicate transformers. These map assertions to assertions.
 
+To define the scalar product for our KAT module, we begin by writing
+an evaluation function which, given an interpretation and an element of
+the term algebra, returns the forward predicate transformer for that
+term.
+
 \begin{isabellebody}
 \isanewline
 \isacommand{fun}\isamarkupfalse%
@@ -752,19 +710,82 @@ predicate transformers. These map assertions to assertions.
 {\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ SKOne\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
 {\isaliteral{7C}{\isacharbar}}\ {\isaliteral{22}{\isachardoublequoteopen}}eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ SKZero\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{7B}{\isacharbraceleft}}{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
 \end{isabellebody}
+
+We can now prove that if two expressions in our term algebra are
+equivalent according to the congruence relation defined in Section
+\ref{sec:skat} then they represent the same predicate transformer. The
+proof is by induction. This property allows us to lift the
+\textit{eval-skat-expr} function to the quotient algebra.
+
 \begin{isabellebody}
 \isanewline
 \isacommand{theorem}\isamarkupfalse%
 \ skat{\isaliteral{5F}{\isacharunderscore}}con{\isaliteral{5F}{\isacharunderscore}}eval{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}\isanewline
 \ \ skat{\isaliteral{5F}{\isacharunderscore}}con\ s\ t\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ {\isaliteral{5C3C666F72616C6C3E}{\isasymforall}}{\isaliteral{5C3C44656C74613E}{\isasymDelta}}{\isaliteral{2E}{\isachardot}}\ eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ s\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}\ {\isaliteral{3D}{\isacharequal}}\ eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\ D\ t\ {\isaliteral{5C3C44656C74613E}{\isasymDelta}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
-\end{isabellebody}
-\begin{isabellebody}
+\ \ $\dots$\isanewline
 \isanewline
 \isacommand{lift{\isaliteral{5F}{\isacharunderscore}}definition}\isamarkupfalse%
 \ eval\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}\isanewline
 \ \ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{28}{\isacharparenleft}}{\isaliteral{27}{\isacharprime}}a{\isaliteral{3A}{\isacharcolon}}{\isaliteral{3A}{\isacharcolon}}ranked{\isaliteral{5F}{\isacharunderscore}}alphabet{\isaliteral{2C}{\isacharcomma}}\ {\isaliteral{27}{\isacharprime}}b{\isaliteral{29}{\isacharparenright}}\ interp\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}a\ skat\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b\ mems\ {\isaliteral{5C3C52696768746172726F773E}{\isasymRightarrow}}\ {\isaliteral{27}{\isacharprime}}b\ mems{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
 \ \ \isakeyword{is}\ eval{\isaliteral{5F}{\isacharunderscore}}skat{\isaliteral{5F}{\isacharunderscore}}expr\isanewline
+\ \ $\dots$\isanewline
 \end{isabellebody}
+
+\fbox{Justify this. Fix multiple assignment rules}
+
+Using this lifting, we can now also derive an assignment rule for
+forward reasoning in Hoare logic.
+
+\begin{isabellebody}
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}\isakeyword{in}\ interp{\isaliteral{29}{\isacharparenright}}\ assignment{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}P{\isaliteral{5B}{\isacharbrackleft}}x{\isaliteral{7C}{\isacharbar}}s{\isaliteral{5D}{\isacharbrackright}}\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ Q\ {\isaliteral{5C3C4C6F6E6772696768746172726F773E}{\isasymLongrightarrow}}\ P\ {\isaliteral{5C3C6C62726163653E}{\isasymlbrace}}\ x\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ s\ {\isaliteral{5C3C7262726163653E}{\isasymrbrace}}\ Q{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isaliteral{28}{\isacharparenleft}}metis\ hoare{\isaliteral{5F}{\isacharunderscore}}triple{\isaliteral{5F}{\isacharunderscore}}def\ mod{\isaliteral{5F}{\isacharunderscore}}assign{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+\end{isabellebody}
+
+We could equally derive an assignment rule $P \llbrace x := s \rrbrace
+P[x/s]$, but this seems less useful in practice.
+
+To facilitate automated reasoning we define the following syntactic
+sugar for the while loop, where the loop invariant is an assertion
+used by the verification condition generator.
+
+\begin{equation*}
+\whileinv{b}{i}{p} = (bp)^\ast \overline{b}.
+\end{equation*}
+
+A variant of the while rule can be derived which uses the supplied
+invariant.
+
+\begin{isabellebody}
+\isacommand{lemma}\isamarkupfalse%
+\ hoare{\isaliteral{5F}{\isacharunderscore}}while{\isaliteral{5F}{\isacharunderscore}}inv{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ \isakeyword{assumes}\ b{\isaliteral{5F}{\isacharunderscore}}test{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}b\ {\isaliteral{5C3C696E3E}{\isasymin}}\ carrier\ tests{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ Pi{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}P\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ i{\isaliteral{22}{\isachardoublequoteclose}}\ \isakeyword{and}\ iQ{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}i\ {\isaliteral{5C3C696E7465723E}{\isasyminter}}\ {\isaliteral{28}{\isacharparenleft}}UNIV\ {\isaliteral{5C3C436F6C6F6E3E}{\isasymColon}}\ {\isaliteral{21}{\isacharbang}}b{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C73756273657465713E}{\isasymsubseteq}}\ Q{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{and}\ inv{\isaliteral{5F}{\isacharunderscore}}loop{\isaliteral{3A}{\isacharcolon}}\ {\isaliteral{22}{\isachardoublequoteopen}}i\ {\isaliteral{5C3C696E7465723E}{\isasyminter}}\ {\isaliteral{28}{\isacharparenleft}}UNIV\ {\isaliteral{5C3C436F6C6F6E3E}{\isasymColon}}\ b{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{5C3C6C62726163653E}{\isasymlbrace}}p{\isaliteral{5C3C7262726163653E}{\isasymrbrace}}\ i{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\ \ \isakeyword{shows}\ {\isaliteral{22}{\isachardoublequoteopen}}P\ {\isaliteral{5C3C6C62726163653E}{\isasymlbrace}}\ WHILE\ b\ INVARIANT\ i\ DO\ p\ WEND\ {\isaliteral{5C3C7262726163653E}{\isasymrbrace}}\ Q{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+\end{isabellebody}
+
+This particular rule is instantiated to the powerset algebra of
+states, but could as well have been defined abstractly.
+
+A package for Hoare logic has already been defined in Isabelle. Since
+there is one hoare rule per programming construct, a tactic is used to
+blast away the control structure of programs. It essentially generates
+three verification conditions for simple while programs. The first one
+shows that the initialisation of the program establishes the
+invariant, the second one that each execution of the loop preserves
+the invariant and the third one that the invariant the postcondition
+when the test of the while loop fails. We have implemented a
+similar tactic.
 
 {
 \small
@@ -829,72 +850,180 @@ val hoare_tac = Subgoal.FOCUS (fn {context, ...} =>
 % }
 % \end{minipage}
 
-\section{Examples}
+\section{Verification Examples}
 
-Euclid's algorithm for finding the greatest common divisor:
+With our Hoare rules, we now prove the correctness of some simple
+algorithms by using our tactic \textit{hoare-auto}. This makes their
+verification almost fully automatic. More complex examples would
+certainly require more user interaction to discharge the generated
+proof obligations.
 
-\begin{minipage}[T]{0.1\textwidth}
-{
+\begin{isabellebody}
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ euclids{\isaliteral{5F}{\isacharunderscore}}algorithm{\isaliteral{5F}{\isacharunderscore}}auto{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ \ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{7B}{\isacharbraceleft}}mem{\isaliteral{2E}{\isachardot}}\ mem\ {\isadigit{0}}\ {\isaliteral{3D}{\isacharequal}}\ x\ {\isaliteral{5C3C616E643E}{\isasymand}}\ mem\ {\isadigit{1}}\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{7D}{\isacharbraceright}}\ {\isaliteral{5C3C6C62726163653E}{\isasymlbrace}}\isanewline
+\ \ \ WHILE\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}pred\ {\isaliteral{28}{\isacharparenleft}}EQ\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}NAT\ {\isadigit{0}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ INVARIANT\ {\isaliteral{7B}{\isacharbraceleft}}mem{\isaliteral{2E}{\isachardot}}\ gcd\ {\isaliteral{28}{\isacharparenleft}}mem\ {\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}mem\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{3D}{\isacharequal}}\ gcd\ x\ y{\isaliteral{7D}{\isacharbraceright}}\isanewline
+\ \ \ DO\isanewline
+\ \ \ \ \ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ Var\ {\isadigit{1}}{\isaliteral{3B}{\isacharsemicolon}}\isanewline
+\ \ \ \ \ {\isadigit{1}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ MOD\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{3B}{\isacharsemicolon}}\isanewline
+\ \ \ \ \ {\isadigit{0}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ Var\ {\isadigit{2}}\isanewline
+\ \ \ WEND\isanewline
+\ \ \ {\isaliteral{5C3C7262726163653E}{\isasymrbrace}}\ {\isaliteral{7B}{\isacharbraceleft}}mem{\isaliteral{2E}{\isachardot}}\ mem\ {\isadigit{0}}\ {\isaliteral{3D}{\isacharequal}}\ gcd\ x\ y{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ hoare{\isaliteral{5F}{\isacharunderscore}}auto\ {\isaliteral{28}{\isacharparenleft}}metis\ gcd{\isaliteral{5F}{\isacharunderscore}}red{\isaliteral{5F}{\isacharunderscore}}nat{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+\end{isabellebody}
+
+\begin{isabellebody}
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ repeated{\isaliteral{5F}{\isacharunderscore}}addition{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{7B}{\isacharbraceleft}}mem{\isaliteral{2E}{\isachardot}}\ mem\ {\isadigit{0}}\ {\isaliteral{3D}{\isacharequal}}\ x\ {\isaliteral{5C3C616E643E}{\isasymand}}\ mem\ {\isadigit{1}}\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{7D}{\isacharbraceright}}\ {\isaliteral{5C3C6C62726163653E}{\isasymlbrace}}\isanewline
+\ \ \ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ NAT\ {\isadigit{0}}{\isaliteral{3B}{\isacharsemicolon}}\isanewline
+\ \ \ {\isadigit{3}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ NAT\ {\isadigit{0}}{\isaliteral{3B}{\isacharsemicolon}}\isanewline
+\ \ \ {\isaliteral{28}{\isacharparenleft}}WHILE\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}pred\ {\isaliteral{28}{\isacharparenleft}}EQ\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{0}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ INVARIANT\ {\isaliteral{7B}{\isacharbraceleft}}mem{\isaliteral{2E}{\isachardot}}\ mem\ {\isadigit{3}}\ {\isaliteral{3D}{\isacharequal}}\ mem\ {\isadigit{2}}\ {\isaliteral{2A}{\isacharasterisk}}\ mem\ {\isadigit{1}}\ {\isaliteral{5C3C616E643E}{\isasymand}}\ mem\ {\isadigit{0}}\ {\isaliteral{3D}{\isacharequal}}\ x\ {\isaliteral{5C3C616E643E}{\isasymand}}\ mem\ {\isadigit{1}}\ {\isaliteral{3D}{\isacharequal}}\ y{\isaliteral{7D}{\isacharbraceright}}\isanewline
+\ \ \ DO\isanewline
+\ \ \ \ \ {\isadigit{3}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ PLUS\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{3}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{3B}{\isacharsemicolon}}\isanewline
+\ \ \ \ \ {\isadigit{2}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ PLUS\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{2}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}NAT\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ WEND{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ {\isaliteral{5C3C7262726163653E}{\isasymrbrace}}\ {\isaliteral{7B}{\isacharbraceleft}}mem{\isaliteral{2E}{\isachardot}}\ mem\ {\isadigit{3}}\ {\isaliteral{3D}{\isacharequal}}\ {\isaliteral{28}{\isacharparenleft}}x\ {\isaliteral{2A}{\isacharasterisk}}\ y{\isaliteral{29}{\isacharparenright}}{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ hoare{\isaliteral{5F}{\isacharunderscore}}auto\ smt%
+\endisatagproof
+\end{isabellebody}
+
+\begin{isabellebody}
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ factorial{\isaliteral{3A}{\isacharcolon}}\isanewline
+\ \ {\isaliteral{22}{\isachardoublequoteopen}}{\isaliteral{7B}{\isacharbraceleft}}mem{\isaliteral{2E}{\isachardot}}\ mem\ {\isadigit{0}}\ {\isaliteral{3D}{\isacharequal}}\ x{\isaliteral{7D}{\isacharbraceright}}\ {\isaliteral{5C3C6C62726163653E}{\isasymlbrace}}\isanewline
+\ \ \ {\isadigit{1}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ NAT\ {\isadigit{1}}{\isaliteral{3B}{\isacharsemicolon}}\isanewline
+\ \ \ {\isaliteral{28}{\isacharparenleft}}WHILE\ {\isaliteral{21}{\isacharbang}}{\isaliteral{28}{\isacharparenleft}}pred\ {\isaliteral{28}{\isacharparenleft}}EQ\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}NAT\ {\isadigit{0}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ INVARIANT\ {\isaliteral{7B}{\isacharbraceleft}}mem{\isaliteral{2E}{\isachardot}}\ fact\ x\ {\isaliteral{3D}{\isacharequal}}\ mem\ {\isadigit{1}}\ {\isaliteral{2A}{\isacharasterisk}}\ fact\ {\isaliteral{28}{\isacharparenleft}}mem\ {\isadigit{0}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{7D}{\isacharbraceright}}\isanewline
+\ \ \ DO\isanewline
+\ \ \ \ \ {\isadigit{1}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ MULT\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{0}}{\isaliteral{29}{\isacharparenright}}{\isaliteral{3B}{\isacharsemicolon}}\ {\isadigit{0}}\ {\isaliteral{3A}{\isacharcolon}}{\isaliteral{3D}{\isacharequal}}\ MINUS\ {\isaliteral{28}{\isacharparenleft}}Var\ {\isadigit{0}}{\isaliteral{29}{\isacharparenright}}\ {\isaliteral{28}{\isacharparenleft}}NAT\ {\isadigit{1}}{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ WEND{\isaliteral{29}{\isacharparenright}}\isanewline
+\ \ \ {\isaliteral{5C3C7262726163653E}{\isasymrbrace}}\ {\isaliteral{7B}{\isacharbraceleft}}mem{\isaliteral{2E}{\isachardot}}\ mem\ {\isadigit{1}}\ {\isaliteral{3D}{\isacharequal}}\ fact\ x{\isaliteral{7D}{\isacharbraceright}}{\isaliteral{22}{\isachardoublequoteclose}}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ hoare{\isaliteral{5F}{\isacharunderscore}}auto\ {\isaliteral{28}{\isacharparenleft}}metis\ fact{\isaliteral{5F}{\isacharunderscore}}reduce{\isaliteral{5F}{\isacharunderscore}}nat{\isaliteral{29}{\isacharparenright}}%
+\endisatagproof
+\end{isabellebody}
+
+Finally, our formalisation is expressive enough for deriving further
+Hoare-style inference rules.
+
 \begin{align*}
-&\text{\textbf{lemma} \textit{euclids\_algorithm}:}\\
-&\hspace{2ex}\text{\texttt{"}\{mem. mem 0 = x $\wedge$ mem 1 = y\} $\llbrace$}\\
-&\hspace{2ex}\text{WHILE !(pred (EQ (Var 1) (NAT 0)))}\\
-&\hspace{2ex}\text{INVARIANT \{mem. gcd (mem 0) (mem 1) = gcd x y\}}\\
-&\hspace{2ex}\text{DO}\\
-&\hspace{4ex}\text{2 := Var 1;}\\
-&\hspace{4ex}\text{1 := MOD (Var 0) (Var 1);}\\
-&\hspace{4ex}\text{0 := Var 2}\\
-&\hspace{2ex}\text{WEND}\\
-&\hspace{2ex}\text{$\rrbrace$ \{mem. mem 0 = gcd x y\}\texttt{"}}\\
-&\hspace{2ex}\text{\textbf{by} hoare\_auto (metis \textit{gcd\_red\_nat})}
+pa = ap &\Longrightarrow \triple{p}{a}{p}\\
+&\frac{\triple{p_1}{a}{q_1} \qquad \triple{p_2}{a}{q_2}}{\triple{p_1 \wedge p_2}{a}{q_1 \wedge q_2}}\\
+pa = ap &\Longrightarrow \frac{\triple{q}{a}{r}}{\triple{p \wedge q}{a}{p \wedge r}}
 \end{align*}
-}
-\end{minipage}
 
-Multiplication by repeated addition
-
-\begin{minipage}[T]{0.1\textwidth}
-{
-\begin{align*}
-&\text{\textbf{lemma} \textit{repeated\_addition}:}\\
-&\hspace{2ex}\text{\texttt{"}\{mem. mem 0 = x $\wedge$ mem 1 = y\} $\llbrace$}\\
-&\hspace{2ex}\text{2 := NAT 0;}\\
-&\hspace{2ex}\text{3 := NAT 0;}\\
-&\hspace{2ex}\text{WHILE !(pred (EQ (Var 2) (Var 0)))}\\
-&\hspace{2ex}\text{INVARIANT \{mem. mem 3 = mem 2 * mem 1 $\wedge$ mem 0 = x $\wedge$ mem 1 = y\}}\\
-&\hspace{2ex}\text{DO}\\
-&\hspace{4ex}\text{3 := PLUS (Var 3) (Var 1);}\\
-&\hspace{4ex}\text{2 := PLUS (Var 2) (NAT 1)}\\
-&\hspace{2ex}\text{WEND}\\
-&\hspace{2ex}\text{$\rrbrace$ \{mem. mem 3 = (x * y)\}\texttt{"}}\\
-&\hspace{2ex}\text{\textbf{by} hoare\_auto smt}
-\end{align*}
-}
-\end{minipage}
-
-Factorial algorithm
-
-\begin{minipage}[T]{0.1\textwidth}
-{
-\begin{align*}
-&\text{\textbf{lemma} \textit{factorial}:}\\
-&\hspace{2ex}\text{\texttt{"}\{mem. mem 0 = x\} $\llbrace$}\\
-&\hspace{2ex}\text{1 := NAT 1;}\\
-&\hspace{2ex}\text{WHILE !(pred (EQ (Var 0) (NAT 0)))}\\
-&\hspace{2ex}\text{INVARIANT \{mem. fact x = mem 1 * fact (mem 0)\}}\\
-&\hspace{2ex}\text{DO}\\
-&\hspace{4ex}\text{1 := MULT (Var 1) (Var 0);}\\
-&\hspace{4ex}\text{0 := MINUS (Var 0) (NAT 1)}\\
-&\hspace{2ex}\text{WEND}\\
-&\hspace{2ex}\text{$\rrbrace$ \{mem. mem 1 = fact x\}\texttt{"}}\\
-&\hspace{2ex}\text{\textbf{by} hoare\_auto (metis \textit{fact\_reduce\_nat})}
-\end{align*}
-}
-\end{minipage}
+This derivation is fully automatic by access to the algebraic
+level. These examples suggest that program refinement and
+transformation rules can be verified in SKAT as well. More generally,
+the approach not only lends itself to program verification, but also
+program construction and refinement.
 
 \section{Conclusion}
 
 \bibliographystyle{plain}
 \bibliography{paper}
+
+\newpage
+\appendix
+\section{Appendix}
+
+\begin{minipage}[t]{0.49\columnwidth}
+\begin{tikzpicture}[node distance=1cm,auto]
+  \node [block] (start) {start};
+  \node [block, below of=start] (a1) {$y := f(x)$};
+  \node [test, below of=a1, node distance=1.6cm] (t1) {$P(y)$};
+  \node [block, below left of=t1,node distance=1.7cm] (loop) {loop};
+  \node [block, below right of=t1,node distance=1.7cm] (a2) {$y := g(y,y)$};
+  \node [test, below of=a2, node distance=1.6cm] (t2) {$P(y)$};
+  \node [block, below left of=t2,node distance=1.7cm] (a3) {$y = f(f(y))$};
+  \node [block, below right of=t2,node distance=1.7cm] (a4) {$z := y$};
+  \node [block, below of=a4] (halt) {halt};
+
+  \path [line] (start) -- (a1);
+  \path [line] (a1) -- (t1);
+  \path [line] (t1) -| node[false] {F} (loop);
+  \path [line] (t1) -| node[true] {T} (a2);
+  \path [line] (a2) -- (t2);
+  \path [line] (t2) -| node[false] {F} (a3);
+  \path [line] (t2) -| node[true] {T} (a4);
+  \path [line] (a4) -- (halt);
+  \path [line] let \p1 = (a3.base),
+                   \p2 = (t1.base)
+               in (a3) -- (\x1,\y1 - 1cm) -- (\x1 - 2cm, \y1 - 1cm) --  (\x1 - 2cm, \y2 + 12mm) -- (\x2,\y2 + 12mm);
+\end{tikzpicture}
+\begin{center}
+Scheme $S_{6E}$ \cite[p. 258]{Manna}
+\end{center}
+\end{minipage}
+\begin{minipage}[t]{0.49\columnwidth}
+\begin{tikzpicture}[node distance=1cm,auto]
+  \node [block] (start) {start};
+  \node [block, below of=start] (a1) {$y_1 := x$};
+  \node [block, below of=a1] (a2) {$y_4 := f(y_1)$};
+  \node [block, below of=a2] (a3) {$y_1 := f(y_1)$};
+  \node [block, below of=a3] (a4) {$y_2 := g(y_1,y_4)$};
+  \node [block, below of=a4] (a5) {$y_3 := g(y_1,y_1)$};
+  \node [test, below of=a5, node distance=1.6cm] (t1) {$P(y_1)$};
+  \node [block, below of=t1, node distance=1.6cm] (a6) {$y_1 := f(y_3)$};
+  \node [test, below of=a6, node distance=1.6cm] (t2) {$P(y_4)$};
+  \node [test, below of=t2, node distance=2.2cm] (t3) {$P(y_2)$};
+  \node [block, below left of=t3,node distance=1.7cm] (a7) {$y_2 := f(y_2)$};
+  \node [test, below right of=t3,node distance=1.7cm] (t4) {$P(y_3)$};
+  \node [block, below of=t4, node distance=1.6cm] (a8) {$z := y_2$};
+  \node [block, below of=a8] (halt) {halt};
+
+  \path [line] (start) -- (a1);
+  \path [line] (a1) -- (a2);
+  \path [line] (a2) -- (a3);
+  \path [line] (a3) -- (a4);
+  \path [line] (a4) -- (a5);
+  \path [line] (a5) -- (t1);
+  \path [line] let \p1 = (t1.base), \p2 = (a3.base)
+               in (t1) -| node{F}(\x1 - 1.5cm,\y1 + 1mm) -- (\x1 - 1.5cm,\y2 + 6.5mm) -- (\x2, \y2 + 6.5mm);
+  \path [line] (t1) -- node{T} (a6);
+  \path [line] (a6) -- (t2);
+  \path [line] (t2) -- node{T} (t3);
+  \path [line] let \p1 = (t2.base), \p2 = (a4.base)
+               in (t2) -| node{F}(\x1 - 2.5cm,\y1 + 1mm) -- (\x1 - 2.5cm,\y2 + 6.5mm) -- (\x2, \y2 + 6.5mm);
+  \path [line] (t3) -| node[true]{T} (t4);
+  \path [line] (t3) -| node[false]{F} (a7);
+  \path [line] (t4) -- node{T} (a8);
+  \path [line] (a8) -- (halt);
+  \path [line] let \p1 = (t4.base), \p2 = (a2.base)
+               in (t4) -| node[false]{F}(\x1 + 1cm,\y1 + 1mm) -- (\x1 + 1cm,\y2 + 6.5mm) -- (\x2,\y2 + 6.5mm);
+  \path [line] let \p1 = (a7.base), \p2 = (t3.base)
+               in (a7) -- (\x1,\y1 - 1cm) -- (\x1 - 1.5cm,\y1 - 1cm) -- (\x1 - 1.5cm,\y2 + 13mm) -- (\x2,\y2 + 13mm);
+\end{tikzpicture}
+\begin{center}
+Scheme $S_{6A}$ \cite[p. 254]{Manna}
+\end{center}
+\end{minipage}
 
 \end{document}
