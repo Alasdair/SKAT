@@ -398,40 +398,40 @@ primrec bexpr_leaves :: "'a bexpr \<Rightarrow> 'a set" where
 | "bexpr_leaves BOne = {}"
 | "bexpr_leaves BZero = {}"
 
-inductive hunt_con :: "'a bexpr \<Rightarrow> 'a bexpr \<Rightarrow> bool" where
-  refl [intro]: "hunt_con x x"
-| sym [sym]: "hunt_con x y \<Longrightarrow> hunt_con y x"
-| trans [trans]: "\<lbrakk>hunt_con x y; hunt_con y z\<rbrakk> \<Longrightarrow> hunt_con x z"
-| or_compat: "hunt_con x1 x2 \<Longrightarrow> hunt_con y1 y2 \<Longrightarrow> hunt_con (BOr x1 y1) (BOr x2 y2)"
-| not_compat: "hunt_con x y \<Longrightarrow> hunt_con (BNot x) (BNot y)"
-| and_compat: "hunt_con x1 x2 \<Longrightarrow> hunt_con y1 y2 \<Longrightarrow> hunt_con (BAnd x1 y1) (BAnd x2 y2)"
-| huntington: "hunt_con (BNot (BNot x :+: y) :+: BNot (BNot x :+: BNot y)) x"
-| comm: "hunt_con (x :+: y) (y :+: x)"
-| assoc: "hunt_con ((x :+: y) :+: z) (x :+: (y :+: z))"
-| one: "hunt_con (x :+: BNot x) BOne"
-| zero: "hunt_con (BNot BOne) BZero"
-| meet: "hunt_con (x :\<cdot>: y) (BNot (BNot x :+: BNot y))"
+inductive hunt_cong :: "'a bexpr \<Rightarrow> 'a bexpr \<Rightarrow> bool" where
+  refl [intro]: "hunt_cong x x"
+| sym [sym]: "hunt_cong x y \<Longrightarrow> hunt_cong y x"
+| trans [trans]: "\<lbrakk>hunt_cong x y; hunt_cong y z\<rbrakk> \<Longrightarrow> hunt_cong x z"
+| or_compat: "hunt_cong x1 x2 \<Longrightarrow> hunt_cong y1 y2 \<Longrightarrow> hunt_cong (BOr x1 y1) (BOr x2 y2)"
+| not_compat: "hunt_cong x y \<Longrightarrow> hunt_cong (BNot x) (BNot y)"
+| and_compat: "hunt_cong x1 x2 \<Longrightarrow> hunt_cong y1 y2 \<Longrightarrow> hunt_cong (BAnd x1 y1) (BAnd x2 y2)"
+| huntington: "hunt_cong (BNot (BNot x :+: y) :+: BNot (BNot x :+: BNot y)) x"
+| comm: "hunt_cong (x :+: y) (y :+: x)"
+| assoc: "hunt_cong ((x :+: y) :+: z) (x :+: (y :+: z))"
+| one: "hunt_cong (x :+: BNot x) BOne"
+| zero: "hunt_cong (BNot BOne) BZero"
+| meet: "hunt_cong (x :\<cdot>: y) (BNot (BNot x :+: BNot y))"
 
-quotient_type 'a bterm = "'a bexpr" / "hunt_con"
+quotient_type 'a bterm = "'a bexpr" / "hunt_cong"
   apply (simp add: equivp_def, auto)
-  apply (subgoal_tac "\<forall>z. hunt_con x z = hunt_con y z")
+  apply (subgoal_tac "\<forall>z. hunt_cong x z = hunt_cong y z")
   apply auto
-  by (metis hunt_con.sym hunt_con.trans)+
+  by (metis hunt_cong.sym hunt_cong.trans)+
 
 lift_definition bt_or :: "'a bterm \<Rightarrow> 'a bterm \<Rightarrow> 'a bterm" is BOr
-  by (rule hunt_con.or_compat, assumption+)
+  by (rule hunt_cong.or_compat, assumption+)
 
 lift_definition bt_not :: "'a bterm \<Rightarrow> 'a bterm" is BNot
-  by (rule hunt_con.not_compat, assumption)
+  by (rule hunt_cong.not_compat, assumption)
 
 lift_definition bt_and :: "'a bterm \<Rightarrow> 'a bterm \<Rightarrow> 'a bterm" is BAnd
-  by (rule hunt_con.and_compat, assumption+)
+  by (rule hunt_cong.and_compat, assumption+)
 
 lift_definition bt_one :: "'a bterm" is BOne
-  by (rule hunt_con.refl)
+  by (rule hunt_cong.refl)
 
 lift_definition bt_zero :: "'a bterm" is BZero
-  by (rule hunt_con.refl)
+  by (rule hunt_cong.refl)
 
 definition free_ba where "free_ba \<equiv> \<lparr>carrier = UNIV, le = (\<lambda>x y. bt_or x y = y)\<rparr>"
 
@@ -439,11 +439,11 @@ lemma free_ba_hunt: "huntington_algebra \<lparr>carrier = UNIV, hor = bt_or, hno
 proof (default, simp_all)
   fix x y z :: "'b bterm"
   show "x = bt_or (bt_not (bt_or (bt_not x) y)) (bt_not (bt_or (bt_not x) (bt_not y)))"
-    by (rule HOL.sym, transfer, rule hunt_con.huntington)
+    by (rule HOL.sym, transfer, rule hunt_cong.huntington)
   show "bt_or x y = bt_or y x"
-    by (transfer, rule hunt_con.comm)
+    by (transfer, rule hunt_cong.comm)
   show "bt_or (bt_or x y) z = bt_or x (bt_or y z)"
-    by (transfer, rule hunt_con.assoc)
+    by (transfer, rule hunt_cong.assoc)
 qed
 
 abbreviation BTH where "BTH \<equiv> \<lparr>carrier = UNIV, hor = bt_or, hnot = bt_not\<rparr>"
@@ -474,7 +474,7 @@ interpretation hba: huntington_algebra "BTH"
   apply (simp_all add: free_ba_hunt)
   apply (simp add: huntington_algebra.hand_def[OF free_ba_hunt])
   apply transfer
-  apply (metis hunt_con.sym meet)
+  apply (metis hunt_cong.sym meet)
   done
 
 theorem free_ba: "boolean_algebra free_ba"

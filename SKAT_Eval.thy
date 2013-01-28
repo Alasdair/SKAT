@@ -94,10 +94,10 @@ lemma "filter_set (eval_bexpr D P) \<Delta> = \<Delta> \<inter> eval_bexpr_set D
 fun eval_skat_expr ::
   "('a::ranked_alphabet, 'b) interp \<Rightarrow> 'a skat_expr \<Rightarrow> 'b mems \<Rightarrow> 'b mems"
   where
-  "eval_skat_expr D (SKLeaf x s) \<Delta> = assigns D x s \<Delta>"
+  "eval_skat_expr D (SKAssign x s) \<Delta> = assigns D x s \<Delta>"
 | "eval_skat_expr D (SKBool P) \<Delta> = filter_set (eval_bexpr D P) \<Delta>"
-| "eval_skat_expr D (s :\<odot>: t) \<Delta> = eval_skat_expr D t (eval_skat_expr D s \<Delta>)"
-| "eval_skat_expr D (s :\<oplus>: t) \<Delta> = eval_skat_expr D s \<Delta> \<union> eval_skat_expr D t \<Delta>"
+| "eval_skat_expr D (s \<odot> t) \<Delta> = eval_skat_expr D t (eval_skat_expr D s \<Delta>)"
+| "eval_skat_expr D (s \<oplus> t) \<Delta> = eval_skat_expr D s \<Delta> \<union> eval_skat_expr D t \<Delta>"
 | "eval_skat_expr D (SKStar s) \<Delta> = (\<Union>n. iter n (eval_skat_expr D s) \<Delta>)"
 | "eval_skat_expr D SKOne \<Delta> = \<Delta>"
 | "eval_skat_expr D SKZero \<Delta> = {}"
@@ -163,7 +163,7 @@ lemma eval_iter:
 
 lemma eval_star_unfoldl:
   fixes \<Delta> :: "'b mems"
-  shows "eval_skat_expr D (SKOne :\<oplus>: x :\<odot>: SKStar x :\<oplus>: SKStar x) \<Delta> = eval_skat_expr D (SKStar x) \<Delta>"
+  shows "eval_skat_expr D (SKOne \<oplus> x \<odot> SKStar x \<oplus> SKStar x) \<Delta> = eval_skat_expr D (SKStar x) \<Delta>"
 proof auto
   fix mem :: "'b mem" assume "mem \<in> \<Delta>"
   thus "\<exists>n. mem \<in> iter n (eval_skat_expr D x) \<Delta>"
@@ -200,27 +200,27 @@ qed
 lemma eval_jp: "eval_skat_expr D s (\<Union>X) = \<Union>(eval_skat_expr D s ` X)"
 proof (induct s arbitrary: X)
   fix x and s :: "'b trm" and X
-  show "eval_skat_expr D (SKLeaf x s) (\<Union>X) = \<Union>eval_skat_expr D (SKLeaf x s) ` X"
+  show "eval_skat_expr D (SKAssign x s) (\<Union>X) = \<Union>eval_skat_expr D (SKAssign x s) ` X"
     by (auto simp add: assigns_def set_mems_def)
 next
   fix s t :: "'b skat_expr" and X
   assume "\<And>X. eval_skat_expr D s (\<Union>X) = \<Union>eval_skat_expr D s ` X"
   and "\<And>X. eval_skat_expr D t (\<Union>X) = \<Union>eval_skat_expr D t ` X"
-  thus "eval_skat_expr D (s :\<oplus>: t) (\<Union>X) = \<Union>eval_skat_expr D (s :\<oplus>: t) ` X"
+  thus "eval_skat_expr D (s \<oplus> t) (\<Union>X) = \<Union>eval_skat_expr D (s \<oplus> t) ` X"
     by auto
 next
   fix s t :: "'b skat_expr" and X
   assume asm1: "\<And>X. eval_skat_expr D s (\<Union>X) = \<Union>eval_skat_expr D s ` X"
   and asm2: "\<And>X. eval_skat_expr D t (\<Union>X) = \<Union>eval_skat_expr D t ` X"
-  have "eval_skat_expr D (s :\<odot>: t) (\<Union>X) = eval_skat_expr D t (eval_skat_expr D s (\<Union>X))"
+  have "eval_skat_expr D (s \<odot> t) (\<Union>X) = eval_skat_expr D t (eval_skat_expr D s (\<Union>X))"
     by simp
   also have "... = eval_skat_expr D t (\<Union>eval_skat_expr D s ` X)"
     by (simp add: asm1[of X])
   also have "... = \<Union>(eval_skat_expr D t ` eval_skat_expr D s ` X)"
     by (insert asm2[of "eval_skat_expr D s ` X"])
-  also have "... = \<Union>eval_skat_expr D (s :\<odot>: t) ` X"
+  also have "... = \<Union>eval_skat_expr D (s \<odot> t) ` X"
     by simp
-  finally show "eval_skat_expr D (s :\<odot>: t) (\<Union>X) = \<Union>eval_skat_expr D (s :\<odot>: t) ` X" .
+  finally show "eval_skat_expr D (s \<odot> t) (\<Union>X) = \<Union>eval_skat_expr D (s \<odot> t) ` X" .
 next
   fix s :: "'b skat_expr" and X
   assume asm: "\<And>X. eval_skat_expr D s (\<Union>X) = \<Union>eval_skat_expr D s ` X"
@@ -254,7 +254,7 @@ qed
 
 lemma eval_star_slide:
   fixes \<Delta> :: "'b mems"
-  shows "eval_skat_expr D (SKStar x :\<odot>: x) \<Delta> = eval_skat_expr D (x :\<odot>: SKStar x) \<Delta>"
+  shows "eval_skat_expr D (SKStar x \<odot> x) \<Delta> = eval_skat_expr D (x \<odot> SKStar x) \<Delta>"
   apply (simp add: eval_star_power del: eval_skat_expr.simps(5))
   apply (simp add: eval_jp)
   apply auto
@@ -263,24 +263,24 @@ lemma eval_star_slide:
 
 lemma eval_star_unfoldr:
   fixes \<Delta> :: "'b mems"
-  shows "eval_skat_expr D (SKOne :\<oplus>: SKStar x :\<odot>: x :\<oplus>: SKStar x) \<Delta> = eval_skat_expr D (SKStar x) \<Delta>"
+  shows "eval_skat_expr D (SKOne \<oplus> SKStar x \<odot> x \<oplus> SKStar x) \<Delta> = eval_skat_expr D (SKStar x) \<Delta>"
   by (subst eval_star_unfoldl[symmetric], insert eval_star_slide, auto)
 
 lemma eval_star_inductl:
-  assumes asm2: "\<forall>\<Delta>::'b mems. eval_skat_expr D (z :\<oplus>: x :\<odot>: y :\<oplus>: y) \<Delta> = eval_skat_expr D y \<Delta>"
-  shows "\<forall>\<Delta>. eval_skat_expr D (SKStar x :\<odot>: z :\<oplus>: y) \<Delta> = eval_skat_expr D y \<Delta>"
+  assumes asm2: "\<forall>\<Delta>::'b mems. eval_skat_expr D (z \<oplus> x \<odot> y \<oplus> y) \<Delta> = eval_skat_expr D y \<Delta>"
+  shows "\<forall>\<Delta>. eval_skat_expr D (SKStar x \<odot> z \<oplus> y) \<Delta> = eval_skat_expr D y \<Delta>"
 proof (auto simp add: eval_star_power eval_jp eval_power_def simp del: eval_skat_expr.simps(5))
   fix \<Delta> :: "'b mems" and mem :: "'b mem" and n
   assume "mem \<in> eval_skat_expr D z (iter n (eval_skat_expr D x) \<Delta>)"
-  hence "mem \<in> eval_skat_expr D (z :\<oplus>: x :\<odot>: y :\<oplus>: y) \<Delta>"
+  hence "mem \<in> eval_skat_expr D (z \<oplus> x \<odot> y \<oplus> y) \<Delta>"
   proof (induct n arbitrary: \<Delta>, simp, simp only: iter.simps eval_iter1)
     fix m and \<Gamma> :: "'b mems"
     assume "\<And>\<Delta>. mem \<in> eval_skat_expr D z (iter m (eval_skat_expr D x) \<Delta>) \<Longrightarrow>
-                mem \<in> eval_skat_expr D (z :\<oplus>: x :\<odot>: y :\<oplus>: y) \<Delta>"
+                mem \<in> eval_skat_expr D (z \<oplus> x \<odot> y \<oplus> y) \<Delta>"
       and "mem \<in> eval_skat_expr D z (iter m (eval_skat_expr D x) (eval_skat_expr D x \<Gamma>))"
-    hence a: "mem \<in> eval_skat_expr D (z :\<oplus>: x :\<odot>: y :\<oplus>: y) (eval_skat_expr D x \<Gamma>)"
+    hence a: "mem \<in> eval_skat_expr D (z \<oplus> x \<odot> y \<oplus> y) (eval_skat_expr D x \<Gamma>)"
       by auto
-    thus "mem \<in> eval_skat_expr D (z :\<oplus>: x :\<odot>: y :\<oplus>: y) \<Gamma>"
+    thus "mem \<in> eval_skat_expr D (z \<oplus> x \<odot> y \<oplus> y) \<Gamma>"
       by (auto, (metis a asm2)+)
   qed
   thus "mem \<in> eval_skat_expr D y \<Delta>"
@@ -299,31 +299,31 @@ proof -
 qed
 
 lemma eval_star_inductr:
-  assumes asm2: "\<forall>\<Delta>::'b mems. eval_skat_expr D (z :\<oplus>: y :\<odot>: x :\<oplus>: y) \<Delta> = eval_skat_expr D y \<Delta>"
-  shows "\<forall>\<Delta>. eval_skat_expr D (z :\<odot>: SKStar x :\<oplus>: y) \<Delta> = eval_skat_expr D y \<Delta>"
+  assumes asm2: "\<forall>\<Delta>::'b mems. eval_skat_expr D (z \<oplus> y \<odot> x \<oplus> y) \<Delta> = eval_skat_expr D y \<Delta>"
+  shows "\<forall>\<Delta>. eval_skat_expr D (z \<odot> SKStar x \<oplus> y) \<Delta> = eval_skat_expr D y \<Delta>"
 proof auto
   fix \<Delta> :: "'b mems" and mem :: "'b mem" and n
   assume "mem \<in> iter n (eval_skat_expr D x) (eval_skat_expr D z \<Delta>)"
-  hence "mem \<in> eval_skat_expr D (z :\<oplus>: y :\<odot>: x :\<oplus>: y) \<Delta>"
+  hence "mem \<in> eval_skat_expr D (z \<oplus> y \<odot> x \<oplus> y) \<Delta>"
   proof (induct n arbitrary: mem, simp)
     fix n mem
     assume asm:
       "\<And>mem. mem \<in> iter n (eval_skat_expr D x) (eval_skat_expr D z \<Delta>) \<Longrightarrow>
-             mem \<in> eval_skat_expr D (z :\<oplus>: y :\<odot>: x :\<oplus>: y) \<Delta>"
+             mem \<in> eval_skat_expr D (z \<oplus> y \<odot> x \<oplus> y) \<Delta>"
     and "mem \<in> iter (Suc n) (eval_skat_expr D x) (eval_skat_expr D z \<Delta>)"
     hence "mem \<in> eval_skat_expr D x (iter n (eval_skat_expr D x) (eval_skat_expr D z \<Delta>))"
       by simp
-    hence "mem \<in> eval_skat_expr D x (eval_skat_expr D (z :\<oplus>: y :\<odot>: x :\<oplus>: y) \<Delta>)"
+    hence "mem \<in> eval_skat_expr D x (eval_skat_expr D (z \<oplus> y \<odot> x \<oplus> y) \<Delta>)"
       by (smt asm eval_iso2)
-    thus "mem \<in> eval_skat_expr D (z :\<oplus>: y :\<odot>: x :\<oplus>: y) \<Delta>"
+    thus "mem \<in> eval_skat_expr D (z \<oplus> y \<odot> x \<oplus> y) \<Delta>"
       by (metis (lifting) UnI1 UnI2 asm2 eval_skat_expr.simps(3) eval_skat_expr.simps(4))
   qed
   thus "mem \<in> eval_skat_expr D y \<Delta>"
     by (metis asm2)
 qed
 
-theorem hunt_con_eval: "hunt_con s t \<Longrightarrow> \<forall>\<Delta>. eval_bexpr D s \<Delta> = eval_bexpr D t \<Delta>"
-  by (induct rule: hunt_con.induct, auto)
+theorem hunt_cong_eval: "hunt_cong s t \<Longrightarrow> \<forall>\<Delta>. eval_bexpr D s \<Delta> = eval_bexpr D t \<Delta>"
+  by (induct rule: hunt_cong.induct, auto)
 
 lemma evap_bexpr_not[simp]: "eval_bexpr D (BNot x) \<Delta> = (\<not> eval_bexpr D x \<Delta>)" by simp
 
@@ -348,9 +348,9 @@ Scan.succeed (fn ctxt =>
 
 declare filter_set_def [simp]
 
-theorem skat_con_eval: "skat_con s t \<Longrightarrow> \<forall>\<Delta>. eval_skat_expr D s \<Delta> = eval_skat_expr D t \<Delta>"
-proof (induct rule: skat_con.induct, simp_solve)
-  fix x y assume asm1: "skat_con x y"
+theorem skat_cong_eval: "skat_cong s t \<Longrightarrow> \<forall>\<Delta>. eval_skat_expr D s \<Delta> = eval_skat_expr D t \<Delta>"
+proof (induct rule: skat_cong.induct, simp_solve)
+  fix x y assume asm1: "skat_cong x y"
   and asm2: "\<forall>\<Delta>. eval_skat_expr D x \<Delta> = eval_skat_expr D y \<Delta>"
   hence "\<And>n. \<forall>\<Delta>. iter n (eval_skat_expr D x) \<Delta> = iter n (eval_skat_expr D y) \<Delta>"
   proof -
@@ -360,72 +360,72 @@ proof (induct rule: skat_con.induct, simp_solve)
   thus "\<forall>\<Delta>. eval_skat_expr D (SKStar x) \<Delta> = eval_skat_expr D (SKStar y) \<Delta>"
     by auto
 next
-  fix x y assume "skat_con (SKBool x) (SKBool y)"
+  fix x y assume "skat_cong (SKBool x) (SKBool y)"
   and "\<forall>\<Delta>. eval_skat_expr D (SKBool x) \<Delta> = eval_skat_expr D (SKBool y) \<Delta>"
   thus "\<forall>\<Delta>. eval_skat_expr D (SKBool (BNot x)) \<Delta> = eval_skat_expr D (SKBool (BNot y)) \<Delta>"
     by (simp only: eval_skat_not, auto)
 next
- fix x y z show "\<forall>\<Delta>. eval_skat_expr D (x :\<oplus>: y :\<oplus>: z) \<Delta> = eval_skat_expr D (x :\<oplus>: (y :\<oplus>: z)) \<Delta>"
+ fix x y z show "\<forall>\<Delta>. eval_skat_expr D (x \<oplus> y \<oplus> z) \<Delta> = eval_skat_expr D (x \<oplus> (y \<oplus> z)) \<Delta>"
    by auto
 next
-  fix x y show "\<forall>\<Delta>. eval_skat_expr D (x :\<oplus>: y) \<Delta> = eval_skat_expr D (y :\<oplus>: x) \<Delta>"
+  fix x y show "\<forall>\<Delta>. eval_skat_expr D (x \<oplus> y) \<Delta> = eval_skat_expr D (y \<oplus> x) \<Delta>"
     by auto
 next
-  fix x y z show "\<forall>\<Delta>. eval_skat_expr D ((x :\<oplus>: y) :\<odot>: z) \<Delta> = eval_skat_expr D (x :\<odot>: z :\<oplus>: y :\<odot>: z) \<Delta>"
+  fix x y z show "\<forall>\<Delta>. eval_skat_expr D ((x \<oplus> y) \<odot> z) \<Delta> = eval_skat_expr D (x \<odot> z \<oplus> y \<odot> z) \<Delta>"
     by (simp, metis eval_mod2)
 next
-  fix x show "\<forall>\<Delta>. eval_skat_expr D (SKZero :\<odot>: x) \<Delta> = eval_skat_expr D SKZero \<Delta>"
+  fix x show "\<forall>\<Delta>. eval_skat_expr D (SKZero \<odot> x) \<Delta> = eval_skat_expr D SKZero \<Delta>"
     by (simp, metis eval_mod1)
 next
   fix x
-  show "\<forall>\<Delta>. eval_skat_expr D (SKOne :\<oplus>: x :\<odot>: SKStar x :\<oplus>: SKStar x) \<Delta> = eval_skat_expr D (SKStar x) \<Delta>"
+  show "\<forall>\<Delta>. eval_skat_expr D (SKOne \<oplus> x \<odot> SKStar x \<oplus> SKStar x) \<Delta> = eval_skat_expr D (SKStar x) \<Delta>"
     by (metis eval_star_unfoldl)
 next
   fix x
-  show "\<forall>\<Delta>. eval_skat_expr D (SKOne :\<oplus>: SKStar x :\<odot>: x :\<oplus>: SKStar x) \<Delta> = eval_skat_expr D (SKStar x) \<Delta>"
+  show "\<forall>\<Delta>. eval_skat_expr D (SKOne \<oplus> SKStar x \<odot> x \<oplus> SKStar x) \<Delta> = eval_skat_expr D (SKStar x) \<Delta>"
     by (metis eval_star_unfoldr)
 next
-  fix z x y assume "\<forall>\<Delta>. eval_skat_expr D (z :\<oplus>: x :\<odot>: y :\<oplus>: y) \<Delta> = eval_skat_expr D y \<Delta>"
-  thus "\<forall>\<Delta>. eval_skat_expr D (SKStar x :\<odot>: z :\<oplus>: y) \<Delta> = eval_skat_expr D y \<Delta>"
+  fix z x y assume "\<forall>\<Delta>. eval_skat_expr D (z \<oplus> x \<odot> y \<oplus> y) \<Delta> = eval_skat_expr D y \<Delta>"
+  thus "\<forall>\<Delta>. eval_skat_expr D (SKStar x \<odot> z \<oplus> y) \<Delta> = eval_skat_expr D y \<Delta>"
     by (metis eval_star_inductl)
 next
-  fix z y x assume "skat_con (z :\<oplus>: y :\<odot>: x :\<oplus>: y) y"
-  and "\<forall>\<Delta>. eval_skat_expr D (z :\<oplus>: y :\<odot>: x :\<oplus>: y) \<Delta> = eval_skat_expr D y \<Delta>"
-  thus "\<forall>\<Delta>. eval_skat_expr D (z :\<odot>: SKStar x :\<oplus>: y) \<Delta> = eval_skat_expr D y \<Delta>"
+  fix z y x assume "skat_cong (z \<oplus> y \<odot> x \<oplus> y) y"
+  and "\<forall>\<Delta>. eval_skat_expr D (z \<oplus> y \<odot> x \<oplus> y) \<Delta> = eval_skat_expr D y \<Delta>"
+  thus "\<forall>\<Delta>. eval_skat_expr D (z \<odot> SKStar x \<oplus> y) \<Delta> = eval_skat_expr D y \<Delta>"
     by (metis eval_star_inductr)
 next
-  fix x y :: "'a pred bexpr" assume "hunt_con x y"
+  fix x y :: "'a pred bexpr" assume "hunt_cong x y"
   hence "\<forall>\<Delta>. eval_bexpr D x \<Delta> = eval_bexpr D y \<Delta>"
-    by (metis hunt_con_eval)
+    by (metis hunt_cong_eval)
   hence "eval_bexpr D x = eval_bexpr D y"
     by auto
   thus "\<forall>\<Delta>. eval_skat_expr D (SKBool x) \<Delta> = eval_skat_expr D (SKBool y) \<Delta>"
     by (simp del: filter_set_def)
 next
-  fix x y show "\<forall>\<Delta>. eval_skat_expr D (SKBool (x :\<cdot>: y)) \<Delta> = eval_skat_expr D (SKBool x :\<odot>: SKBool y) \<Delta>"
+  fix x y show "\<forall>\<Delta>. eval_skat_expr D (SKBool (x :\<cdot>: y)) \<Delta> = eval_skat_expr D (SKBool x \<odot> SKBool y) \<Delta>"
     by (auto, (metis empty_iff singleton_iff)+)
 next
-  fix x y show "\<forall>\<Delta>. eval_skat_expr D (SKBool (x :+: y)) \<Delta> = eval_skat_expr D (SKBool x :\<oplus>: SKBool y) \<Delta>"
+  fix x y show "\<forall>\<Delta>. eval_skat_expr D (SKBool (x :+: y)) \<Delta> = eval_skat_expr D (SKBool x \<oplus> SKBool y) \<Delta>"
     by (auto, (metis empty_iff singleton_iff)+)
 next
   fix x y :: nat and s t :: "'a trm" assume "x \<noteq> y" and "y \<notin> FV s"
-  thus "\<forall>\<Delta>. eval_skat_expr D (SKLeaf x s :\<odot>: SKLeaf y t) \<Delta> =
-            eval_skat_expr D (SKLeaf y (t[x|s]) :\<odot>: SKLeaf x s) \<Delta>"
+  thus "\<forall>\<Delta>. eval_skat_expr D (SKAssign x s \<odot> SKAssign y t) \<Delta> =
+            eval_skat_expr D (SKAssign y (t[x|s]) \<odot> SKAssign x s) \<Delta>"
     by (simp, metis eval_assigns1)
 next
   fix x y :: nat and s t :: "'a trm" assume "x \<noteq> y" and "x \<notin> FV s"
-  thus "\<forall>\<Delta>. eval_skat_expr D (SKLeaf x s :\<odot>: SKLeaf y t) \<Delta> =
-            eval_skat_expr D (SKLeaf x s :\<odot>: SKLeaf y (t[x|s])) \<Delta>"
+  thus "\<forall>\<Delta>. eval_skat_expr D (SKAssign x s \<odot> SKAssign y t) \<Delta> =
+            eval_skat_expr D (SKAssign x s \<odot> SKAssign y (t[x|s])) \<Delta>"
     by (simp, metis eval_assigns2)
 next
   fix x s t
-  show "\<forall>\<Delta>. eval_skat_expr D (SKLeaf x s :\<odot>: SKLeaf x t) \<Delta> =
-            eval_skat_expr D (SKLeaf x (t[x|s])) \<Delta>"
+  show "\<forall>\<Delta>. eval_skat_expr D (SKAssign x s \<odot> SKAssign x t) \<Delta> =
+            eval_skat_expr D (SKAssign x (t[x|s])) \<Delta>"
     by (simp, metis eval_assigns3)
 next
   fix x t \<phi>
-  show "\<forall>\<Delta>. eval_skat_expr D (SKBool (bexpr_map (pred_subst x t) \<phi>) :\<odot>: SKLeaf x t) \<Delta> =
-            eval_skat_expr D (SKLeaf x t :\<odot>: SKBool \<phi>) \<Delta>"
+  show "\<forall>\<Delta>. eval_skat_expr D (SKBool (bexpr_map (pred_subst x t) \<phi>) \<odot> SKAssign x t) \<Delta> =
+            eval_skat_expr D (SKAssign x t \<odot> SKBool \<phi>) \<Delta>"
     by (simp del: filter_set_def, metis eval_assigns4_bexpr)
 qed
 
@@ -434,9 +434,9 @@ lift_definition eval ::
   is eval_skat_expr
 proof -
   fix D :: "('a::ranked_alphabet, 'b) interp" and s t :: "'a skat_expr"
-  assume "skat_con s t"
+  assume "skat_cong s t"
   hence "\<forall>\<Delta>. eval_skat_expr D s \<Delta> = eval_skat_expr D t \<Delta>"
-    by (metis skat_con_eval)
+    by (metis skat_cong_eval)
   thus "eval_skat_expr D s = eval_skat_expr D t"
     by auto
 qed
@@ -454,7 +454,7 @@ lemma pred_expr_to_test [simp]: "pred_expr \<circ> rep_bterm = test"
 
 lemma test_to_pred_expr [simp]: "test \<circ> abs_bterm = pred_expr"
   apply (rule ext, simp add: o_def test_def pred_expr_def)
-  by (metis o_eq_dest_lhs pred_expr_test pred_expr_unfold skat_unfold.simps(4) test_to_pred_expr unfold_is_abs)
+  by (metis o_eq_dest_lhs pred_expr_test pred_expr_unfold abs.simps(4) test_to_pred_expr unfold_is_abs)
 
 lemma test_range: "range pred_expr = range test"
   by (metis test_to_pred_expr equalityI image_compose image_subsetI pred_expr_to_test rangeI)

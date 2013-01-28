@@ -11,9 +11,9 @@ subsection {* Schematic Kleene Algebra Expressions *}
 text {* SKAT expressions are represented by the following datatype *}
 
 datatype 'a skat_expr =
-    SKLeaf nat "'a trm"
-  | SKPlus "'a skat_expr" "'a skat_expr" (infixl ":\<oplus>:" 70)
-  | SKMult "'a skat_expr" "'a skat_expr" (infixl ":\<odot>:" 80)
+    SKAssign nat "'a trm"
+  | SKPlus "'a skat_expr" "'a skat_expr" (infixl "\<oplus>" 70)
+  | SKMult "'a skat_expr" "'a skat_expr" (infixl "\<odot>" 80)
   | SKStar "'a skat_expr"
   | SKBool "'a pred bexpr"
   | SKOne
@@ -22,7 +22,7 @@ datatype 'a skat_expr =
 text {* The variables red by an expression can be calculated with the following function *}
 
 primrec reads :: "'a::ranked_alphabet skat_expr \<Rightarrow> nat set" where
-  "reads (SKLeaf x s) = FV s"
+  "reads (SKAssign x s) = FV s"
 | "reads (SKPlus x y) = reads x \<union> reads y"
 | "reads (SKMult x y) = reads x \<union> reads y"
 | "reads (SKStar x) = reads x"
@@ -31,7 +31,7 @@ primrec reads :: "'a::ranked_alphabet skat_expr \<Rightarrow> nat set" where
 | "reads SKZero = {}"
 
 primrec writes :: "'a::ranked_alphabet skat_expr \<Rightarrow> nat set" where
-  "writes (SKLeaf x s) = {x}"
+  "writes (SKAssign x s) = {x}"
 | "writes (SKPlus x y) = writes x \<union> writes y"
 | "writes (SKMult x y) = writes x \<union> writes y"
 | "writes (SKStar x) = writes x"
@@ -40,7 +40,7 @@ primrec writes :: "'a::ranked_alphabet skat_expr \<Rightarrow> nat set" where
 | "writes SKZero = {}"
 
 primrec touches :: "'a::ranked_alphabet skat_expr \<Rightarrow> nat set" where
-  "touches (SKLeaf x s) = {x} \<union> FV s"
+  "touches (SKAssign x s) = {x} \<union> FV s"
 | "touches (SKPlus x y) = touches x \<union> touches y"
 | "touches (SKMult x y) = touches x \<union> touches y"
 | "touches (SKStar x) = touches x"
@@ -55,59 +55,60 @@ lemma touches_rw: "touches t = writes t \<union> reads t"
 subsection {* Quotient Type *}
 (* +------------------------------------------------------------------------+ *)
 
-inductive skat_con :: "'a::ranked_alphabet skat_expr \<Rightarrow> 'a skat_expr \<Rightarrow> bool"
+inductive skat_cong :: "'a::ranked_alphabet skat_expr \<Rightarrow> 'a skat_expr \<Rightarrow> bool" (infix "\<approx>" 55)
   where
   (* Basic equivalence conditions *)
-  refl [intro]: "skat_con x x"
-| sym [sym]: "skat_con x y \<Longrightarrow> skat_con y x"
-| trans [trans]: "skat_con x y \<Longrightarrow> skat_con y z \<Longrightarrow> skat_con x z"
+  refl [intro]: "x \<approx> x"
+| sym [sym]: "x \<approx> y \<Longrightarrow> y \<approx> x"
+| trans [trans]: "x \<approx> y \<Longrightarrow> y \<approx> z \<Longrightarrow> x \<approx> z"
 
   (* Compatability conditions *)
-| add_compat: "skat_con x1 x2 \<Longrightarrow> skat_con y1 y2 \<Longrightarrow> skat_con (SKPlus x1 y1) (SKPlus x2 y2)"
-| mult_compat: "skat_con x1 x2 \<Longrightarrow> skat_con y1 y2 \<Longrightarrow> skat_con (SKMult x1 y1) (SKMult x2 y2)"
-| star_compat: "skat_con x y \<Longrightarrow> skat_con (SKStar x) (SKStar y)"
-| skat_not_compat: "skat_con (SKBool x) (SKBool y) \<Longrightarrow> skat_con (SKBool (BNot x)) (SKBool (BNot y))"
+| add_compat: "skat_cong x1 x2 \<Longrightarrow> skat_cong y1 y2 \<Longrightarrow> skat_cong (SKPlus x1 y1) (SKPlus x2 y2)"
+| mult_compat: "skat_cong x1 x2 \<Longrightarrow> skat_cong y1 y2 \<Longrightarrow> skat_cong (SKMult x1 y1) (SKMult x2 y2)"
+| star_compat: "skat_cong x y \<Longrightarrow> skat_cong (SKStar x) (SKStar y)"
+| skat_not_compat: "skat_cong (SKBool x) (SKBool y) \<Longrightarrow> skat_cong (SKBool (BNot x)) (SKBool (BNot y))"
 
   (* Dioid laws for kexprs *)
-| mult_assoc: "skat_con (SKMult (SKMult x y) z) (SKMult x (SKMult y z))"
-| add_assoc: "skat_con (SKPlus (SKPlus x y) z) (SKPlus x (SKPlus y z))"
-| add_comm: "skat_con (SKPlus x y) (SKPlus y x)"
-| add_idem: "skat_con (SKPlus x x) x"
-| distl: "skat_con (SKMult x (SKPlus y z)) (SKPlus (SKMult x y) (SKMult x z))"
-| distr: "skat_con (SKMult (SKPlus x y) z) (SKPlus (SKMult x z) (SKMult y z))"
-| mult_onel: "skat_con (SKMult SKOne x) x"
-| mult_oner: "skat_con (SKMult x SKOne) x"
-| add_zerol: "skat_con (SKPlus SKZero x) x"
-| mult_zerol: "skat_con (SKMult SKZero x) SKZero"
-| mult_zeror: "skat_con (SKMult x SKZero) SKZero"
+| mult_assoc: "(x \<odot> y) \<odot> z \<approx> x \<odot> (y \<odot> z)"
+| add_assoc: "(x \<oplus> y) \<oplus> z \<approx> x \<oplus> (y \<oplus> z)"
+| add_comm: "x \<oplus> y \<approx> y \<oplus> x"
+| add_idem: "x \<oplus> x \<approx> x"
+| distl: "x \<odot> (y \<oplus> z) \<approx> (x \<odot> y) \<oplus> (x \<odot> z)"
+| distr: "(x \<oplus> y) \<odot> z \<approx> (x \<odot> z) \<oplus> (y \<odot> z)"
+| mult_onel: "SKOne \<odot> x \<approx> x"
+| mult_oner: "x \<odot> SKOne \<approx> x"
+| add_zerol: "SKZero \<oplus> x \<approx> x"
+| mult_zerol: "SKZero \<odot> x \<approx> SKZero"
+| mult_zeror: "x \<odot> SKZero \<approx> SKZero"
 
   (* Kleene Algebra rules *)
-| star_unfoldl: "skat_con (SKPlus (SKPlus SKOne (SKMult x (SKStar x))) (SKStar x)) (SKStar x)"
-| star_unfoldr: "skat_con (SKPlus (SKPlus SKOne (SKMult (SKStar x) x)) (SKStar x)) (SKStar x)"
-| star_inductl: "skat_con (SKPlus (SKPlus z (SKMult x y)) y) y \<Longrightarrow> skat_con (SKPlus (SKMult (SKStar x) z) y) y"
-| star_inductr: "skat_con (SKPlus (SKPlus z (SKMult y x)) y) y \<Longrightarrow> skat_con (SKPlus (SKMult z (SKStar x)) y) y"
+| star_unfoldl: "(SKOne \<oplus> x \<odot> SKStar x) \<oplus> SKStar x \<approx> SKStar x"
+| star_unfoldr: "(SKOne \<oplus> SKStar x \<odot> x) \<oplus> SKStar x \<approx> SKStar x"
+| star_inductl: "(z \<oplus> x \<odot> y) \<oplus> y \<approx> y \<Longrightarrow> (SKStar x \<odot> z) \<oplus> y \<approx> y"
+| star_inductr: "(z \<oplus> y \<odot> x) \<oplus> y \<approx> y \<Longrightarrow> (z \<odot> SKStar x) \<oplus> y \<approx> y"
 
   (* Boolean Algebra rules *)
-| test_ba: "hunt_con x y \<Longrightarrow> skat_con (SKBool x) (SKBool y)"
-| test_zero: "skat_con SKZero (SKBool BZero)"
-| test_one: "skat_con SKOne (SKBool BOne)"
-| test_plus: "skat_con (SKBool (BAnd x y)) (SKMult (SKBool x) (SKBool y))"
-| test_mult: "skat_con (SKBool (BOr x y)) (SKPlus (SKBool x) (SKBool y))"
+| test_ba: "hunt_cong x y \<Longrightarrow> SKBool x \<approx> SKBool y"
+| test_zero: "SKZero \<approx> SKBool BZero"
+| test_one: "SKOne \<approx> SKBool BOne"
+| test_plus: "SKBool (BAnd x y) \<approx> SKBool x \<odot> SKBool y"
+| test_mult: "SKBool (BOr x y) \<approx> SKBool x \<oplus> SKBool y"
 
-| assign1: "\<lbrakk>x \<noteq> y; y \<notin> FV s\<rbrakk> \<Longrightarrow> skat_con (SKLeaf x s :\<odot>: SKLeaf y t) (SKLeaf y (t[x|s]) :\<odot>: SKLeaf x s)"
-| assign2: "\<lbrakk>x \<noteq> y; x \<notin> FV s\<rbrakk> \<Longrightarrow> skat_con (SKLeaf x s :\<odot>: SKLeaf y t) (SKLeaf x s :\<odot>: SKLeaf y (t[x|s]))"
-| assign3: "skat_con (SKLeaf x s :\<odot>: SKLeaf x t) (SKLeaf x (t[x|s]))"
-| assign4: "skat_con (SKBool (bexpr_map (pred_subst x t) \<phi>) :\<odot>: SKLeaf x t) (SKLeaf x t :\<odot>: SKBool \<phi>)"
+| assign1: "\<lbrakk>x \<noteq> y; y \<notin> FV s\<rbrakk> \<Longrightarrow> SKAssign x s \<odot> SKAssign y t \<approx> SKAssign y (t[x|s]) \<odot> SKAssign x s"
+| assign2: "\<lbrakk>x \<noteq> y; x \<notin> FV s\<rbrakk> \<Longrightarrow> SKAssign x s \<odot> SKAssign y t \<approx> SKAssign x s \<odot> SKAssign y (t[x|s])"
+| assign3: "SKAssign x s \<odot> SKAssign x t \<approx> SKAssign x (t[x|s])"
+| assign4: "SKBool (bexpr_map (pred_subst x t) \<phi>) \<odot> SKAssign x t \<approx> SKAssign x t \<odot> SKBool \<phi>"
 
-lemma skat_con_eq: "x = y \<Longrightarrow> skat_con x y" by (simp add: skat_con.refl)
+no_notation skat_cong (infix "\<approx>" 55)
 
-quotient_type 'a skat = "'a::ranked_alphabet skat_expr" / skat_con
+lemma skat_cong_eq: "x = y \<Longrightarrow> skat_cong x y" by (simp add: skat_cong.refl)
+
+quotient_type 'a skat = "'a::ranked_alphabet skat_expr" / skat_cong
 proof (auto simp add: equivp_def)
-  fix x y assume "skat_con x y"
-  thus "skat_con x = skat_con y"
-    apply (subgoal_tac "\<forall>z. skat_con x z = skat_con y z")
-    apply auto
-    by (metis skat_con.sym skat_con.trans)+
+  fix x y assume "skat_cong x y"
+  thus "skat_cong x = skat_cong y"
+    apply (subgoal_tac "\<forall>z. skat_cong x z = skat_cong y z")
+    by auto (metis skat_cong.sym skat_cong.trans)+
 qed
 
 (* +------------------------------------------------------------------------+ *)
@@ -115,8 +116,8 @@ subsection {* Lifting Definitions *}
 (* +------------------------------------------------------------------------+ *)
 
 lift_definition skat_assign :: "nat \<Rightarrow> 'a::ranked_alphabet trm \<Rightarrow> 'a skat"
-  (infix ":=" 100) is SKLeaf
-  by (rule skat_con.refl)
+  (infix ":=" 100) is SKAssign
+  by (rule skat_cong.refl)
 
 lift_definition skat_mult :: "'a::ranked_alphabet skat \<Rightarrow> 'a skat \<Rightarrow> 'a skat" (infixl "\<cdot>" 80) is SKMult
   by (rule mult_compat, assumption+)
@@ -129,10 +130,10 @@ no_notation
   dioid.mult (infixl "\<cdot>\<index>" 80)
 
 lift_definition skat_one :: "'a::ranked_alphabet skat" ("\<one>") is SKOne
-  by (rule skat_con.refl)
+  by (rule skat_cong.refl)
 
 lift_definition skat_zero :: "'a::ranked_alphabet skat" ("\<zero>") is SKZero
-  by (rule skat_con.refl)
+  by (rule skat_cong.refl)
 
 no_notation
   dioid.one ("\<one>\<index>") and
@@ -148,10 +149,10 @@ definition skat_star1 :: "'a::ranked_alphabet skat \<Rightarrow> 'a skat" ("_\<^
   "skat_star1 x = x\<cdot>x\<^sup>\<star>"
 
 lift_definition test :: "'a::ranked_alphabet pred bterm \<Rightarrow> 'a skat" is SKBool
-  by (rule skat_con.test_ba, assumption)
+  by (rule skat_cong.test_ba, assumption)
 
 lift_definition pred_expr :: "'a::ranked_alphabet pred bexpr \<Rightarrow> 'a skat" is SKBool
-  by (metis skat_con.refl)
+  by (metis skat_cong.refl)
 
 lift_definition skat_bexpr_not :: "'a::ranked_alphabet pred bexpr \<Rightarrow> 'a skat" is "SKBool \<circ> BNot"
   by auto
@@ -164,15 +165,15 @@ lift_definition pred :: "'a::ranked_alphabet pred \<Rightarrow> 'a skat" is "SKB
 lemma pred_to_expr: "pred \<phi> = pred_expr (BLeaf \<phi>)"
   by (simp add: pred_def pred_expr_def)
 
-primrec test_unfold :: "'a::ranked_alphabet pred bexpr \<Rightarrow> 'a skat" where
-  "test_unfold (BLeaf x) = pred x"
-| "test_unfold (BOr x y) = test_unfold x + test_unfold y"
-| "test_unfold (BAnd x y) = test_unfold x \<cdot> test_unfold y"
-| "test_unfold (BNot x) = !(test_unfold x)"
-| "test_unfold BOne = \<one>"
-| "test_unfold BZero = \<zero>"
+primrec test_abs :: "'a::ranked_alphabet pred bexpr \<Rightarrow> 'a skat" where
+  "test_abs (BLeaf x) = pred x"
+| "test_abs (BOr x y) = test_abs x + test_abs y"
+| "test_abs (BAnd x y) = test_abs x \<cdot> test_abs y"
+| "test_abs (BNot x) = !(test_abs x)"
+| "test_abs BOne = \<one>"
+| "test_abs BZero = \<zero>"
 
-lemma not_test_unfold: "!(test_unfold x) = test_unfold (BNot x)" by simp
+lemma not_test_abs: "!(test_abs x) = test_abs (BNot x)" by simp
 
 lemma pred_expr_not: "!(pred_expr p) = pred_expr (BNot p)"
   apply (simp add: skat_not_def)
@@ -186,37 +187,37 @@ proof -
   thus "skat_bexpr_not x = pred_expr (BNot p)"
     apply transfer
     apply simp
-    by (metis skat_con.sym skat_not_compat)
+    by (metis skat_cong.sym skat_not_compat)
 qed
 
-lemma pred_expr_unfold: "test_unfold p = pred_expr p"
+lemma pred_expr_unfold: "test_abs p = pred_expr p"
   apply (induct p)
-  apply (metis pred_to_expr test_unfold.simps(1))
+  apply (metis pred_to_expr test_abs.simps(1))
 proof simp_all
   fix p1 p2
   show "pred_expr p1 + pred_expr p2 = pred_expr (p1 :+: p2)"
-    by (transfer, metis (lifting) skat_con.sym test_mult)
+    by (transfer, metis (lifting) skat_cong.sym test_mult)
   show "!(pred_expr p1) = pred_expr (BNot p1)"
     by (metis pred_expr_not)
   show "pred_expr p1 \<cdot> pred_expr p2 = pred_expr (p1 :\<cdot>: p2)"
-    by (transfer, metis skat_con.sym test_plus)
+    by (transfer, metis skat_cong.sym test_plus)
   show "\<one> = pred_expr BOne"
     by (transfer, metis test_one)
   show "\<zero> = pred_expr BZero"
     by (transfer, metis test_zero)
 qed
 
-primrec skat_unfold :: "'a::ranked_alphabet skat_expr \<Rightarrow> 'a skat" ("\<lfloor>_\<rfloor>" [111] 110) where
-  "skat_unfold (SKLeaf x y) = x := y"
-| "skat_unfold (SKPlus x y) = skat_unfold x + skat_unfold y"
-| "skat_unfold (SKMult x y) = skat_unfold x \<cdot> skat_unfold y"
-| "skat_unfold (SKBool p) = test_unfold p"
-| "skat_unfold SKOne = \<one>"
-| "skat_unfold SKZero = \<zero>"
-| "skat_unfold (SKStar x) = (skat_unfold x)\<^sup>\<star>"
+primrec abs :: "'a::ranked_alphabet skat_expr \<Rightarrow> 'a skat" ("\<lfloor>_\<rfloor>" [111] 110) where
+  "abs (SKAssign x y) = x := y"
+| "abs (SKPlus x y) = abs x + abs y"
+| "abs (SKMult x y) = abs x \<cdot> abs y"
+| "abs (SKBool p) = test_abs p"
+| "abs SKOne = \<one>"
+| "abs SKZero = \<zero>"
+| "abs (SKStar x) = (abs x)\<^sup>\<star>"
 
 primrec atoms :: "'a::ranked_alphabet skat_expr \<Rightarrow> 'a skat_expr set" where
-  "atoms (SKLeaf x y) = {SKLeaf x y}"
+  "atoms (SKAssign x y) = {SKAssign x y}"
 | "atoms (SKPlus x y) = atoms x \<union> atoms y"
 | "atoms (SKMult x y) = atoms x \<union> atoms y"
 | "atoms (SKBool p) = SKBool ` BLeaf ` bexpr_leaves p"
@@ -238,35 +239,35 @@ lemma touch_atoms: "a \<in> atoms s \<Longrightarrow> touches a \<subseteq> touc
 
 lemma unfold_is_abs: "\<lfloor>y\<rfloor> = abs_skat y"
 proof (induct y, simp_all)
-  fix x s show "x := s = abs_skat (SKLeaf x s)"
-    by (transfer, metis skat_con.refl)
+  fix x s show "x := s = abs_skat (SKAssign x s)"
+    by (transfer, metis skat_cong.refl)
 next
-  fix s t show "abs_skat s + abs_skat t = abs_skat (s :\<oplus>: t)"
-    by (transfer, metis skat_con.refl)
+  fix s t show "abs_skat s + abs_skat t = abs_skat (s \<oplus> t)"
+    by (transfer, metis skat_cong.refl)
 next
-  fix s t show "abs_skat s \<cdot> abs_skat t = abs_skat (s :\<odot>: t)"
-    by (transfer, metis skat_con.refl)
+  fix s t show "abs_skat s \<cdot> abs_skat t = abs_skat (s \<odot> t)"
+    by (transfer, metis skat_cong.refl)
 next
   fix s show "abs_skat s\<^sup>\<star> = abs_skat (SKStar s)"
-    by (transfer, metis skat_con.refl)
+    by (transfer, metis skat_cong.refl)
 next
   fix a
   have "pred_expr a = abs_skat (SKBool a)"
-    by (transfer, metis skat_con.refl)
-  thus "test_unfold a = abs_skat (SKBool a)"
+    by (transfer, metis skat_cong.refl)
+  thus "test_abs a = abs_skat (SKBool a)"
     by (subst pred_expr_unfold)
 next
   show "\<one> = abs_skat SKOne"
-    by (transfer, metis skat_con.refl)
+    by (transfer, metis skat_cong.refl)
 next
   show "\<zero> = abs_skat SKZero"
-    by (transfer, metis skat_con.refl)
+    by (transfer, metis skat_cong.refl)
 qed
 
 lemma unfold_exists: "\<exists>t. \<lfloor>t\<rfloor> = s"
   by (metis Quotient3_abs_rep Quotient3_skat unfold_is_abs)
 
-lemma unfold_transfer: "\<lfloor>x\<rfloor> = \<lfloor>y\<rfloor> \<longleftrightarrow> skat_con x y"
+lemma unfold_transfer: "\<lfloor>x\<rfloor> = \<lfloor>y\<rfloor> \<longleftrightarrow> skat_cong x y"
   by (simp add: unfold_is_abs, transfer, simp)
 
 (* +------------------------------------------------------------------------+ *)
@@ -274,19 +275,19 @@ subsection {* Assignment Rules *}
 (* +------------------------------------------------------------------------+ *)
 
 lemma skat_assign1: "\<lbrakk>x \<noteq> y; y \<notin> FV s\<rbrakk> \<Longrightarrow> (x := s \<cdot> y := t) = (y := t[x|s] \<cdot> x := s)"
-  by (transfer, rule skat_con.assign1)
+  by (transfer, rule skat_cong.assign1)
 
 lemma skat_assign1_var: "\<lbrakk>x \<noteq> y; y \<notin> FV s; t' = t[x|s]\<rbrakk> \<Longrightarrow> (x := s \<cdot> y := t) = (y := t' \<cdot> x := s)"
   by (metis skat_assign1)
 
 lemma skat_assign2: "\<lbrakk>x \<noteq> y; x \<notin> FV s\<rbrakk> \<Longrightarrow> (x := s \<cdot> y := t) = (x := s \<cdot> y := t[x|s])"
-  by (transfer, rule skat_con.assign2)
+  by (transfer, rule skat_cong.assign2)
 
 lemma skat_assign2_var: "\<lbrakk>x \<noteq> y; x \<notin> FV s; t' = t[x|s]\<rbrakk> \<Longrightarrow> (x := s \<cdot> y := t) = (x := s \<cdot> y := t')"
   by (metis skat_assign2)
 
 lemma skat_assign3: "(x := s \<cdot> x := t) = (x := t[x|s])"
-  by (transfer, rule skat_con.assign3)
+  by (transfer, rule skat_cong.assign3)
 
 lemma skat_assign4: "(pred (\<phi>[x|t]) \<cdot> x := t) = (x := t \<cdot> pred \<phi>)"
   by (transfer, metis assign4 bexpr_map.simps(1) o_apply)
@@ -332,27 +333,27 @@ lemma free_kat_dioid: "dioid free_kat"
 proof (unfold_locales, simp_all add: free_kat_def)
   fix x y z
   show "skat_mult (skat_mult x y) z = skat_mult x (skat_mult y z)"
-    by (transfer, rule skat_con.mult_assoc)
+    by (transfer, rule skat_cong.mult_assoc)
   show "skat_plus (skat_plus x y) z = skat_plus x (skat_plus y z)"
-    by (transfer, rule skat_con.add_assoc)
+    by (transfer, rule skat_cong.add_assoc)
   show "skat_plus x y = skat_plus y x"
-    by (transfer, rule skat_con.add_comm)
+    by (transfer, rule skat_cong.add_comm)
   show "skat_plus x x = x"
-    by (transfer, rule skat_con.add_idem)
+    by (transfer, rule skat_cong.add_idem)
   show "skat_mult x (skat_plus y z) = skat_plus (skat_mult x y) (skat_mult x z)"
-    by (transfer, rule skat_con.distl)
+    by (transfer, rule skat_cong.distl)
   show "skat_mult (skat_plus x y) z = skat_plus (skat_mult x z) (skat_mult y z)"
-    by (transfer, rule skat_con.distr)
+    by (transfer, rule skat_cong.distr)
   show "skat_mult skat_one x = x"
-    by (transfer, rule skat_con.mult_onel)
+    by (transfer, rule skat_cong.mult_onel)
   show "skat_mult x skat_one = x"
-    by (transfer, rule skat_con.mult_oner)
+    by (transfer, rule skat_cong.mult_oner)
   show "skat_plus skat_zero x = x"
-    by (transfer, rule skat_con.add_zerol)
+    by (transfer, rule skat_cong.add_zerol)
   show "skat_mult skat_zero x = skat_zero"
-    by (transfer, rule skat_con.mult_zerol)
+    by (transfer, rule skat_cong.mult_zerol)
   show "skat_mult x skat_zero = skat_zero"
-    by (transfer, rule skat_con.mult_zeror)
+    by (transfer, rule skat_cong.mult_zeror)
 qed
 
 interpretation skd: dioid free_kat
@@ -372,13 +373,13 @@ lemma free_kat_ka: "kleene_algebra free_kat"
 proof (simp_all add: free_kat_def)
   fix x y z
   show "\<one> + x \<cdot> skat_star x + skat_star x = skat_star x"
-    by (transfer, rule skat_con.star_unfoldl)
+    by (transfer, rule skat_cong.star_unfoldl)
   show "\<one> + skat_star x \<cdot> x + skat_star x = skat_star x"
-    by (transfer, rule skat_con.star_unfoldr)
+    by (transfer, rule skat_cong.star_unfoldr)
   show "z + x \<cdot> y + y = y \<longrightarrow> skat_star x \<cdot> z + y = y"
-    by (transfer, metis skat_con.star_inductl)
+    by (transfer, metis skat_cong.star_inductl)
   show "z + y \<cdot> x + y = y \<longrightarrow> z \<cdot> skat_star x + y = y"
-    by (transfer, metis skat_con.star_inductr)
+    by (transfer, metis skat_cong.star_inductr)
 qed
 
 (* PR4 *)
@@ -404,7 +405,7 @@ lemma test_to_pred_expr: "test = pred_expr \<circ> rep_bterm"
   by (metis SKAT.test_def map_fun_def o_id pred_expr_def)
 
 lemma pred_expr_test: "pred_expr p = test (abs_bterm p)"
-  by (simp add: pred_expr_def, transfer, rule skat_con.refl)
+  by (simp add: pred_expr_def, transfer, rule skat_cong.refl)
 
 lemma pred_expr_closed: "pred_expr x \<in> carrier tests"
   by (metis pred_expr_test test_closed)
@@ -426,7 +427,7 @@ lemma test_ex: "x \<in> test_set \<Longrightarrow> \<exists>y. x = test y"
   by (simp add: test_set_def image_iff)
 
 lemma pred_test: "pred p = test (abs_bterm (BLeaf p))"
-  by (simp add: pred_def, transfer, rule skat_con.refl)
+  by (simp add: pred_def, transfer, rule skat_cong.refl)
 
 lemma pred_closed: "pred p \<in> carrier tests"
   by (simp add: pred_test, rule test_closed)
@@ -446,7 +447,7 @@ lemma test_zero_closed: "\<zero> \<in> carrier tests"
   by (metis test_closed zero_to_test)
 
 lemma mult_to_test: "test x \<cdot> test y = test (bt_and x y)"
-  by (transfer, metis skat_con.sym test_plus)
+  by (transfer, metis skat_cong.sym test_plus)
 
 lemma test_mult_closed:
   assumes xc: "x \<in> carrier tests" and yc: "y \<in> carrier tests"
@@ -461,7 +462,7 @@ proof -
 qed
 
 lemma plus_to_test: "test x + test y = test (bt_or x y)"
-  by (transfer, metis skat_con.sym test_mult)
+  by (transfer, metis skat_cong.sym test_mult)
 
 lemma test_plus_closed:
   assumes xc: "x \<in> carrier tests" and yc: "y \<in> carrier tests"
@@ -476,7 +477,7 @@ proof -
 qed
 
 lemma not_to_not: "!(test x) = test (bt_not x)"
-  by (metis (full_types) Quotient3_abs_rep Quotient3_bterm bt_not_def map_fun_apply pred_expr_test pred_expr_unfold test_unfold.simps(4))
+  by (metis (full_types) Quotient3_abs_rep Quotient3_bterm bt_not_def map_fun_apply pred_expr_test pred_expr_unfold test_abs.simps(4))
 
 lemma test_eq: "x = y \<Longrightarrow> test x = test y" by auto
 
@@ -666,12 +667,12 @@ proof (simp add: complemented_lattice_def complemented_lattice_axioms_def, safe)
     thus "x + !x = \<one>"
       apply (simp add: not_to_not plus_to_test one_to_test)
       apply (rule test_eq)
-      by (transfer, rule hunt_con.one)
+      by (transfer, rule hunt_cong.one)
     from `x = test x'` show "x \<cdot> !x = \<zero>"
       apply (simp add: not_to_not mult_to_test zero_to_test)
       apply (rule test_eq)
       apply transfer
-      by (metis hunt_con.trans meet Boolean_Algebra_Extras.not_compat one zero)
+      by (metis hunt_cong.trans meet Boolean_Algebra_Extras.not_compat one zero)
   qed
 qed
 
@@ -715,16 +716,16 @@ proof -
   show a: "x + !x = \<one>"
   proof (simp, transfer)
     fix x
-    show "skat_con (SKBool x :\<oplus>: SKBool (BNot x)) SKOne"
-      by (smt one skat_con.sym skat_con.trans test_ba test_mult test_one)
+    show "skat_cong (SKBool x \<oplus> SKBool (BNot x)) SKOne"
+      by (smt one skat_cong.sym skat_cong.trans test_ba test_mult test_one)
   qed
   show b: "x \<cdot> ! x = \<zero>"
   proof (simp, transfer)
     fix x
-    have "skat_con (SKBool (x :\<cdot>: BNot x)) SKZero"
-      by (metis hunt_con.trans meet not_compat one skat_con.sym skat_con.trans test_ba test_zero zero)
-    thus "skat_con (SKBool x :\<odot>: SKBool (BNot x)) SKZero"
-      by (smt skat_con.sym skat_con.trans test_plus)
+    have "skat_cong (SKBool (x :\<cdot>: BNot x)) SKZero"
+      by (metis hunt_cong.trans meet not_compat one skat_cong.sym skat_cong.trans test_ba test_zero zero)
+    thus "skat_cong (SKBool x \<odot> SKBool (BNot x)) SKZero"
+      by (smt skat_cong.sym skat_cong.trans test_plus)
   qed
   assume "x + y = \<one>" and "x \<cdot> y = \<zero>"
   from this and a b show "y = !x"
@@ -849,49 +850,49 @@ lemma kat3:
 
 locale kat_homomorphism =
   fixes f :: "'a::ranked_alphabet skat_expr \<Rightarrow> 'b::ranked_alphabet skat"
-  assumes homo_plus: "f (x :\<oplus>: y) = f x + f y"
-  and homo_test_plus: "f (SKBool (P :+: Q)) = f (SKBool P) + f (SKBool Q)"
-  and homo_mult: "f (x :\<odot>: y) = f x \<cdot> f y"
-  and homo_test_mult: "f (SKBool (P :\<cdot>: Q)) = f (SKBool P) \<cdot> f (SKBool Q)"
-  and homo_star: "f (SKStar x) = (f x)\<^sup>\<star>"
-  and homo_one: "f SKOne = \<one>"
-  and homo_test_one: "f (SKBool BOne) = \<one>"
-  and homo_zero: "f SKZero = \<zero>"
-  and homo_test_zero: "f (SKBool BZero) = \<zero>"
-  and homo_not: "f (SKBool (BNot P)) = !(f (SKBool P))"
-  and homo_tests: " f (SKBool P) \<in> carrier tests"
+  assumes hom_plus: "f (x \<oplus> y) = f x + f y"
+  and hom_test_plus: "f (SKBool (P :+: Q)) = f (SKBool P) + f (SKBool Q)"
+  and hom_mult: "f (x \<odot> y) = f x \<cdot> f y"
+  and hom_test_mult: "f (SKBool (P :\<cdot>: Q)) = f (SKBool P) \<cdot> f (SKBool Q)"
+  and hom_star: "f (SKStar x) = (f x)\<^sup>\<star>"
+  and hom_one: "f SKOne = \<one>"
+  and hom_test_one: "f (SKBool BOne) = \<one>"
+  and hom_zero: "f SKZero = \<zero>"
+  and hom_test_zero: "f (SKBool BZero) = \<zero>"
+  and hom_not: "f (SKBool (BNot P)) = !(f (SKBool P))"
+  and hom_tests: " f (SKBool P) \<in> carrier tests"
 
-lemma skat_unfold_homo: "kat_homomorphism skat_unfold"
+lemma abs_hom: "kat_homomorphism abs"
   by (default, simp_all, metis pred_expr_closed pred_expr_unfold)
 
 lemma metatheorem:
-  assumes f_homo: "kat_homomorphism f"
-  and g_homo: "kat_homomorphism g"
+  assumes f_hom: "kat_homomorphism f"
+  and g_hom: "kat_homomorphism g"
   and atomic: "\<And>a. a \<in> atoms p \<Longrightarrow> f a \<cdot> x = x \<cdot> g a"
   shows "f p \<cdot> x = x \<cdot> g p"
   using atomic
 proof (induct p)
-  fix X s assume "\<And>a. a \<in> atoms (SKLeaf X s) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a"
-  thus "f (SKLeaf X s) \<cdot> x = x \<cdot> g (SKLeaf X s)" by simp
+  fix X s assume "\<And>a. a \<in> atoms (SKAssign X s) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a"
+  thus "f (SKAssign X s) \<cdot> x = x \<cdot> g (SKAssign X s)" by simp
 next
   fix p q
   assume "(\<And>a. a \<in> atoms p \<Longrightarrow> f a \<cdot> x = x \<cdot> g a) \<Longrightarrow> f p \<cdot> x = x \<cdot> g p"
   and "(\<And>a. a \<in> atoms q \<Longrightarrow> f a \<cdot> x = x \<cdot> g a) \<Longrightarrow> f q \<cdot> x = x \<cdot> g q"
-  and "\<And>a. a \<in> atoms (p :\<oplus>: q) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a"
-  thus "f (p :\<oplus>: q) \<cdot> x = x \<cdot> g (p :\<oplus>: q)"
-    by (auto simp add: kat_homomorphism.homo_plus f_homo g_homo skd.distl skd.distr)
+  and "\<And>a. a \<in> atoms (p \<oplus> q) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a"
+  thus "f (p \<oplus> q) \<cdot> x = x \<cdot> g (p \<oplus> q)"
+    by (auto simp add: kat_homomorphism.hom_plus f_hom g_hom skd.distl skd.distr)
 next
   fix p q
   assume "(\<And>a. a \<in> atoms p \<Longrightarrow> f a \<cdot> x = x \<cdot> g a) \<Longrightarrow> f p \<cdot> x = x \<cdot> g p"
   and "(\<And>a. a \<in> atoms q \<Longrightarrow> f a \<cdot> x = x \<cdot> g a) \<Longrightarrow> f q \<cdot> x = x \<cdot> g q"
-  and "\<And>a. a \<in> atoms (p :\<odot>: q) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a"
-  thus "f (p :\<odot>: q) \<cdot> x = x \<cdot> g (p :\<odot>: q)"
-    by (auto simp add: kat_homomorphism.homo_mult f_homo g_homo, metis skd.mult_assoc)
+  and "\<And>a. a \<in> atoms (p \<odot> q) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a"
+  thus "f (p \<odot> q) \<cdot> x = x \<cdot> g (p \<odot> q)"
+    by (auto simp add: kat_homomorphism.hom_mult f_hom g_hom, metis skd.mult_assoc)
 next
   fix p assume "(\<And>a. a \<in> atoms p \<Longrightarrow> f a \<cdot> x = x \<cdot> g a) \<Longrightarrow> f p \<cdot> x = x \<cdot> g p"
   and "\<And>a. a \<in> atoms (SKStar p) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a"
   thus "f (SKStar p) \<cdot> x = x \<cdot> g (SKStar p)"
-    by (auto simp add: kat_homomorphism.homo_star f_homo g_homo intro: ska.star_sim[symmetric])
+    by (auto simp add: kat_homomorphism.hom_star f_hom g_hom intro: ska.star_sim[symmetric])
 next
   fix P
   assume "\<And>a. a \<in> atoms (SKBool P) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a"
@@ -907,7 +908,7 @@ next
     and "\<And>a. a \<in> atoms (SKBool (P :+: Q)) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a"
     moreover hence "\<And>a. a \<in> (atoms (SKBool P) \<union> atoms (SKBool Q)) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a" by auto
     ultimately show "f (SKBool (P :+: Q)) \<cdot> x = x \<cdot> g (SKBool (P :+: Q))"
-      by (simp add: f_homo g_homo kat_homomorphism.homo_test_plus skd.distl skd.distr)
+      by (simp add: f_hom g_hom kat_homomorphism.hom_test_plus skd.distl skd.distr)
   next
     fix P Q
     assume "(\<And>a. a \<in> atoms (SKBool P) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a) \<Longrightarrow> f (SKBool P) \<cdot> x = x \<cdot> g (SKBool P)"
@@ -915,7 +916,7 @@ next
     and "\<And>a. a \<in> atoms (SKBool (P :\<cdot>: Q)) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a"
     moreover hence "\<And>a. a \<in> (atoms (SKBool P) \<union> atoms (SKBool Q)) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a" by auto
     ultimately show "f (SKBool (P :\<cdot>: Q)) \<cdot> x = x \<cdot> g (SKBool (P :\<cdot>: Q))"
-      by (simp add: f_homo g_homo kat_homomorphism.homo_test_mult, metis skd.mult_assoc)
+      by (simp add: f_hom g_hom kat_homomorphism.hom_test_mult, metis skd.mult_assoc)
   next
     fix P
     assume ind_hyp: "(\<And>a. a \<in> atoms (SKBool P) \<Longrightarrow> f a \<cdot> x = x \<cdot> g a) \<Longrightarrow> f (SKBool P) \<cdot> x = x \<cdot> g (SKBool P)"
@@ -925,27 +926,27 @@ next
     from this and ind_hyp have "f (SKBool P) \<cdot> x = x \<cdot> g (SKBool P)"
       by simp
     moreover have "f (SKBool P) \<in> carrier tests" and "g (SKBool P) \<in> carrier tests"
-      by (metis f_homo g_homo kat_homomorphism.homo_tests)+
+      by (metis f_hom g_hom kat_homomorphism.hom_tests)+
     ultimately show "f (SKBool (BNot P)) \<cdot> x = x \<cdot> g (SKBool (BNot P))"
-      by (simp add: f_homo g_homo kat_homomorphism.homo_not kat3[symmetric])
+      by (simp add: f_hom g_hom kat_homomorphism.hom_not kat3[symmetric])
   next
     show "f (SKBool BOne) \<cdot> x = x \<cdot> g (SKBool BOne)"
-      by (metis f_homo g_homo kat_homomorphism.homo_test_one skd.mult_onel skd.mult_oner)
+      by (metis f_hom g_hom kat_homomorphism.hom_test_one skd.mult_onel skd.mult_oner)
   next
     show "f (SKBool BZero) \<cdot> x = x \<cdot> g (SKBool BZero)"
-      by (metis f_homo g_homo kat_homomorphism.homo_test_zero skd.mult_zerol skd.mult_zeror)
+      by (metis f_hom g_hom kat_homomorphism.hom_test_zero skd.mult_zerol skd.mult_zeror)
   qed
 next
   show "f SKOne \<cdot> x = x \<cdot> g SKOne"
-    by (metis f_homo g_homo kat_homomorphism.homo_one skd.mult_onel skd.mult_oner)
+    by (metis f_hom g_hom kat_homomorphism.hom_one skd.mult_onel skd.mult_oner)
 next
   show "f SKZero \<cdot> x = x \<cdot> g SKZero"
-    by (metis f_homo g_homo kat_homomorphism.homo_zero skd.mult_zerol skd.mult_zeror)
+    by (metis f_hom g_hom kat_homomorphism.hom_zero skd.mult_zerol skd.mult_zeror)
 qed
 
-lemmas skat_comm = metatheorem[OF skat_unfold_homo skat_unfold_homo]
+lemmas skat_comm = metatheorem[OF abs_hom abs_hom]
 
-lemma atoms_oneof: "a \<in> atoms p \<Longrightarrow> (\<exists>X s. a = SKLeaf X s) \<or> (\<exists>P. a = SKBool (BLeaf P))"
+lemma atoms_oneof: "a \<in> atoms p \<Longrightarrow> (\<exists>X s. a = SKAssign X s) \<or> (\<exists>P. a = SKBool (BLeaf P))"
   by (induct p, auto)
 
 lemma no_touch_comm:
@@ -953,8 +954,8 @@ lemma no_touch_comm:
   shows "\<lfloor>s\<rfloor> \<cdot> \<lfloor>t\<rfloor> = \<lfloor>t\<rfloor> \<cdot> \<lfloor>s\<rfloor>"
 proof (rule skat_comm, rule skat_comm[symmetric])
   fix sa ta assume asm1: "sa \<in> atoms s" and asm2: "ta \<in> atoms t"
-  let ?opts = "((\<exists>x s. sa = SKLeaf x s) \<or> (\<exists>P. sa = SKBool (BLeaf P)))
-             \<and> ((\<exists>x s. ta = SKLeaf x s) \<or> (\<exists>P. ta = SKBool (BLeaf P)))"
+  let ?opts = "((\<exists>x s. sa = SKAssign x s) \<or> (\<exists>P. sa = SKBool (BLeaf P)))
+             \<and> ((\<exists>x s. ta = SKAssign x s) \<or> (\<exists>P. ta = SKBool (BLeaf P)))"
 
   have "\<lbrakk>touches sa \<inter> touches ta = {}; ?opts\<rbrakk> \<Longrightarrow> \<lfloor>ta\<rfloor> \<cdot> \<lfloor>sa\<rfloor> = \<lfloor>sa\<rfloor> \<cdot> \<lfloor>ta\<rfloor>"
     apply (auto intro: skat_assign_comm skat_pred_comm)
@@ -972,15 +973,15 @@ proof (rule skat_comm, rule skat_comm[symmetric])
 qed
 
 fun eliminate :: "nat \<Rightarrow> 'a::ranked_alphabet skat_expr => 'a skat_expr" where
-  "eliminate x (SKLeaf y s) = (if x = y then SKOne else (SKLeaf y s))"
+  "eliminate x (SKAssign y s) = (if x = y then SKOne else (SKAssign y s))"
 | "eliminate x (SKBool p) = (SKBool p)"
-| "eliminate x (s :\<odot>: t) = eliminate x s :\<odot>: eliminate x t"
-| "eliminate x (s :\<oplus>: t) = eliminate x s :\<oplus>: eliminate x t"
+| "eliminate x (s \<odot> t) = eliminate x s \<odot> eliminate x t"
+| "eliminate x (s \<oplus> t) = eliminate x s \<oplus> eliminate x t"
 | "eliminate x (SKStar s) = SKStar (eliminate x s)"
 | "eliminate x SKOne = SKOne"
 | "eliminate x SKZero = SKZero"
 
-lemma eliminate_homo: "\<And>X. kat_homomorphism (\<lambda>s. \<lfloor>eliminate X s\<rfloor>)"
+lemma eliminate_hom: "\<And>X. kat_homomorphism (\<lambda>s. \<lfloor>eliminate X s\<rfloor>)"
   by (default, simp_all, metis pred_expr_closed pred_expr_unfold)
 
 lemma non_output_infinite: "\<not> finite (- output_vars TYPE('a::ranked_alphabet))"
@@ -996,7 +997,7 @@ lemma eliminate_comm:
   "x \<notin> reads s \<Longrightarrow> \<lfloor>eliminate x s\<rfloor> \<cdot> x := null = x := null \<cdot> \<lfloor>eliminate x s\<rfloor>"
 proof -
   assume no_read: "x \<notin> reads s"
-  have "\<lfloor>eliminate x s\<rfloor> \<cdot> \<lfloor>SKLeaf x null\<rfloor> = \<lfloor>SKLeaf x null\<rfloor> \<cdot> \<lfloor>eliminate x s\<rfloor>"
+  have "\<lfloor>eliminate x s\<rfloor> \<cdot> \<lfloor>SKAssign x null\<rfloor> = \<lfloor>SKAssign x null\<rfloor> \<cdot> \<lfloor>eliminate x s\<rfloor>"
     by (rule no_touch_comm, simp, rule not_read_elim, simp add: no_read)
   thus ?thesis
     by simp
@@ -1009,7 +1010,7 @@ proof -
   have "(\<And>a. a \<in> atoms p \<Longrightarrow> \<lfloor>a\<rfloor> \<cdot> x := null = x := null \<cdot> \<lfloor>eliminate x a\<rfloor>)"
   proof -
     fix a assume asm: "a \<in> atoms p"
-    hence "(\<exists>x s. a = SKLeaf x s) \<or> (\<exists>P. a = SKBool (BLeaf P))"
+    hence "(\<exists>x s. a = SKAssign x s) \<or> (\<exists>P. a = SKBool (BLeaf P))"
       by (metis atoms_oneof)
     moreover from asm have "x \<notin> reads a"
       by (metis disjoint_iff_not_equal no_reads read_atoms set_rev_mp)
@@ -1019,7 +1020,7 @@ proof -
       apply (metis FV_null empty_iff skat_assign_comm)
       by (metis skat_pred_comm)
   qed
-  with metatheorem[OF skat_unfold_homo eliminate_homo[of x] this]
+  with metatheorem[OF abs_hom eliminate_hom[of x] this]
   show ?thesis
     by (metis eliminate_comm no_reads)
 qed
@@ -1071,9 +1072,9 @@ proof -
   finally show ?thesis .
 qed
 
-lemma skat_comm_pred_con:
+lemma skat_comm_pred_cong:
   fixes x y :: "'a::ranked_alphabet pred bexpr"
-  shows "skat_con (SKBool x :\<odot>: SKBool y) (SKBool y :\<odot>: SKBool x)"
+  shows "skat_cong (SKBool x \<odot> SKBool y) (SKBool y \<odot> SKBool x)"
 proof -
   have "pred_expr x \<in> carrier tests" and "pred_expr y \<in> carrier tests"
     by (metis pred_expr_closed)+
@@ -1083,10 +1084,10 @@ proof -
     by (transfer fixing: x y)
 qed
 
-lemma skat_comm_assign_pred_con:
+lemma skat_comm_assign_pred_cong:
   fixes P :: "'a::ranked_alphabet pred bexpr"
   assumes xP: "x \<notin> reads (SKBool P)"
-  shows "skat_con (SKBool P :\<odot>: SKLeaf x s) (SKLeaf x s :\<odot>: SKBool P)"
+  shows "skat_cong (SKBool P \<odot> SKAssign x s) (SKAssign x s \<odot> SKBool P)"
 proof (auto simp add: unfold_transfer[symmetric] pred_expr_unfold, insert xP, induct P)
   fix P :: "'a pred" assume "x \<notin> reads (SKBool (BLeaf P))"
   thus "pred_expr (BLeaf P) \<cdot> x := s = x := s \<cdot> pred_expr (BLeaf P)"
@@ -1099,7 +1100,7 @@ next
   hence "x \<notin> reads (SKBool P1)" and "x \<notin> reads (SKBool P2)"
     by auto
   thus "pred_expr (P1 :+: P2) \<cdot> x := s = x := s \<cdot> pred_expr (P1 :+: P2)"
-    by (smt ind_hyp1 ind_hyp2 pred_expr_unfold skd.distl skd.distr test_unfold.simps(2))
+    by (smt ind_hyp1 ind_hyp2 pred_expr_unfold skd.distl skd.distr test_abs.simps(2))
 next
   fix P :: "'a pred bexpr"
   assume ind_hyp: "x \<notin> reads (SKBool P) \<Longrightarrow> pred_expr P \<cdot> x := s = x := s \<cdot> pred_expr P"
@@ -1119,38 +1120,38 @@ next
   hence "x \<notin> reads (SKBool P1)" and "x \<notin> reads (SKBool P2)"
     by auto
   thus "pred_expr (P1 :\<cdot>: P2) \<cdot> x := s = x := s \<cdot> pred_expr (P1 :\<cdot>: P2)"
-    by (smt ind_hyp1 ind_hyp2 pred_expr_unfold skd.mult_assoc test_unfold.simps(3))
+    by (smt ind_hyp1 ind_hyp2 pred_expr_unfold skd.mult_assoc test_abs.simps(3))
 next
   show "pred_expr bexpr.BOne \<cdot> x := s = x := s \<cdot> pred_expr bexpr.BOne"
-    by (metis pred_expr_unfold skd.mult_onel skd.mult_oner test_unfold.simps(5))
+    by (metis pred_expr_unfold skd.mult_onel skd.mult_oner test_abs.simps(5))
 next
   show "pred_expr bexpr.BZero \<cdot> x := s = x := s \<cdot> pred_expr bexpr.BZero"
-    by (metis pred_expr_unfold skd.mult_zerol skd.mult_zeror test_unfold.simps(6))
+    by (metis pred_expr_unfold skd.mult_zerol skd.mult_zeror test_abs.simps(6))
 qed
 
-lemma skat_comm_assign_con:
-  "\<lbrakk>x \<noteq> y; x \<notin> FV t; y \<notin> FV s\<rbrakk> \<Longrightarrow> skat_con (SKLeaf x s :\<odot>: SKLeaf y t) (SKLeaf y t :\<odot>: SKLeaf x s)"
+lemma skat_comm_assign_cong:
+  "\<lbrakk>x \<noteq> y; x \<notin> FV t; y \<notin> FV s\<rbrakk> \<Longrightarrow> skat_cong (SKAssign x s \<odot> SKAssign y t) (SKAssign y t \<odot> SKAssign x s)"
   by (auto simp add: unfold_transfer[symmetric] intro: skat_assign_comm)
 
-lemma skat_comm_no_touch_con:
-  "touches t \<inter> touches s = {} \<Longrightarrow> skat_con (s :\<odot>: t) (t :\<odot>: s)"
+lemma skat_comm_no_touch_cong:
+  "touches t \<inter> touches s = {} \<Longrightarrow> skat_cong (s \<odot> t) (t \<odot> s)"
   by (auto simp add: unfold_transfer[symmetric] intro: no_touch_comm)
 
-lemma skat_comm_con:
-  assumes atoms_comm: "\<And>xa ya. \<lbrakk>xa \<in> atoms x; ya \<in> atoms y\<rbrakk> \<Longrightarrow> skat_con (xa :\<odot>: ya) (ya :\<odot>: xa)"
-  shows "skat_con (x :\<odot>: y) (y :\<odot>: x)"
+lemma skat_comm_cong:
+  assumes atoms_comm: "\<And>xa ya. \<lbrakk>xa \<in> atoms x; ya \<in> atoms y\<rbrakk> \<Longrightarrow> skat_cong (xa \<odot> ya) (ya \<odot> xa)"
+  shows "skat_cong (x \<odot> y) (y \<odot> x)"
   apply (simp add: unfold_transfer[symmetric])
   apply (rule skat_comm)
   apply (rule HOL.sym)
   apply (rule skat_comm)
   apply (rule HOL.sym)
-  by (auto simp only: skat_unfold.simps[symmetric] unfold_transfer intro: atoms_comm)
+  by (auto simp only: abs.simps[symmetric] unfold_transfer intro: atoms_comm)
 
 lemma skat_fold_tac_simp:
-  "skat_unfold (SKBool (p :\<cdot>: q)) = skat_unfold (SKBool p :\<odot>: SKBool q)"
+  "abs (SKBool (p :\<cdot>: q)) = abs (SKBool p \<odot> SKBool q)"
   by simp
 
-lemma eliminate_variables_con:
+lemma eliminate_variables_cong:
   assumes x_in_xs: "x \<in> set xs" and nr: "x \<notin> reads (s::'a skat_expr)" and xo: "x \<notin> output_vars TYPE('a::ranked_alphabet)"
   shows "\<lfloor>s\<rfloor> \<cdot> halt xs = \<lfloor>eliminate x s\<rfloor> \<cdot> halt xs"
   by (metis eliminate_variables_halt nr x_in_xs xo)
@@ -1165,8 +1166,8 @@ structure SkatSimpRules = Named_Thms
    val description = "SKAT simplification rules")
 
 fun skat_fold_tac ctxt n =
-  REPEAT (EqSubst.eqsubst_tac ctxt [0] @{thms test_unfold.simps[symmetric]} n)
-  THEN REPEAT (EqSubst.eqsubst_tac ctxt [0] @{thms skat_unfold.simps[symmetric]} n)
+  REPEAT (EqSubst.eqsubst_tac ctxt [0] @{thms test_abs.simps[symmetric]} n)
+  THEN REPEAT (EqSubst.eqsubst_tac ctxt [0] @{thms abs.simps[symmetric]} n)
 
 fun skat_apply_fold_tac ctrm =
   Subgoal.FOCUS (fn {context, ...} =>
@@ -1198,15 +1199,15 @@ fun skat_transfer_tac ctxt n =
   end
 
 fun comm_rules_tac n =
-  rtac @{thm skat_comm_pred_con} n
-  ORELSE rtac @{thm skat_comm_assign_pred_con} n
-  ORELSE rtac @{thm skat_comm_assign_pred_con[symmetric]} n
-  ORELSE rtac @{thm skat_comm_assign_con} n
-  ORELSE rtac @{thm skat_comm_no_touch_con} n
+  rtac @{thm skat_comm_pred_cong} n
+  ORELSE rtac @{thm skat_comm_assign_pred_cong} n
+  ORELSE rtac @{thm skat_comm_assign_pred_cong[symmetric]} n
+  ORELSE rtac @{thm skat_comm_assign_cong} n
+  ORELSE rtac @{thm skat_comm_no_touch_cong} n
 
 fun skat_comm_tac solver = Subgoal.FOCUS_PARAMS (fn {context, ...} =>
   DETERM (skat_transfer_tac context 1
-    THEN rtac @{thm skat_comm_con} 1
+    THEN rtac @{thm skat_comm_cong} 1
     THEN full_simp_tac (HOL_basic_ss addsimps @{thms atoms.simps}) 1
     THEN safe_tac context
     THEN ALLGOALS (asm_full_simp_tac (HOL_basic_ss addsimps @{thms triv_forall_equality}))
@@ -1221,7 +1222,7 @@ fun simp_solver ctxt n = REPEAT (CHANGED
 fun eliminate_variable_tac v = Subgoal.FOCUS (fn {context, ...} =>
   asm_full_simp_tac (HOL_basic_ss addsimps SkatSimpRules.get context) 1
   THEN skat_fold_tac context 1
-  THEN DETERM (EqSubst.eqsubst_tac context [0] [Drule.instantiate' [] [SOME (nat_cterm v)] @{thm eliminate_variables_con}] 1)
+  THEN DETERM (EqSubst.eqsubst_tac context [0] [Drule.instantiate' [] [SOME (nat_cterm v)] @{thm eliminate_variables_cong}] 1)
   THEN asm_full_simp_tac (simpset_of context) 1
   THEN asm_full_simp_tac (simpset_of context) 1
   THEN TRY (simp_tac (simpset_of context) 1)
