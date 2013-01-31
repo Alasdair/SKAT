@@ -1333,4 +1333,7 @@ proof -
   finally show ?thesis .
 qed
 
+lemma "1 := Var 2; 3 := Var 4 = 3 := Var 4; 1 := Var 2"
+  by skat_comm
+
 end

@@ -215,61 +215,43 @@ no_notation
 
 abbreviation halt where "halt \<equiv> SKAT.halt [1,2,3,4]"
 
-definition scheme1 :: "kzp skat list" where "scheme1 \<equiv>
-  [ 1 := vx
-  , 4 := f (Var 1)
-  , 1 := f (Var 1)
-  , 2 := g (Var 1) (Var 4)
-  , 3 := g (Var 1) (Var 1)
+definition scheme1 where "scheme1 \<equiv>
+  [ 1 := vx, 4 := f (Var 1), 1 := f (Var 1)
+  , 2 := g (Var 1) (Var 4), 3 := g (Var 1) (Var 1)
   , loop
-    [ !(P (Var 1))
-    , 1 := f (Var 1)
-    , 2 := g (Var 1) (Var 4)
-    , 3 := g (Var 1) (Var 1)
+    [ !(P (Var 1)), 1 := f (Var 1)
+    , 2 := g (Var 1) (Var 4), 3 := g (Var 1) (Var 1)
     ]
-  , P (Var 1)
-  , 1 := f (Var 3)
+  , P (Var 1), 1 := f (Var 3)
   , loop
     [ !(P (Var 4)) + seq
       [ P (Var 4)
-      , (!(P (Var 2)) \<cdot> 2 := f (Var 2))\<^sup>\<star>
-      , P (Var 2)
-      , ! (P (Var 3))
-      , 4 := f (Var 1)
-      , 1 := f (Var 1)
+      , (!(P (Var 2)); 2 := f (Var 2))\<^sup>\<star>
+      , P (Var 2), ! (P (Var 3))
+      , 4 := f (Var 1), 1 := f (Var 1)
       ]
-    , 2 := g (Var 1) (Var 4)
-    , 3 := g (Var 1) (Var 1)
+    , 2 := g (Var 1) (Var 4), 3 := g (Var 1) (Var 1)
     , loop
-      [ !(P (Var 1))
-      , 1 := f (Var 1)
-      , 2 := g (Var 1) (Var 4)
-      , 3 := g (Var 1) (Var 1)
+      [ !(P (Var 1)), 1 := f (Var 1)
+      , 2 := g (Var 1) (Var 4), 3 := g (Var 1) (Var 1)
       ]
-    , P (Var 1)
-    , 1 := f (Var 3)
+    , P (Var 1), 1 := f (Var 3)
     ]
   , P (Var 4)
   , (!(P (Var 2)) \<cdot> 2 := f (Var 2))\<^sup>\<star>
-  , P (Var 2)
-  , P (Var 3)
-  , 0 := Var 2
-  , halt
+  , P (Var 2), P (Var 3), 0 := Var 2, halt
   ]"
 
 definition scheme2 where "scheme2 \<equiv>
-  [ 2 := f vx
-  , P (Var 2)
+  [ 2 := f vx, P (Var 2)
   , 2 := g (Var 2) (Var 2)
-  , skat_star (seq
+  , loop
     [ !(P (Var 2))
     , 2 := f (f (Var 2))
     , P (Var 2)
     , 2 := g (Var 2) (Var 2)
-    ])
-  , P (Var 2)
-  , 0 := Var 2
-  , halt
+    ]
+  , P (Var 2), 0 := Var 2, halt
   ]"
 
 declare Nat.One_nat_def [simp del]

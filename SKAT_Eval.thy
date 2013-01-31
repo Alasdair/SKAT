@@ -537,8 +537,7 @@ begin
       by (metis b_def)
   qed
 
-
-  lemma module: "kat_module free_kat SET (\<lambda>x y. y \<Colon> x)"
+  lemma module: "kat_module free_kat SET (op \<Colon>)"
   proof (auto simp add: kat_module_def kat_module'_def)
     show "kat free_kat"
       by (metis free_kat)
@@ -546,10 +545,10 @@ begin
     show "complete_boolean_lattice SET"
       by (metis SET_cbl)
 
-    show "(\<lambda>x y. y \<Colon> x) \<in> carrier free_kat \<rightarrow> carrier SET \<rightarrow> carrier SET"
+    show "(op \<Colon>) \<in> carrier SET \<rightarrow> carrier free_kat \<rightarrow> carrier SET"
       by (simp add: ftype_pred SET_def)
 
-    show "kat_module_axioms free_kat SET (\<lambda>x y. y \<Colon> x)"
+    show "kat_module_axioms free_kat SET (op \<Colon>)"
     proof (simp add: kat_module_axioms_def, intro conjI impI allI, simp_all add: SET_def free_kat_def)
       fix p q m n a P Q
       show "m \<Colon> (p + q) = m \<Colon> p \<union> m \<Colon> q"
@@ -565,28 +564,35 @@ begin
     qed
   qed
 
-  definition hoare_triple :: "'b mems \<Rightarrow> 'a skat \<Rightarrow> 'b mems \<Rightarrow> bool" ("_ \<lbrace> _ \<rbrace> _" [54,54,54] 53) where
-    "P \<lbrace> p \<rbrace> Q \<equiv> P \<Colon> p \<subseteq> Q"
+  definition hoare_triple :: "'b mems \<Rightarrow> 'a skat \<Rightarrow> 'b mems \<Rightarrow> bool" ("\<lbrace>_\<rbrace> _ \<lbrace>_\<rbrace>" [54,54,54] 53) where
+    "\<lbrace>P\<rbrace> p \<lbrace>Q\<rbrace> \<equiv> P \<Colon> p \<subseteq> Q"
 
-  lemma hoare_composition: "\<lbrakk>P \<lbrace>p\<rbrace> Q; Q \<lbrace>q\<rbrace> R\<rbrakk> \<Longrightarrow> P \<lbrace>p ; q\<rbrace> R"
-    apply (simp add: hoare_triple_def mod_mult)
-    apply (simp add: module_def eval.rep_eq)
-    by (metis eval_iso subset_trans)
+  lemma hoare_triple_mod: "kat_module.hoare_triple SET (op \<Colon>) P p Q = \<lbrace>P\<rbrace> p \<lbrace>Q\<rbrace>"
+    by (simp add: kat_module.hoare_triple_def[OF module] hoare_triple_def) (simp add: SET_def)
 
-  lemma hoare_weakening [consumes 1]: "\<lbrakk>P \<lbrace> p \<rbrace> Q; P' \<subseteq> P; Q \<subseteq> Q'\<rbrakk> \<Longrightarrow> P' \<lbrace> p \<rbrace> Q'"
-    by (metis hoare_triple_def hoare_composition mod_mult mod_one order_refl subset_trans)
+  lemma [simp]: "kat_module.hoare_triple \<lparr>carrier = UNIV, le = op \<subseteq>\<rparr> op \<Colon> P  p Q = \<lbrace>P\<rbrace> p \<lbrace>Q\<rbrace>"
+    by (metis SET_def interp.hoare_triple_mod)
+
+  declare hoare_triple_mod[simp]
+  declare SET_def[simp]
+  declare free_kat_def[simp]
+
+  lemmas hoare_composition = kat_module.hoare_composition[OF module, simplified]
+
+  lemma hoare_weakening [consumes 1]: "\<lbrakk>\<lbrace>P\<rbrace> p \<lbrace>Q\<rbrace>; P' \<subseteq> P; Q \<subseteq> Q'\<rbrakk> \<Longrightarrow> \<lbrace>P'\<rbrace> p \<lbrace>Q'\<rbrace>"
+    by (metis hoare_triple_def interp.hoare_composition mod_one skd.mult_onel skd.mult_oner)
 
   lemma hoare_if:
     assumes b_test: "b \<in> carrier tests"
-    and then_branch: "P \<inter> (UNIV \<Colon> b) \<lbrace> p \<rbrace> Q"
-    and else_branch: "P \<inter> (UNIV \<Colon> !b) \<lbrace> q \<rbrace> Q"
-    shows "P \<lbrace> IF b THEN p ELSE q ENDIF \<rbrace> Q"
+    and then_branch: "\<lbrace>P \<inter> (UNIV \<Colon> b)\<rbrace> p \<lbrace>Q\<rbrace>"
+    and else_branch: "\<lbrace>P \<inter> (UNIV \<Colon> !b)\<rbrace> q \<lbrace>Q\<rbrace>"
+    shows "\<lbrace>P\<rbrace> IF b THEN p ELSE q ENDIF \<lbrace>Q\<rbrace>"
   proof -
     obtain B where b_def: "b = pred_expr B"
       by (metis b_test pred_exists)
-    hence "P \<inter> (UNIV \<Colon> pred_expr B) \<lbrace> p \<rbrace> Q" and "P \<inter> (UNIV \<Colon> pred_expr (BNot B)) \<lbrace> q \<rbrace> Q"
+    hence "\<lbrace>P \<inter> (UNIV \<Colon> pred_expr B)\<rbrace> p \<lbrace>Q\<rbrace>" and "\<lbrace>P \<inter> (UNIV \<Colon> pred_expr (BNot B))\<rbrace> q \<lbrace>Q\<rbrace>"
       by (metis then_branch) (metis b_def else_branch pred_expr_not)
-    hence "P \<lbrace> IF pred_expr B THEN p ELSE q ENDIF \<rbrace> Q"
+    hence "\<lbrace>P\<rbrace> IF pred_expr B THEN p ELSE q ENDIF \<lbrace>Q\<rbrace>"
       apply (simp add: if_then_else_def hoare_triple_def mod_plus mod_mult)
       by (metis (lifting) filter_set_inter mod_pred_expr)
     thus ?thesis
@@ -597,7 +603,7 @@ begin
     ("_[_|_]" [100,100,100] 101) where
     "P[x|t] \<equiv> assigns D x t P"
 
-  lemma hoare_assignment: "P[x|s] \<subseteq> Q \<Longrightarrow> P \<lbrace> x := s \<rbrace> Q"
+  lemma hoare_assignment: "P[x|s] \<subseteq> Q \<Longrightarrow> \<lbrace>P\<rbrace> x := s \<lbrace>Q\<rbrace>"
     by (metis hoare_triple_def mod_assign)
 
   definition satisfies :: "nat \<Rightarrow> ('b \<Rightarrow> bool) \<Rightarrow> 'b mems" where
@@ -606,8 +612,8 @@ begin
   lemma hoare_while:
     assumes b_test: "b \<in> carrier tests"
     and Q_def: "Q = P \<inter> (UNIV \<Colon> !b)"
-    and loop_condition: "P \<inter> (UNIV \<Colon> b) \<lbrace>p\<rbrace> P"
-    shows "P \<lbrace> WHILE b DO p WEND \<rbrace> Q"
+    and loop_condition: "\<lbrace>P \<inter> (UNIV \<Colon> b)\<rbrace> p \<lbrace>P\<rbrace>"
+    shows "\<lbrace>P\<rbrace> WHILE b DO p WEND \<lbrace>Q\<rbrace>"
   proof -
     have "P \<Colon> (b ; p)\<^sup>\<star> \<subseteq> P"
       by (rule mod_star, metis b_test hoare_triple_def interp.mod_mult interp.mod_test_and le_sup_iff loop_condition order_refl)
@@ -617,11 +623,24 @@ begin
       by (simp add: Q_def)
     hence "(P \<Colon> (b ; p)\<^sup>\<star>) \<Colon> !b \<subseteq> Q"
       by (metis b_test not_closed mod_test_and)
-    hence "P \<lbrace> (b;p)\<^sup>\<star>;!b \<rbrace> Q"
+    hence "\<lbrace>P\<rbrace> (b;p)\<^sup>\<star>;!b \<lbrace>Q\<rbrace>"
       by (simp add: hoare_triple_def mod_mult)
     thus ?thesis
       by (simp add: while_def)
   qed
+
+  definition while_inv :: "'a::ranked_alphabet skat \<Rightarrow> 'b mems \<Rightarrow> 'a skat \<Rightarrow> 'a skat" ("WHILE _ INVARIANT _ DO _ WEND" [64,64,64] 63) where
+  "WHILE b INVARIANT i DO p WEND = (b\<cdot>p)\<^sup>\<star>\<cdot>!b"
+
+  lemma while_inv_while: "WHILE b INVARIANT i DO p WEND = WHILE b DO p WEND"
+    by (metis while_def while_inv_def)
+
+  lemma hoare_while_inv:
+    assumes b_test: "b \<in> carrier tests"
+    and Pi: "P \<subseteq> i" and iQ: "i \<inter> (UNIV \<Colon> !b) \<subseteq> Q"
+    and inv_loop: "\<lbrace>i \<inter> (UNIV \<Colon> b)\<rbrace> p \<lbrace>i\<rbrace>"
+    shows "\<lbrace>P\<rbrace> WHILE b INVARIANT i DO p WEND \<lbrace>Q\<rbrace>"
+    by (auto simp add: while_inv_while intro: hoare_weakening[OF _ Pi iQ] hoare_while[OF b_test _ inv_loop])
 
 end
 

@@ -122,15 +122,15 @@ type_synonym 'a relation = "('a list) set"
 subsection {* Interpretation and term evaluation *}
 (* +------------------------------------------------------------------------+ *)
 
-record ('a, 'b) interp = "'b partial_object" +
-  mf :: "'a \<Rightarrow> 'b list \<Rightarrow> 'b"
-  mr :: "'a \<Rightarrow> 'b relation"
+record ('a, 'b) interp =
+  interp_fun :: "'a \<Rightarrow> 'b list \<Rightarrow> 'b"
+  interp_rel :: "'a \<Rightarrow> 'b relation"
 
 type_synonym 'a mem = "nat \<Rightarrow> 'a"
 
 fun eval_trm :: "('a::ranked_alphabet, 'b) interp \<Rightarrow> (nat \<Rightarrow> 'b) \<Rightarrow> 'a trm \<Rightarrow> 'b" where
   "eval_trm D mem (Var n) = mem n"
-| "eval_trm D mem (App f xs) = mf D f (map (eval_trm D mem) xs)"
+| "eval_trm D mem (App f xs) = interp_fun D f (map (eval_trm D mem) xs)"
 
 definition null :: "'a::ranked_alphabet trm" where
   "null \<equiv> App NULL []"
@@ -149,7 +149,7 @@ inductive_set wf_preds :: "'a::ranked_alphabet pred set" where
   "\<lbrakk>P \<in> rels; arity P = length xs\<rbrakk> \<Longrightarrow> Pred P xs \<in> wf_preds"
 
 primrec eval_pred :: "('a::ranked_alphabet, 'b) interp \<Rightarrow> 'b mem \<Rightarrow> 'a pred \<Rightarrow> bool" where
-  "eval_pred D mem (Pred P xs) \<longleftrightarrow> map (eval_trm D mem) xs \<in> mr D P"
+  "eval_pred D mem (Pred P xs) \<longleftrightarrow> map (eval_trm D mem) xs \<in> interp_rel D P"
 
 primrec pred_subst :: "nat \<Rightarrow> 'a::ranked_alphabet trm \<Rightarrow> 'a pred \<Rightarrow> 'a pred" where
   "pred_subst v s (Pred P xs) = Pred P (map (trm_subst v s) xs)"
@@ -272,7 +272,7 @@ proof (induct rule: trm_simple_induct, auto)
     by (metis asm1)
   hence "map (eval_trm D m1) xs = map (eval_trm D m2) xs"
     by (induct xs, auto)
-  thus "mf D f (map (eval_trm D m1) xs) = mf D f (map (eval_trm D m2) xs)"
+  thus "interp_fun D f (map (eval_trm D m1) xs) = interp_fun D f (map (eval_trm D m2) xs)"
     by metis
 qed
 
@@ -286,7 +286,7 @@ definition assign ::
 
 definition halt_null :: "('a::ranked_alphabet, 'b) interp \<Rightarrow> 'b mem \<Rightarrow> 'b mem"
   where
-  "halt_null D mem \<equiv> \<lambda>v. if v \<notin> output_vars TYPE('a) then mf D NULL [] else mem v"
+  "halt_null D mem \<equiv> \<lambda>v. if v \<notin> output_vars TYPE('a) then interp_fun D NULL [] else mem v"
 
 lemma eval_assign1:
   assumes xy: "x \<noteq> y" and ys: "y \<notin> FV s"

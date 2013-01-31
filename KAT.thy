@@ -574,6 +574,11 @@ begin
     by (metis (lifting) complement2 hoare_triple_def mult_oner one_closed test_subset_var)
 
 *)
+
+lemma "{c,d1,d2} \<subseteq> tests A \<Longrightarrow> c\<cdot>d1 + !c\<cdot>d2 = (!c + d1)\<cdot>(c + d2)"
+  apply auto
+  by (smt ba_5 de_morgan2 local.complement_closed test_dist1 test_dist2 test_join_def test_meet_closed test_mult_comm)
+
 end
 
 notation
